@@ -204,7 +204,7 @@ a:hover{color:#d8ff8a}
 <!-- ═══════════════════════════════════════════ -->
 <!-- SECTION 4 — PROCESS (Fitted Inside Video Frame) -->
 <!-- ═══════════════════════════════════════════ -->
-<section id="process" style="position:relative;width:100%;height:160vh;background:#09090B">
+<section id="process" style="position:relative;width:100%;height:220vh;background:#09090B">
   
   <!-- Sticky Video Viewport (100vh) -->
   <div data-smr-viewport style="position:sticky;top:0;width:100%;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#09090B">
@@ -421,8 +421,8 @@ class Component extends DCLogic {
     // Initialize Scroll Mask Reveal on Process section
     if (window.ScrollMaskReveal && window.ScrollMaskReveal.init) {
       window.ScrollMaskReveal.init('#process', {
-        startSize: 30,
-        endSize: 2800
+        startSize: 28,
+        endSize: 520
       });
     }
 
@@ -451,43 +451,20 @@ class Component extends DCLogic {
       }, 2500);
     }, 80);
 
-    // Timeline step animation
+    // Timeline step cards are animated smoothly in sync with mask expansion by ScrollMaskReveal
+    // Fallback only if ScrollMaskReveal is not initialized
     const timelineSection = document.getElementById('process-timeline');
     if (timelineSection) {
       const stepCards = timelineSection.querySelectorAll('[data-step-card]');
-      const timelineLine = timelineSection.querySelector('[data-timeline-line]');
-      let timelineRevealed = false;
-
-      const tio = new IntersectionObserver((entries) => {
-        entries.forEach(e => {
-          if (e.isIntersecting && !timelineRevealed) {
-            timelineRevealed = true;
-            tio.unobserve(e.target);
-            // Animate the vertical line
-            if (timelineLine) {
-              timelineLine.style.height = '100%';
-            }
-            // Stagger each card in
-            stepCards.forEach((card, i) => {
-              setTimeout(() => {
-                card.style.transition = 'opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-              }, i * 90);
-            });
-          }
-        });
-      }, { threshold: 0.1 });
-
-      tio.observe(timelineSection);
-
-      // Fallback
       setTimeout(() => {
-        stepCards.forEach(card => {
-          card.style.opacity = '1';
-          card.style.transform = 'translateY(0)';
-        });
-      }, 3000);
+        const processEl = document.getElementById('process');
+        if (!processEl || !processEl._smrInstance) {
+          stepCards.forEach(card => {
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          });
+        }
+      }, 3500);
     }
   }
 
@@ -570,8 +547,8 @@ class Component extends DCLogic {
       var smrEl = document.getElementById('process');
       if (smrEl && window.ScrollMaskReveal && window.ScrollMaskReveal.init && !smrEl._smrInstance) {
         smrEl._smrInstance = window.ScrollMaskReveal.init(smrEl, {
-          startSize: 30,
-          endSize: 2800
+          startSize: 28,
+          endSize: 520
         });
       }
     }

@@ -41,9 +41,10 @@
     }
 
     const config = Object.assign({
-      startSize: 30,       // percentage of viewport for mask at start
-      endSize: 2800,      // expands wide enough to completely clear all screen corners
+      startSize: 28,       // percentage of viewport for mask at start
+      endSize: 520,        // expands wide enough to completely clear all screen corners on any display
       maskSvg: DEFAULT_E_MASK,
+      revealDistance: null, // dynamic based on viewport & container
       onProgress: null
     }, options);
 
@@ -71,27 +72,36 @@
 
       const rect = container.getBoundingClientRect();
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      const viewportWidth = window.innerWidth || document.documentElement.clientWidth || 1200;
 
       // If completely offscreen, skip styling
       if (rect.bottom < -100 || rect.top > viewportHeight + 100) {
         return;
       }
 
-      // Expand mask as section enters and pins
-      // Start expanding when section top reaches 75% of viewport height
-      // Reach full expansion right as the section pins at top: 0
-      const startRevealAt = viewportHeight * 0.75;
-      const revealDistance = viewportHeight * 0.70;
-      const rawProgress = clamp01((startRevealAt - rect.top) / revealDistance);
+      // Mask is visible when entering the section.
+      // While entering (rect.top > 0), progress is 0 and mask stays at startSize.
+      // The expansion begins when the section reaches top: 0 (pins in viewport).
+      const pinnedScroll = Math.max(0, -rect.top);
+
+      // Section height and available pinned travel
+      const containerHeight = container.offsetHeight || (viewportHeight * 2.2);
+      const maxPinTravel = Math.max(viewportHeight * 0.5, containerHeight - viewportHeight);
+
+      // Reveal distance: expands across ~85% of viewport height (or ~72% of pinned travel)
+      // to reduce scroll speed smoothly.
+      const revealDistance = config.revealDistance || Math.min(viewportHeight * 0.90, maxPinTravel * 0.72);
+
+      const rawProgress = clamp01(pinnedScroll / revealDistance);
 
       // Expansion progress smoothly accelerates to full bleed (1.0)
-      const expansionProgress = clamp01(rawProgress / 0.85);
+      const expansionProgress = clamp01(rawProgress / 0.88);
       const easedProgress = smoothstep(expansionProgress);
 
       const targetSize = config.startSize + (config.endSize - config.startSize) * easedProgress;
 
-      // When expansion reaches completion (or targetSize >= 1500), remove mask entirely so video is 100% full bleed
-      if (expansionProgress >= 0.92 || targetSize >= 1500) {
+      // When expansion reaches completion (or targetSize >= 450), remove mask entirely so video is 100% full bleed
+      if (expansionProgress >= 0.95 || targetSize >= 450) {
         maskedEl.style.maskImage = 'none';
         maskedEl.style.webkitMaskImage = 'none';
         maskedEl.style.mask = 'none';
@@ -110,21 +120,34 @@
 
       // Update glowing border contour around expanding "e"
       if (maskBorder) {
-        const basePx = Math.min(viewportHeight, window.innerWidth || 1200) * (targetSize / 100);
+        const svgPx = viewportWidth * (targetSize / 100);
+        const basePx = svgPx * 0.70; // 0.70 is diameter of outer circle (2 * 210 / 600)
         maskBorder.style.width = `${basePx.toFixed(1)}px`;
         maskBorder.style.height = `${basePx.toFixed(1)}px`;
         // Fade border out cleanly as monogram expands
-        const borderOpacity = clamp01(1 - rawProgress * 2.5);
+        const borderOpacity = clamp01(1 - rawProgress * 2.2);
         maskBorder.style.opacity = borderOpacity.toFixed(3);
         maskBorder.style.display = borderOpacity <= 0.01 ? 'none' : 'block';
       }
 
       // Smoothly reveal header onto the video background as mask expands
       if (headerEl) {
-        const headerProgress = clamp01((rawProgress - 0.15) / 0.55);
+        const headerProgress = clamp01((rawProgress - 0.20) / 0.50);
         const headerOpacity = smoothstep(headerProgress);
         headerEl.style.opacity = headerOpacity.toFixed(3);
         headerEl.style.transform = `translateY(${((1 - headerOpacity) * 20).toFixed(1)}px)`;
+      }
+
+      // Reveal step cards as mask opens wide enough to showcase them
+      const stepCards = container.querySelectorAll('[data-step-card]');
+      if (stepCards.length > 0) {
+        stepCards.forEach((card, i) => {
+          const cardOffset = i * 0.04;
+          const individualProgress = clamp01((rawProgress - 0.25 - cardOffset) / 0.40);
+          const indivOpacity = smoothstep(individualProgress);
+          card.style.opacity = indivOpacity.toFixed(3);
+          card.style.transform = `translateY(${((1 - indivOpacity) * 16).toFixed(1)}px)`;
+        });
       }
 
       if (typeof config.onProgress === 'function') {
