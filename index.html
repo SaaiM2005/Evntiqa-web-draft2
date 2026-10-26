@@ -35,48 +35,79 @@ a:hover{color:#d8ff8a}
   #process-timeline { grid-template-columns: 1fr !important; gap: 8px !important; max-height: 58vh; overflow-y: auto; }
 }
 
-/* Accounts Cards Slide-Up & Auto-Showcase Animation */
-.account-card {
+/* Accounts Editorial Text Layout (Minimal, typography-focused) */
+.accounts-editorial-list {
+  display: flex;
+  flex-direction: column;
+}
+.account-item {
   position: relative;
   opacity: 0;
-  transform: translateY(48px);
-  will-change: transform, opacity, border-color, box-shadow;
+  transform: translateY(32px);
+  padding: 38px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  will-change: transform, opacity;
   transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
-              border-color 0.45s ease,
-              background 0.45s ease,
-              box-shadow 0.45s ease;
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
 }
-.account-card.is-revealed {
+.account-item:first-child {
+  padding-top: 8px;
+}
+.account-item:last-child {
+  border-bottom: none;
+  padding-bottom: 8px;
+}
+.account-item.is-revealed {
   opacity: 1;
   transform: translateY(0);
 }
-.account-card:hover {
-  background: rgba(14, 14, 18, 0.88) !important;
-  border-color: rgba(200, 244, 92, 0.35) !important;
-  transform: translateY(-4px) translateX(6px) !important;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 24px rgba(200, 244, 92, 0.12) !important;
+.account-item-num {
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.45);
+  letter-spacing: 0.5px;
+  margin-bottom: 16px;
+  transition: color 0.35s ease, transform 0.35s ease;
 }
-.account-card.is-active-lime {
-  background: rgba(14, 14, 18, 0.82) !important;
-  border-color: rgba(200, 244, 92, 0.35) !important;
-  transform: translateY(-4px) translateX(6px) !important;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 24px rgba(200, 244, 92, 0.12) !important;
+.account-item-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(28px, 2.7vw, 38px);
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0 0 14px;
+  letter-spacing: -1px;
+  line-height: 1.15;
+  transition: color 0.35s ease, text-shadow 0.35s ease;
 }
-.account-card.is-active-emerald {
-  background: rgba(14, 14, 18, 0.82) !important;
-  border-color: rgba(52, 211, 153, 0.35) !important;
-  transform: translateY(-4px) translateX(6px) !important;
-  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 24px rgba(52, 211, 153, 0.12) !important;
+.account-item-desc {
+  font-size: 15px;
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.5);
+  margin: 0;
+  max-width: 520px;
+  transition: color 0.35s ease;
 }
-.account-card.is-active-lime .account-card-accent,
-.account-card:hover .account-card-accent {
-  box-shadow: 0 0 16px rgba(200, 244, 92, 0.8) !important;
-  transform: scaleY(1.05);
+.account-item:hover .account-item-num,
+.account-item.is-active-lime .account-item-num {
+  color: #C8F45C;
+  transform: translateX(4px);
 }
-.account-card.is-active-emerald .account-card-accent {
-  box-shadow: 0 0 16px rgba(52, 211, 153, 0.8) !important;
-  transform: scaleY(1.05);
+.account-item.is-active-emerald .account-item-num {
+  color: #34D399;
+  transform: translateX(4px);
+}
+.account-item:hover .account-item-title,
+.account-item.is-active-lime .account-item-title,
+.account-item.is-active-emerald .account-item-title {
+  color: #ffffff;
+  text-shadow: 0 0 28px rgba(200, 244, 92, 0.18);
+}
+.account-item:hover .account-item-desc,
+.account-item.is-active-lime .account-item-desc,
+.account-item.is-active-emerald .account-item-desc {
+  color: rgba(255, 255, 255, 0.85);
 }
 @media (max-width: 900px) {
   #accounts .accounts-grid {
@@ -87,9 +118,12 @@ a:hover{color:#d8ff8a}
     position: relative !important;
     top: 0 !important;
   }
+  .account-item {
+    padding: 28px 0;
+  }
 }
 @media (prefers-reduced-motion: reduce) {
-  .account-card {
+  .account-item {
     transform: none !important;
     transition: opacity 0.4s ease !important;
   }
@@ -322,15 +356,13 @@ a:hover{color:#d8ff8a}
         <h2 style="font-family:'Space Grotesk';font-size:clamp(36px,4vw,60px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:16px 0 20px">Turn Target Accounts into Active Pipeline.</h2>
         <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.6);max-width:420px;margin:0">Engage security leaders to move key accounts forward.</p>
       </div>
-      <!-- Right: stacked cards with left accent & frosted glass -->
-      <div id="accounts-cards-list" style="display:flex;flex-direction:column;gap:16px">
+      <!-- Right: Minimal editorial numbered text layout (referencing Image 1) -->
+      <div id="accounts-cards-list" class="accounts-editorial-list" style="display:flex;flex-direction:column">
         <sc-for list="{{ accountTypes }}" as="item">
-          <div data-account-card class="account-card" style="display:flex;gap:20px;padding:28px 24px;border-radius:12px;background:rgba(9,9,11,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.3)">
-            <div class="account-card-accent" style="width:3px;flex:none;border-radius:2px;background:{{ item.color }};box-shadow:0 0 10px {{ item.color }}44;transition:all 0.4s ease"></div>
-            <div style="flex:1">
-              <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.3px">{{ item.title }}</h3>
-              <p style="font-size:14px;line-height:1.6;color:rgba(255,255,255,0.6);margin:0">{{ item.desc }}</p>
-            </div>
+          <div data-account-card class="account-item">
+            <div class="account-item-num">{{ item.num }}</div>
+            <h3 class="account-item-title">{{ item.title }}</h3>
+            <p class="account-item-desc">{{ item.desc }}</p>
           </div>
         </sc-for>
       </div>
@@ -793,10 +825,10 @@ class Component extends DCLogic {
     const logosDouble = [...logos, ...logos];
 
     const accountTypes = [
-      { title: 'Hard-to-Penetrate', desc: 'Open doors to strategic accounts where executive access has been difficult.', color: '#C8F45C' },
-      { title: 'Dormant & Stalled', desc: 'Restart conversations with accounts that have gone quiet.', color: '#34D399' },
-      { title: 'Active Opportunities', desc: 'Deepen executive engagement and help move buying conversations forward.', color: '#C8F45C' },
-      { title: 'Net-New Accounts', desc: 'Create first conversations with security leaders in new target accounts.', color: '#34D399' }
+      { num: '01', title: 'Hard-to-Penetrate', desc: 'Open doors to strategic accounts where executive access has been difficult.', color: '#C8F45C' },
+      { num: '02', title: 'Dormant & Stalled', desc: 'Restart conversations with accounts that have gone quiet.', color: '#34D399' },
+      { num: '03', title: 'Active Opportunities', desc: 'Deepen executive engagement and help move buying conversations forward.', color: '#C8F45C' },
+      { num: '04', title: 'Net-New Accounts', desc: 'Create first conversations with security leaders in new target accounts.', color: '#34D399' }
     ];
 
     const steps = [
