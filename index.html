@@ -248,6 +248,89 @@ a:hover{color:#d8ff8a}
     grid-template-columns: 1fr !important;
   }
 }
+
+/* Proven Results Section — Sleek Grey Cards */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+@media (max-width: 960px) {
+  .results-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+.result-card {
+  background: #242424;
+  border-radius: 0px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: clamp(32px, 3.5vw, 44px) clamp(26px, 2.8vw, 36px);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 410px;
+  box-sizing: border-box;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.result-card:hover {
+  background: #292929;
+  border-color: rgba(255, 255, 255, 0.12);
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+}
+.result-card-tag {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  color: #00d4e5;
+  margin-bottom: 16px;
+  letter-spacing: -0.1px;
+}
+.result-card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(20px, 1.8vw, 24px);
+  font-weight: 500;
+  color: #ffffff;
+  line-height: 1.3;
+  letter-spacing: -0.3px;
+  margin: 0 0 24px 0;
+}
+.result-card-date {
+  font-size: 14px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.45);
+  margin-bottom: 16px;
+  letter-spacing: -0.1px;
+}
+.result-card-desc {
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.65);
+  margin: 0 0 32px 0;
+}
+.result-card-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  margin-top: auto;
+  padding: 8px 18px;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 400;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.result-card-btn:hover {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ffffff;
+}
 </style>
 </helmet>
 
@@ -481,17 +564,16 @@ a:hover{color:#d8ff8a}
       <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.35);max-width:360px;margin:0">See how cybersecurity leaders turn target accounts into pipeline.</p>
     </div>
 
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    <div class="results-grid">
       <sc-for list="{{ caseStudies }}" as="cs">
-        <div style="border-radius:0px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);transition:all 0.3s" style-hover="border-color:rgba(255,255,255,0.08);transform:translateY(-3px)">
-          <div style="height:160px;background:{{ cs.gradient }};display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
-            <span style="font-family:'Space Grotesk';font-size:40px;font-weight:700;color:rgba(255,255,255,0.06);letter-spacing:4px">{{ cs.logo }}</span>
+        <div class="result-card" data-anim>
+          <div style="display:flex;flex-direction:column;flex-grow:1">
+            <span class="result-card-tag">{{ cs.tag }}</span>
+            <h3 class="result-card-title">{{ cs.title }}</h3>
+            <div class="result-card-date">{{ cs.date }}</div>
+            <p class="result-card-desc">{{ cs.desc }}</p>
           </div>
-          <div style="padding:28px 24px;background:rgba(255,255,255,0.02)">
-            <span style="font-size:11px;font-weight:600;color:#C8F45C;letter-spacing:1.5px;text-transform:uppercase">{{ cs.industry }}</span>
-            <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:600;color:#fff;margin:8px 0;letter-spacing:-0.2px">{{ cs.title }}</h3>
-            <p style="font-size:13px;line-height:1.6;color:rgba(255,255,255,0.3);margin:0">{{ cs.desc }}</p>
-          </div>
+          <a href="#expert-form-section" data-expert-trigger="true" class="result-card-btn">Read more</a>
         </div>
       </sc-for>
     </div>
@@ -841,9 +923,33 @@ class Component extends DCLogic {
     ];
 
     const caseStudies = [
-      { logo: 'CLIENT A', industry: 'Cloud Security', title: 'Enterprise pipeline acceleration', desc: 'How a leading cloud security vendor activated 40+ dormant Fortune 500 accounts through CISO roundtables.', gradient: 'linear-gradient(135deg,rgba(200,244,92,0.06),rgba(52,211,153,0.04))' },
-      { logo: 'CLIENT B', industry: 'Identity & Access', title: 'Net-new account penetration', desc: 'Breaking into 25 strategic accounts with zero prior executive relationships in 90 days.', gradient: 'linear-gradient(135deg,rgba(52,211,153,0.06),rgba(200,244,92,0.04))' },
-      { logo: 'CLIENT C', industry: 'Endpoint Security', title: 'Stalled deal reactivation', desc: 'Restarting conversations with 18 stalled enterprise accounts through peer benchmarking sessions.', gradient: 'linear-gradient(135deg,rgba(200,244,92,0.04),rgba(52,211,153,0.06))' }
+      {
+        tag: 'Cloud Security',
+        industry: 'Cloud Security',
+        title: 'Enterprise pipeline acceleration',
+        date: 'Oct 2026',
+        client: 'Client A',
+        logo: 'CLIENT A',
+        desc: 'How a leading cloud security vendor activated 40+ dormant Fortune 500 accounts through CISO roundtables.'
+      },
+      {
+        tag: 'Identity & Access',
+        industry: 'Identity & Access',
+        title: 'Net-new account penetration',
+        date: 'Oct 2026',
+        client: 'Client B',
+        logo: 'CLIENT B',
+        desc: 'Breaking into 25 strategic accounts with zero prior executive relationships in 90 days.'
+      },
+      {
+        tag: 'Endpoint Security',
+        industry: 'Endpoint Security',
+        title: 'Stalled deal reactivation',
+        date: 'Sep 2026',
+        client: 'Client C',
+        logo: 'CLIENT C',
+        desc: 'Restarting conversations with 18 stalled enterprise accounts through peer benchmarking sessions.'
+      }
     ];
 
     const faqData = [
