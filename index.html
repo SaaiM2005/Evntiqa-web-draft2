@@ -94,6 +94,130 @@ a:hover{color:#d8ff8a}
     transition: opacity 0.4s ease !important;
   }
 }
+
+/* Expert Form Section Styles */
+.expert-form-section {
+  display: block;
+  opacity: 1;
+  transform: none;
+  padding: 0 clamp(24px, 4vw, 64px) clamp(80px, 10vw, 120px);
+  position: relative;
+  z-index: 2;
+}
+.expert-card {
+  position: relative;
+  max-width: 1400px;
+  margin: 0 auto;
+  border-radius: 24px;
+  background: rgba(14, 15, 18, 0.92);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 0 40px rgba(200, 244, 92, 0.04);
+  padding: clamp(36px, 5vw, 64px);
+  overflow: hidden;
+}
+.expert-glow-top {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(200, 244, 92, 0.08), transparent 70%);
+  pointer-events: none;
+}
+.expert-form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: clamp(36px, 5vw, 72px);
+  align-items: start;
+  position: relative;
+  z-index: 1;
+}
+.expert-input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.expert-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.7);
+  letter-spacing: -0.2px;
+}
+.expert-label span {
+  color: #C8F45C;
+}
+.expert-input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 13px 16px;
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  box-sizing: border-box;
+  transition: all 0.25s ease;
+}
+.expert-input:focus {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: #C8F45C;
+  box-shadow: 0 0 0 3px rgba(200, 244, 92, 0.15), 0 0 16px rgba(200, 244, 92, 0.08);
+}
+.expert-input::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+.expert-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.45)' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+  background-size: 12px;
+  padding-right: 36px;
+  cursor: pointer;
+}
+.expert-select option {
+  background: #121316;
+  color: #fff;
+}
+.expert-close-btn {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 2;
+}
+.expert-close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+@media (max-width: 900px) {
+  .expert-form-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+  }
+}
+@media (max-width: 600px) {
+  .expert-form-fields-2col {
+    grid-template-columns: 1fr !important;
+  }
+}
 </style>
 </helmet>
 
@@ -119,7 +243,7 @@ a:hover{color:#d8ff8a}
       <a href="#" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Blog</a>
       <a href="#" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">TheCISOnews</a>
     </div>
-    <a href="#cta" style="padding:9px 22px;background:#C8F45C;border-radius:100px;font-size:13px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s;white-space:nowrap" style-hover="background:#d8ff8a;transform:translateY(-1px);box-shadow:0 8px 24px rgba(200,244,92,0.2)">Talk to an ABM Expert</a>
+    <a href="#expert-form-section" data-expert-trigger="true" style="padding:9px 22px;background:#C8F45C;border-radius:100px;font-size:13px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s;white-space:nowrap" style-hover="background:#d8ff8a;transform:translateY(-1px);box-shadow:0 8px 24px rgba(200,244,92,0.2)">Talk to an ABM Expert</a>
   </div>
 </nav>
 
@@ -148,7 +272,7 @@ a:hover{color:#d8ff8a}
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
       <p style="font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:rgba(255,255,255,0.45);max-width:520px;margin:0">We bring 10–12 CISOs from your target accounts into invitation-only, peer-led conversations—and handle all the heavy lifting from recruitment to execution.</p>
       <div style="display:flex;gap:12px;flex-wrap:wrap">
-        <a href="#cta" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#C8F45C;border-radius:100px;font-size:15px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,244,92,0.2)">
+        <a href="#expert-form-section" data-expert-trigger="true" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#C8F45C;border-radius:100px;font-size:15px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,244,92,0.2)">
           Talk to an ABM Expert
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </a>
@@ -394,8 +518,8 @@ a:hover{color:#d8ff8a}
         <span style="font-family:'Space Grotesk';font-size:12px;font-weight:600;color:rgba(200,244,92,0.4);letter-spacing:3px;text-transform:uppercase"></span>
         <h2 style="font-family:'Space Grotesk';font-size:clamp(40px,5vw,72px);font-weight:700;letter-spacing:-2.5px;line-height:1;color:#fff;margin:20px 0 20px">Turn Target<br>Accounts<br>into Deals.</h2>
         <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.4);margin:0 0 36px;max-width:400px">Activate stalled, dormant, and net-new global enterprise accounts.</p>
-        <a href="#" style="display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:#C8F45C;border-radius:100px;font-family:'Space Grotesk';font-size:16px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 16px 40px rgba(200,244,92,0.2)">
-          Talk to an ABM Expert
+        <a href="#expert-form-section" data-expert-trigger="true" style="display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:#C8F45C;border-radius:100px;font-family:'Space Grotesk';font-size:16px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 16px 40px rgba(200,244,92,0.2)">
+          Talk to an IBM Expert
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
         </a>
       </div>
@@ -407,6 +531,107 @@ a:hover{color:#d8ff8a}
             <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.3);letter-spacing:0.3px">{{ stat.label }}</span>
           </div>
         </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 8 — TALK TO AN EXPERT FORM -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="expert-form-section" class="expert-form-section">
+  <div class="expert-card">
+    <div class="expert-glow-top"></div>
+
+    <div class="expert-form-grid">
+      <!-- Left side: Headline -->
+      <div>
+        <h3 style="font-family:'Space Grotesk';font-size:clamp(36px,4.5vw,60px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:0">
+          Let’s Map Your<br>Target Accounts.
+        </h3>
+      </div>
+
+      <!-- Right side: Clean Minimal Form -->
+      <div>
+        <div id="expert-form-container" style="background:rgba(9,9,11,0.6);border:1px solid rgba(255,255,255,0.06);border-radius:16px;padding:clamp(24px,3vw,36px)">
+          <form id="expert-contact-form" onsubmit="return false;" style="display:flex;flex-direction:column;gap:18px">
+            <!-- 2-col Row 1: Name & Email -->
+            <div class="expert-form-fields-2col" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div class="expert-input-group">
+                <label for="expert-name" class="expert-label">Full Name <span>*</span></label>
+                <input type="text" id="expert-name" name="name" class="expert-input" placeholder="Elena Vance" required autocomplete="name">
+              </div>
+              <div class="expert-input-group">
+                <label for="expert-email" class="expert-label">Work Email <span>*</span></label>
+                <input type="email" id="expert-email" name="email" class="expert-input" placeholder="elena@company.com" required autocomplete="email">
+              </div>
+            </div>
+
+            <!-- 2-col Row 2: Company & Role -->
+            <div class="expert-form-fields-2col" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+              <div class="expert-input-group">
+                <label for="expert-company" class="expert-label">Company Name <span>*</span></label>
+                <input type="text" id="expert-company" name="company" class="expert-input" placeholder="Acme Security" required autocomplete="organization">
+              </div>
+              <div class="expert-input-group">
+                <label for="expert-title" class="expert-label">Job Title / Role</label>
+                <input type="text" id="expert-title" name="title" class="expert-input" placeholder="VP Demand Gen / CMO" autocomplete="organization-title">
+              </div>
+            </div>
+
+            <!-- Row 3: Engagement Format / Goal -->
+            <div class="expert-input-group">
+              <label for="expert-objective" class="expert-label">Engagement Program Focus</label>
+              <select id="expert-objective" name="objective" class="expert-input expert-select">
+                <option value="roundtables">Virtual CISO Roundtables (8–12 Verified CISOs)</option>
+                <option value="stalled-deals">Dormant &amp; Stalled Account Reactivation</option>
+                <option value="net-new">Net-New Enterprise Account Penetration</option>
+                <option value="webinars">Account-Based Webinars &amp; Summits</option>
+                <option value="custom">Custom Multi-Channel ABM Program</option>
+              </select>
+            </div>
+
+            <!-- Row 4: Target Accounts or Goals -->
+            <div class="expert-input-group">
+              <label for="expert-message" class="expert-label">Target Accounts or Program Notes <span style="color:rgba(255,255,255,0.3);font-size:11px;font-weight:400">(Optional)</span></label>
+              <textarea id="expert-message" name="message" class="expert-input" rows="3" placeholder="Share priority accounts, target industry (e.g. FinServ, Healthcare), or timeline..." style="resize:vertical;min-height:76px"></textarea>
+            </div>
+
+            <!-- Submit Button & Security Micro-copy -->
+            <div style="margin-top:6px;display:flex;flex-direction:column;gap:14px">
+              <button type="submit" id="expert-submit-btn" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 28px;background:#C8F45C;border:none;border-radius:100px;font-family:'Space Grotesk';font-size:16px;font-weight:600;color:#09090B;cursor:pointer;transition:all 0.25s ease" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,244,92,0.25)">
+                <span>Schedule Expert Consultation</span>
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              </button>
+              <div style="display:flex;align-items:center;justify-content:center;gap:16px;font-size:12px;color:rgba(255,255,255,0.35);flex-wrap:wrap">
+                <span style="display:inline-flex;align-items:center;gap:6px">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  Confidential &amp; Secure
+                </span>
+                <span>•</span>
+                <span>24-Hour Response</span>
+                <span>•</span>
+                <span>Zero Spam</span>
+              </div>
+            </div>
+          </form>
+
+          <!-- Success State (hidden initially) -->
+          <div id="expert-form-success" style="display:none;padding:24px 8px;text-align:center">
+            <div style="width:56px;height:56px;border-radius:50%;background:rgba(200,244,92,0.12);border:1px solid rgba(200,244,92,0.3);display:inline-flex;align-items:center;justify-content:center;margin-bottom:20px;box-shadow:0 0 24px rgba(200,244,92,0.15)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C8F45C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            </div>
+            <h4 style="font-family:'Space Grotesk';font-size:24px;font-weight:700;color:#fff;margin:0 0 8px;letter-spacing:-0.5px">Consultation Request Received!</h4>
+            <p id="expert-success-msg" style="font-size:14px;line-height:1.7;color:rgba(255,255,255,0.6);margin:0 auto 24px;max-width:380px">
+              Thank you. An Evntiqa engagement expert will review your target account profile and reach out within 24 hours.
+            </p>
+            <div style="display:inline-flex;gap:12px">
+              <button type="button" id="expert-reset-btn" style="padding:10px 22px;border-radius:100px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);color:#fff;font-family:'Space Grotesk';font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s" style-hover="background:rgba(255,255,255,0.12)">
+                Submit Another Request
+              </button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -675,6 +900,7 @@ class Component extends DCLogic {
       }
 
       initAccountCardsAnimation();
+      initExpertFormSection();
     }
 
     function initAccountCardsAnimation() {
@@ -781,7 +1007,88 @@ class Component extends DCLogic {
       }, 2200);
     }
 
+    function initExpertFormSection() {
+      var section = document.getElementById('expert-form-section');
+      if (!section || section._initialized) return;
+      section._initialized = true;
+
+      function scrollToForm() {
+        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(function() {
+          var firstInput = document.getElementById('expert-name');
+          if (firstInput) {
+            firstInput.focus();
+          }
+        }, 300);
+      }
+
+      // Delegate click for any trigger button or link matching expert form
+      document.addEventListener('click', function(e) {
+        var trigger = e.target.closest('[data-expert-trigger], a[href="#expert-form-section"]');
+        if (trigger) {
+          e.preventDefault();
+          scrollToForm();
+        }
+      });
+
+      var form = document.getElementById('expert-contact-form');
+      var successBox = document.getElementById('expert-form-success');
+      var submitBtn = document.getElementById('expert-submit-btn');
+      var resetBtn = document.getElementById('expert-reset-btn');
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+          }
+
+          var nameInput = document.getElementById('expert-name');
+          var emailInput = document.getElementById('expert-email');
+          var nameVal = nameInput ? nameInput.value : 'there';
+          var emailVal = emailInput ? emailInput.value : '';
+
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+            submitBtn.innerHTML = '<span>Submitting Request...</span>';
+          }
+
+          setTimeout(function() {
+            form.style.display = 'none';
+            if (successBox) {
+              var msgEl = document.getElementById('expert-success-msg');
+              if (msgEl) {
+                msgEl.textContent = 'Thank you, ' + nameVal + '! An Evntiqa engagement expert will review your target account profile and email you at ' + emailVal + ' within 24 hours.';
+              }
+              successBox.style.display = 'block';
+            }
+          }, 600);
+        });
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function(e) {
+          e.preventDefault();
+          if (form) {
+            form.reset();
+            form.style.display = 'flex';
+          }
+          if (successBox) {
+            successBox.style.display = 'none';
+          }
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.innerHTML = '<span>Schedule Expert Consultation</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
+          }
+        });
+      }
+    }
+
     window.initAccountCardsAnimation = initAccountCardsAnimation;
+    window.initExpertFormSection = initExpertFormSection;
     window.__initBgEffects = tryInit;
 
     if (document.readyState === 'loading') {
