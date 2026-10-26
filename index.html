@@ -33,6 +33,66 @@ a:hover{color:#d8ff8a}
 @media (max-width: 600px) {
   #process-timeline { grid-template-columns: 1fr !important; gap: 8px !important; max-height: 58vh; overflow-y: auto; }
 }
+
+/* Accounts Cards Slide-Up & Auto-Showcase Animation */
+.account-card {
+  position: relative;
+  opacity: 0;
+  transform: translateY(48px);
+  will-change: transform, opacity, border-color, box-shadow;
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.45s ease,
+              background 0.45s ease,
+              box-shadow 0.45s ease;
+}
+.account-card.is-revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+.account-card:hover {
+  background: rgba(14, 14, 18, 0.88) !important;
+  border-color: rgba(200, 244, 92, 0.35) !important;
+  transform: translateY(-4px) translateX(6px) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 24px rgba(200, 244, 92, 0.12) !important;
+}
+.account-card.is-active-lime {
+  background: rgba(14, 14, 18, 0.82) !important;
+  border-color: rgba(200, 244, 92, 0.35) !important;
+  transform: translateY(-4px) translateX(6px) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 24px rgba(200, 244, 92, 0.12) !important;
+}
+.account-card.is-active-emerald {
+  background: rgba(14, 14, 18, 0.82) !important;
+  border-color: rgba(52, 211, 153, 0.35) !important;
+  transform: translateY(-4px) translateX(6px) !important;
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.5), 0 0 24px rgba(52, 211, 153, 0.12) !important;
+}
+.account-card.is-active-lime .account-card-accent,
+.account-card:hover .account-card-accent {
+  box-shadow: 0 0 16px rgba(200, 244, 92, 0.8) !important;
+  transform: scaleY(1.05);
+}
+.account-card.is-active-emerald .account-card-accent {
+  box-shadow: 0 0 16px rgba(52, 211, 153, 0.8) !important;
+  transform: scaleY(1.05);
+}
+@media (max-width: 900px) {
+  #accounts .accounts-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+  }
+  #accounts .accounts-sticky-col {
+    position: relative !important;
+    top: 0 !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .account-card {
+    transform: none !important;
+    transition: opacity 0.4s ease !important;
+  }
+}
 </style>
 </helmet>
 
@@ -135,18 +195,18 @@ a:hover{color:#d8ff8a}
 
   <!-- Inner Content Layer -->
   <div style="position:relative;z-index:2;max-width:1400px;margin:0 auto;padding:clamp(60px,8vw,120px) clamp(24px,4vw,64px)">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,80px);align-items:start">
+    <div class="accounts-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,80px);align-items:start">
       <!-- Left: sticky headline -->
-      <div style="position:sticky;top:120px">
+      <div class="accounts-sticky-col" style="position:sticky;top:120px">
         <h2 style="font-family:'Space Grotesk';font-size:clamp(36px,4vw,60px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:16px 0 20px">Turn Target Accounts into Active Pipeline.</h2>
         <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.6);max-width:420px;margin:0">Engage security leaders to move key accounts forward.</p>
       </div>
       <!-- Right: stacked cards with left accent & frosted glass -->
-      <div style="display:flex;flex-direction:column;gap:16px">
+      <div id="accounts-cards-list" style="display:flex;flex-direction:column;gap:16px">
         <sc-for list="{{ accountTypes }}" as="item">
-          <div style="display:flex;gap:20px;padding:28px 24px;border-radius:12px;background:rgba(9,9,11,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.3);transition:all 0.3s" style-hover="background:rgba(9,9,11,0.75);border-color:rgba(200,244,92,0.25);transform:translateX(6px)">
-            <div style="width:3px;flex:none;border-radius:2px;background:{{ item.color }}"></div>
-            <div>
+          <div data-account-card class="account-card" style="display:flex;gap:20px;padding:28px 24px;border-radius:12px;background:rgba(9,9,11,0.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08);box-shadow:0 8px 32px rgba(0,0,0,0.3)">
+            <div class="account-card-accent" style="width:3px;flex:none;border-radius:2px;background:{{ item.color }};box-shadow:0 0 10px {{ item.color }}44;transition:all 0.4s ease"></div>
+            <div style="flex:1">
               <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.3px">{{ item.title }}</h3>
               <p style="font-size:14px;line-height:1.6;color:rgba(255,255,255,0.6);margin:0">{{ item.desc }}</p>
             </div>
@@ -476,6 +536,7 @@ class Component extends DCLogic {
       }, 3500);
     }
 
+    if (window.initAccountCardsAnimation) window.initAccountCardsAnimation();
     if (window.__initBgEffects) window.__initBgEffects();
   }
 
@@ -579,8 +640,115 @@ class Component extends DCLogic {
           endSize: 520
         });
       }
+
+      initAccountCardsAnimation();
     }
 
+    function initAccountCardsAnimation() {
+      var container = document.getElementById('accounts-cards-list');
+      if (!container || container._animInitialized) return;
+
+      var cards = container.querySelectorAll('[data-account-card]');
+      if (!cards || cards.length === 0) return;
+
+      container._animInitialized = true;
+
+      var revealed = false;
+      var activeIndex = -1;
+      var cycleTimer = null;
+      var isHovered = false;
+
+      function revealCards() {
+        if (revealed) return;
+        revealed = true;
+
+        cards.forEach(function(card, index) {
+          card.classList.remove('is-active-lime', 'is-active-emerald');
+          setTimeout(function() {
+            card.classList.add('is-revealed');
+          }, index * 180);
+        });
+
+        setTimeout(function() {
+          if (!isHovered && revealed) {
+            startAutoCycle();
+          }
+        }, cards.length * 180 + 800);
+      }
+
+      function setActiveCard(index) {
+        cards.forEach(function(card, i) {
+          card.classList.remove('is-active-lime', 'is-active-emerald');
+          if (i === index && !isHovered) {
+            var isLime = (i % 2 === 0);
+            card.classList.add(isLime ? 'is-active-lime' : 'is-active-emerald');
+          }
+        });
+      }
+
+      function nextCard() {
+        if (isHovered || !revealed) return;
+        activeIndex = (activeIndex + 1) % cards.length;
+        setActiveCard(activeIndex);
+      }
+
+      function startAutoCycle() {
+        if (cycleTimer) clearInterval(cycleTimer);
+        if (activeIndex === -1) activeIndex = 0;
+        setActiveCard(activeIndex);
+        cycleTimer = setInterval(nextCard, 2800);
+      }
+
+      function pauseAutoCycle() {
+        if (cycleTimer) {
+          clearInterval(cycleTimer);
+          cycleTimer = null;
+        }
+        cards.forEach(function(card) {
+          card.classList.remove('is-active-lime', 'is-active-emerald');
+        });
+      }
+
+      container.addEventListener('mouseenter', function() {
+        isHovered = true;
+        pauseAutoCycle();
+      });
+
+      container.addEventListener('mouseleave', function() {
+        isHovered = false;
+        setTimeout(function() {
+          if (!isHovered && revealed && !cycleTimer) {
+            startAutoCycle();
+          }
+        }, 1000);
+      });
+
+      var accountsSection = document.getElementById('accounts');
+      if (accountsSection && 'IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              revealCards();
+              if (revealed && !cycleTimer && !isHovered) {
+                startAutoCycle();
+              }
+            } else {
+              pauseAutoCycle();
+            }
+          });
+        }, { threshold: 0.15 });
+
+        observer.observe(accountsSection);
+      } else {
+        revealCards();
+      }
+
+      setTimeout(function() {
+        if (!revealed) revealCards();
+      }, 2200);
+    }
+
+    window.initAccountCardsAnimation = initAccountCardsAnimation;
     window.__initBgEffects = tryInit;
 
     if (document.readyState === 'loading') {
