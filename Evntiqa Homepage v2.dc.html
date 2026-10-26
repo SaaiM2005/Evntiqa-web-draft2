@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&amp;display=swap" rel="stylesheet">
+<style>
+@keyframes marquee { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+@keyframes lineGrow { from{transform:scaleX(0)} to{transform:scaleX(1)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes slideUp { from{opacity:0;transform:translateY(60px)} to{opacity:1;transform:translateY(0)} }
+@keyframes countPulse { 0%,100%{opacity:0.6} 50%{opacity:1} }
+@keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+@keyframes textReveal { from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 0% 0 0)} }
+@keyframes borderFlow { 0%{background-position:0% 0%} 100%{background-position:200% 0%} }
+body{margin:0;background:#09090B;color:#fff;font-family:Satoshi,system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
+a{color:#C8F45C;text-decoration:none;transition:color 0.3s}
+a:hover{color:#d8ff8a}
+::selection{background:rgba(200,244,92,0.25);color:#fff}
+</style>
+</helmet>
+
+<!-- ANNOUNCEMENT BAR -->
+<div style="background:#C8F45C;padding:10px 24px;text-align:center;font-size:13px;font-weight:600;color:#09090B;letter-spacing:0.2px">
+  2027 Virtual CISO Roundtable Calendar Is Live <a href="#" style="color:#09090B;margin-left:6px;text-decoration:underline;text-underline-offset:3px" style-hover="opacity:0.7">Get the Calendar →</a>
+</div>
+
+<!-- NAVIGATION -->
+<nav style="position:sticky;top:0;z-index:100;backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);background:rgba(9,9,11,0.85);border-bottom:1px solid rgba(255,255,255,0.04);padding:0 clamp(24px,4vw,64px)">
+  <div style="max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:68px">
+    <a href="#" style="display:flex;align-items:center;gap:8px;text-decoration:none">
+      <div style="width:28px;height:28px;background:#C8F45C;border-radius:6px;display:flex;align-items:center;justify-content:center">
+        <span style="font-family:'Space Grotesk';font-weight:700;font-size:15px;color:#09090B">E</span>
+      </div>
+      <span style="font-family:'Space Grotesk';font-weight:700;font-size:18px;color:#fff;letter-spacing:-0.5px">EVNTIQA</span>
+    </a>
+    <div style="display:flex;align-items:center;gap:28px">
+      <a href="#hero" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Roundtables</a>
+      <a href="#accounts" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Accounts</a>
+      <a href="#formats" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Solutions</a>
+      <a href="#results" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Case Studies</a>
+      <a href="#" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Blog</a>
+      <a href="#" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">TheCISOnews</a>
+    </div>
+    <a href="#cta" style="padding:9px 22px;background:#C8F45C;border-radius:100px;font-size:13px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s;white-space:nowrap" style-hover="background:#d8ff8a;transform:translateY(-1px);box-shadow:0 8px 24px rgba(200,244,92,0.2)">Talk to an ABM Expert</a>
+  </div>
+</nav>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- HERO — asymmetric oversized type -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="hero" style="position:relative;padding:clamp(80px,12vw,160px) clamp(24px,4vw,64px) clamp(60px,8vw,100px);max-width:1400px;margin:0 auto;overflow:hidden">
+  <!-- Subtle ambient glow -->
+  <div style="position:absolute;top:-20%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(200,244,92,0.04),transparent 60%);pointer-events:none"></div>
+
+  <div style="margin-bottom:32px">
+    
+  </div>
+
+  <!-- Headline — dramatic scale -->
+  <h1 style="font-family:'Space Grotesk';font-size:clamp(52px,7.5vw,110px);font-weight:700;line-height:0.95;letter-spacing:-4px;margin:0 0 40px;color:#fff;max-width:1100px">
+    Virtual CISO<br>Roundtables That<br>
+    <span style="color:#C8F45C">Move Pipeline</span> Forward.
+  </h1>
+
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
+    <p style="font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:rgba(255,255,255,0.45);max-width:520px;margin:0">We bring 10–12 CISOs from your target accounts into invitation-only, peer-led conversations—and handle all the heavy lifting from recruitment to execution.</p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <a href="#cta" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#C8F45C;border-radius:100px;font-size:15px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,244,92,0.2)">
+        Talk to an ABM Expert
+        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </a>
+      <a href="#formats" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border:1px solid rgba(255,255,255,0.1);border-radius:100px;font-size:15px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;transition:all 0.25s" style-hover="border-color:rgba(255,255,255,0.2);color:#fff">Explore Solutions</a>
+    </div>
+  </div>
+
+  <!-- Divider line -->
+  <div style="margin-top:64px;height:1px;background:linear-gradient(90deg,rgba(200,244,92,0.3),rgba(200,244,92,0.05),transparent);transform-origin:left;animation:lineGrow 1.2s ease-out forwards"></div>
+
+  <!-- Logo strip -->
+  <div style="margin-top:48px">
+    <p style="font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin:0 0 24px">Engaging Global Enterprise CISOs</p>
+    <div style="overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)">
+      <div style="display:flex;gap:56px;align-items:center;animation:marquee 35s linear infinite;width:max-content">
+        <img src="logos/commvault.png" alt="Commvault" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/fsecure.png" alt="F-Secure" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/informatica.png" alt="Informatica" style="height:24px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/infosys.png" alt="Infosys" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/intel.png" alt="Intel" style="height:32px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/trendmicro.png" alt="Trend Micro" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/zoominfo.png" alt="ZoomInfo" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/commvault.png" alt="Commvault" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/fsecure.png" alt="F-Secure" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/informatica.png" alt="Informatica" style="height:24px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/infosys.png" alt="Infosys" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/intel.png" alt="Intel" style="height:32px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/trendmicro.png" alt="Trend Micro" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+        <img src="logos/zoominfo.png" alt="ZoomInfo" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 2 — ACCOUNTS (asymmetric 2-col) -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="accounts" style="padding:clamp(60px,8vw,120px) clamp(24px,4vw,64px);max-width:1400px;margin:0 auto">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,80px);align-items:start">
+    <!-- Left: sticky headline -->
+    <div style="position:sticky;top:120px">
+      
+      <h2 style="font-family:'Space Grotesk';font-size:clamp(36px,4vw,60px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:16px 0 20px">Turn Target Accounts into Active Pipeline.</h2>
+      <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.4);max-width:420px;margin:0">Engage security leaders to move key accounts forward.</p>
+    </div>
+    <!-- Right: stacked cards with left accent -->
+    <div style="display:flex;flex-direction:column;gap:16px">
+      <sc-for list="{{ accountTypes }}" as="item">
+        <div style="display:flex;gap:20px;padding:28px 24px;border-radius:12px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);transition:all 0.3s" style-hover="background:rgba(255,255,255,0.04);border-color:rgba(200,244,92,0.1);transform:translateX(4px)">
+          <div style="width:3px;flex:none;border-radius:2px;background:{{ item.color }}"></div>
+          <div>
+            <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.3px">{{ item.title }}</h3>
+            <p style="font-size:14px;line-height:1.6;color:rgba(255,255,255,0.35);margin:0">{{ item.desc }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 3 — FORMATS (bento grid) -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="formats" style="padding:clamp(60px,8vw,120px) clamp(24px,4vw,64px);max-width:1400px;margin:0 auto">
+  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:48px;flex-wrap:wrap">
+    <div>
+      
+      <h2 style="font-family:'Space Grotesk';font-size:clamp(36px,4vw,60px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:16px 0 0">Engagement Formats<br>Built for Pipeline.</h2>
+    </div>
+    <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.4);max-width:380px;margin:0">Four targeted formats built to engage your priority account list.</p>
+  </div>
+
+  <!-- Bento: first card spans full width, rest in 3-col -->
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+    <!-- Featured card — spans 2 cols -->
+    <div data-anim style="grid-column:span 2;position:relative;padding:44px 40px;border-radius:16px;background:linear-gradient(135deg,rgba(200,244,92,0.06),rgba(52,211,153,0.03));border:1px solid rgba(200,244,92,0.08);overflow:hidden;transition:all 0.4s cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:rgba(200,244,92,0.25);transform:translateY(-4px);background:linear-gradient(135deg,rgba(200,244,92,0.12),rgba(52,211,153,0.08),rgba(200,244,92,0.04));box-shadow:0 20px 60px rgba(200,244,92,0.08),0 0 0 1px rgba(200,244,92,0.1)">
+      <div style="position:absolute;top:24px;right:32px;font-family:'Space Grotesk';font-size:120px;font-weight:700;color:rgba(200,244,92,0.04);line-height:1;letter-spacing:-6px;transition:color 0.4s">01</div>
+      <div style="position:relative;z-index:1">
+        <div style="display:inline-flex;padding:4px 14px;border-radius:100px;background:rgba(200,244,92,0.08);font-size:12px;font-weight:600;color:#C8F45C;letter-spacing:0.5px;margin-bottom:16px">8–12 CISOs · Closed-Door · Camera-On</div>
+        <h3 style="font-family:'Space Grotesk';font-size:28px;font-weight:700;color:#fff;margin:0 0 12px;letter-spacing:-0.8px">Executive Virtual Roundtables</h3>
+        <p style="font-size:15px;line-height:1.65;color:rgba(255,255,255,0.4);margin:0;max-width:480px">Convert priority target accounts into high-intent executive pipeline through closed-door, peer-led CISO benchmarking discussions.</p>
+      </div>
+    </div>
+    <!-- Card 2 -->
+    <div data-anim style="padding:36px 28px;border-radius:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;justify-content:space-between" style-hover="border-color:rgba(52,211,153,0.2);transform:translateY(-4px);background:linear-gradient(160deg,rgba(52,211,153,0.08),rgba(200,244,92,0.04),rgba(52,211,153,0.02));box-shadow:0 16px 48px rgba(52,211,153,0.06)">
+      <div>
+        <span style="font-family:'Space Grotesk';font-size:48px;font-weight:700;color:rgba(255,255,255,0.04);letter-spacing:-3px">02</span>
+        <h3 style="font-family:'Space Grotesk';font-size:20px;font-weight:600;color:#fff;margin:8px 0 8px;letter-spacing:-0.3px">Account-Based Webinars</h3>
+        <p style="font-size:13px;line-height:1.6;color:rgba(255,255,255,0.35);margin:0">Engage specific target account lists through tailored, mid-funnel interactive sessions designed to accelerate active sales cycles.</p>
+      </div>
+      <div style="display:inline-flex;padding:4px 12px;border-radius:100px;background:rgba(255,255,255,0.04);font-size:11px;font-weight:500;color:rgba(255,255,255,0.3);margin-top:20px;align-self:flex-start">20–40 Buyers · Mid-Funnel</div>
+    </div>
+    <!-- Card 3 -->
+    <div data-anim style="padding:36px 28px;border-radius:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);transition:all 0.4s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;justify-content:space-between" style-hover="border-color:rgba(200,244,92,0.15);transform:translateY(-4px);background:linear-gradient(160deg,rgba(200,244,92,0.06),rgba(52,211,153,0.03),rgba(200,244,92,0.02));box-shadow:0 16px 48px rgba(200,244,92,0.06)">
+      <div>
+        <span style="font-family:'Space Grotesk';font-size:48px;font-weight:700;color:rgba(255,255,255,0.04);letter-spacing:-3px">03</span>
+        <h3 style="font-family:'Space Grotesk';font-size:20px;font-weight:600;color:#fff;margin:8px 0 8px;letter-spacing:-0.3px">Digital Demand Summits</h3>
+        <p style="font-size:13px;line-height:1.6;color:rgba(255,255,255,0.35);margin:0">Scale top-of-funnel reach, capture qualified lead volume, and build brand authority across enterprise security decision-makers.</p>
+      </div>
+      <div style="display:inline-flex;padding:4px 12px;border-radius:100px;background:rgba(255,255,255,0.04);font-size:11px;font-weight:500;color:rgba(255,255,255,0.3);margin-top:20px;align-self:flex-start">50–150+ Leads · Top-of-Funnel</div>
+    </div>
+    <!-- Card 4 — spans 2 cols -->
+    <div data-anim style="grid-column:span 2;padding:36px 40px;border-radius:16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:32px;transition:all 0.4s cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:rgba(52,211,153,0.2);transform:translateY(-4px);background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(200,244,92,0.04),rgba(52,211,153,0.02));box-shadow:0 16px 48px rgba(52,211,153,0.06)">
+      <span style="font-family:'Space Grotesk';font-size:48px;font-weight:700;color:rgba(255,255,255,0.04);letter-spacing:-3px;flex:none">04</span>
+      <div style="flex:1">
+        <h3 style="font-family:'Space Grotesk';font-size:20px;font-weight:600;color:#fff;margin:0 0 8px;letter-spacing:-0.3px">Audience Acquisition</h3>
+        <p style="font-size:13px;line-height:1.6;color:rgba(255,255,255,0.35);margin:0">Drive verified executive turnout for your events with hyper-targeted CISO recruitment matched directly against your target account list.</p>
+      </div>
+      <div style="display:inline-flex;padding:4px 14px;border-radius:100px;background:rgba(200,244,92,0.06);border:1px solid rgba(200,244,92,0.1);font-size:11px;font-weight:600;color:#C8F45C;flex:none">100% TAL Matching</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 4 — PROCESS (timeline / horizontal) -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="process" style="padding:clamp(60px,8vw,120px) clamp(24px,4vw,64px);border-top:1px solid rgba(255,255,255,0.04)">
+  <div style="max-width:1400px;margin:0 auto">
+    <div style="text-align:center;margin-bottom:64px">
+      <span style="font-family:'Space Grotesk';font-size:12px;font-weight:600;color:rgba(200,244,92,0.4);letter-spacing:3px;text-transform:uppercase">04 — Process</span>
+      <h2 style="font-family:'Space Grotesk';font-size:clamp(36px,4vw,56px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:16px 0 12px">Six Steps to CISO Engagement.</h2>
+      <p style="font-size:16px;color:rgba(255,255,255,0.35);margin:0">A zero-lift execution process from target mapping to handoff.</p>
+    </div>
+
+    <!-- Timeline layout -->
+    <div id="process-timeline" style="position:relative;display:flex;flex-direction:column;gap:0">
+      <!-- Vertical animated line -->
+      <div data-timeline-line style="position:absolute;left:39px;top:0;width:2px;height:0;background:linear-gradient(180deg,#C8F45C,rgba(52,211,153,0.6),rgba(200,244,92,0.2));border-radius:2px;transition:height 1.8s cubic-bezier(0.16,1,0.3,1);z-index:0;mask-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%22 height=%221000%22><rect width=%222%22 height=%221000%22 fill=%22white%22/></svg>');-webkit-mask-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%22 height=%221000%22><rect width=%222%22 height=%221000%22 fill=%22white%22/></svg>')"></div>
+
+      <sc-for list="{{ steps }}" as="step">
+        <div data-step-card style="display:flex;gap:28px;align-items:flex-start;padding:0 0 48px;opacity:0;transform:translateX(-30px);position:relative">
+          <!-- Number node -->
+          <div style="flex:none;width:80px;display:flex;flex-direction:column;align-items:center;position:relative;z-index:5">
+            <div data-step-node style="width:44px;height:44px;border-radius:12px;background:#151518;border:2px solid rgba(200,244,92,0.25);display:flex;align-items:center;justify-content:center;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);position:relative;box-shadow:0 0 12px rgba(200,244,92,0.06)">
+              <span style="font-family:'Space Grotesk';font-size:14px;font-weight:700;color:#C8F45C;transition:color 0.5s">{{ step.num }}</span>
+            </div>
+          </div>
+          <!-- Content card -->
+          <div style="flex:1;padding:24px 28px;border-radius:14px;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);transition:all 0.4s cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:rgba(200,244,92,0.12);background:linear-gradient(135deg,rgba(200,244,92,0.04),rgba(52,211,153,0.02));transform:translateX(6px);box-shadow:0 12px 40px rgba(200,244,92,0.04)">
+            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
+              <h3 style="font-family:'Space Grotesk';font-size:17px;font-weight:600;color:#fff;margin:0;letter-spacing:-0.2px">{{ step.title }}</h3>
+            </div>
+            <p style="font-size:13px;line-height:1.65;color:rgba(255,255,255,0.3);margin:0">{{ step.desc }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 5 — RESULTS (full-width dark band) -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="results" style="padding:clamp(60px,8vw,120px) clamp(24px,4vw,64px);background:rgba(255,255,255,0.015)">
+  <div style="max-width:1400px;margin:0 auto">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:48px;flex-wrap:wrap">
+      <div>
+        <span style="font-family:'Space Grotesk';font-size:12px;font-weight:600;color:rgba(200,244,92,0.4);letter-spacing:3px;text-transform:uppercase"></span>
+        <h2 style="font-family:'Space Grotesk';font-size:clamp(36px,4vw,56px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:16px 0 0">Proven Results Across<br>Enterprise ABM.</h2>
+      </div>
+      <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.35);max-width:360px;margin:0">See how cybersecurity leaders turn target accounts into pipeline.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <sc-for list="{{ caseStudies }}" as="cs">
+        <div style="border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.04);transition:all 0.3s" style-hover="border-color:rgba(255,255,255,0.08);transform:translateY(-3px)">
+          <div style="height:160px;background:{{ cs.gradient }};display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden">
+            <span style="font-family:'Space Grotesk';font-size:40px;font-weight:700;color:rgba(255,255,255,0.06);letter-spacing:4px">{{ cs.logo }}</span>
+          </div>
+          <div style="padding:28px 24px;background:rgba(255,255,255,0.02)">
+            <span style="font-size:11px;font-weight:600;color:#C8F45C;letter-spacing:1.5px;text-transform:uppercase">{{ cs.industry }}</span>
+            <h3 style="font-family:'Space Grotesk';font-size:18px;font-weight:600;color:#fff;margin:8px 0;letter-spacing:-0.2px">{{ cs.title }}</h3>
+            <p style="font-size:13px;line-height:1.6;color:rgba(255,255,255,0.3);margin:0">{{ cs.desc }}</p>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 6 — FAQ (clean, minimal) -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="faq" style="padding:clamp(60px,8vw,120px) clamp(24px,4vw,64px)">
+  <div style="max-width:760px;margin:0 auto">
+    <div style="margin-bottom:48px">
+      
+      <h2 style="font-family:'Space Grotesk';font-size:clamp(32px,3.5vw,48px);font-weight:700;letter-spacing:-1.5px;line-height:1.1;color:#fff;margin:16px 0 0">Frequently Asked Questions</h2>
+    </div>
+
+    <div style="display:flex;flex-direction:column">
+      <sc-for list="{{ faqs }}" as="faq">
+        <div style="border-bottom:1px solid rgba(255,255,255,0.05)">
+          <button onClick="{{ faq.toggle }}" style="width:100%;display:flex;align-items:center;justify-content:space-between;padding:24px 0;background:none;border:none;cursor:pointer;text-align:left">
+            <span style="font-family:'Space Grotesk';font-size:16px;font-weight:600;color:#fff;letter-spacing:-0.2px;padding-right:24px">{{ faq.q }}</span>
+            <span style="flex:none;font-family:'Space Grotesk';font-size:22px;font-weight:300;color:rgba(200,244,92,0.5);width:24px;text-align:center;transition:transform 0.3s">{{ faq.icon }}</span>
+          </button>
+          <sc-if value="{{ faq.open }}">
+            <div style="padding:0 0 24px">
+              <p style="font-size:15px;line-height:1.7;color:rgba(255,255,255,0.4);margin:0;max-width:620px">{{ faq.a }}</p>
+            </div>
+          </sc-if>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- SECTION 7 — CTA (dramatic) -->
+<!-- ═══════════════════════════════════════════ -->
+<section id="cta" style="position:relative;padding:clamp(80px,10vw,140px) clamp(24px,4vw,64px);overflow:hidden">
+  <!-- Gradient wash -->
+  <div style="position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(180deg,transparent,rgba(200,244,92,0.02));pointer-events:none"></div>
+
+  <div style="max-width:1400px;margin:0 auto;position:relative;z-index:1">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,80px);align-items:center">
+      <!-- Left: headline + CTA -->
+      <div>
+        <span style="font-family:'Space Grotesk';font-size:12px;font-weight:600;color:rgba(200,244,92,0.4);letter-spacing:3px;text-transform:uppercase"></span>
+        <h2 style="font-family:'Space Grotesk';font-size:clamp(40px,5vw,72px);font-weight:700;letter-spacing:-2.5px;line-height:1;color:#fff;margin:20px 0 20px">Turn Target<br>Accounts<br>into Deals.</h2>
+        <p style="font-size:16px;line-height:1.7;color:rgba(255,255,255,0.4);margin:0 0 36px;max-width:400px">Activate stalled, dormant, and net-new global enterprise accounts.</p>
+        <a href="#" style="display:inline-flex;align-items:center;gap:10px;padding:16px 36px;background:#C8F45C;border-radius:100px;font-family:'Space Grotesk';font-size:16px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 16px 40px rgba(200,244,92,0.2)">
+          Talk to an ABM Expert
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+      </div>
+      <!-- Right: stats grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);border-radius:16px;overflow:hidden">
+        <sc-for list="{{ stats }}" as="stat">
+          <div style="padding:32px 28px;background:#09090B;display:flex;flex-direction:column;gap:4px">
+            <span style="font-family:'Space Grotesk';font-size:clamp(28px,3vw,44px);font-weight:700;color:#C8F45C;letter-spacing:-1.5px;line-height:1">{{ stat.value }}</span>
+            <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.3);letter-spacing:0.3px">{{ stat.label }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!-- FOOTER -->
+<!-- ═══════════════════════════════════════════ -->
+<footer style="border-top:1px solid rgba(255,255,255,0.04);padding:56px clamp(24px,4vw,64px) 36px">
+  <div style="max-width:1400px;margin:0 auto">
+    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+          <div style="width:28px;height:28px;background:#C8F45C;border-radius:6px;display:flex;align-items:center;justify-content:center">
+            <span style="font-family:'Space Grotesk';font-weight:700;font-size:15px;color:#09090B">E</span>
+          </div>
+          <span style="font-family:'Space Grotesk';font-weight:700;font-size:18px;color:#fff;letter-spacing:-0.5px">EVNTIQA</span>
+        </div>
+        <p style="font-size:14px;line-height:1.7;color:rgba(255,255,255,0.25);max-width:300px;margin:0">Zero-lift CISO engagement programs engineered to activate priority accounts and accelerate enterprise pipeline.</p>
+      </div>
+      <div>
+        <h4 style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px">Explore</h4>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <a href="#hero" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">CISO Roundtables</a>
+          <a href="#accounts" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">Accounts We Activate</a>
+          <a href="#formats" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">Solutions</a>
+          <a href="#results" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">Case Studies</a>
+          <a href="#" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">2027 CISO Calendar</a>
+          <a href="#" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">TheCISONews.com</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px">Company</h4>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <a href="#" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">About us</a>
+          <a href="#" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">Blogs</a>
+          <a href="#" style="font-size:14px;color:rgba(255,255,255,0.3);text-decoration:none;transition:color 0.2s" style-hover="color:#C8F45C">Careers</a>
+        </div>
+      </div>
+      <div>
+        <h4 style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.3);letter-spacing:2px;text-transform:uppercase;margin:0 0 20px">Connect</h4>
+        <div style="display:flex;gap:10px">
+          <a href="#" style="width:36px;height:36px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all 0.2s" style-hover="border-color:rgba(200,244,92,0.2);background:rgba(200,244,92,0.04)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.4)"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg>
+          </a>
+          <a href="#" style="width:36px;height:36px;border:1px solid rgba(255,255,255,0.06);border-radius:8px;display:flex;align-items:center;justify-content:center;transition:all 0.2s" style-hover="border-color:rgba(200,244,92,0.2);background:rgba(200,244,92,0.04)">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="rgba(255,255,255,0.4)"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73l-6.546 4.866-6.546-4.866v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z"></path></svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div style="border-top:1px solid rgba(255,255,255,0.04);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+      <span style="font-size:12px;color:rgba(255,255,255,0.2)">© 2027 EVNTIQA Inc. All rights reserved.</span>
+      <div style="display:flex;gap:20px">
+        <a href="#" style="font-size:12px;color:rgba(255,255,255,0.2);text-decoration:none" style-hover="color:rgba(255,255,255,0.4)">Privacy Policy</a>
+        <a href="#" style="font-size:12px;color:rgba(255,255,255,0.2);text-decoration:none" style-hover="color:rgba(255,255,255,0.4)">GDPR Compliance</a>
+        <a href="#" style="font-size:12px;color:rgba(255,255,255,0.2);text-decoration:none" style-hover="color:rgba(255,255,255,0.4)">CCPA Statement</a>
+        <a href="#" style="font-size:12px;color:rgba(255,255,255,0.2);text-decoration:none" style-hover="color:rgba(255,255,255,0.4)">Terms &amp; Conditions</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C8F45C&quot;,&quot;options&quot;:[&quot;#C8F45C&quot;,&quot;#34D399&quot;,&quot;#F97316&quot;,&quot;#A78BFA&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;showAnnouncement&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;Layout&quot;}}">
+
+class Component extends DCLogic {
+  state = { openFaq: null };
+
+  componentDidMount() {
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.opacity = '1';
+          e.target.style.transform = 'translateY(0)';
+          io.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.02, rootMargin: '0px 0px -30px 0px' });
+
+    setTimeout(() => {
+      document.querySelectorAll('[data-anim]').forEach((el, i) => {
+        el.style.opacity = '0';
+        el.style.transform = 'translateY(36px)';
+        el.style.transition = `opacity 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 0.04}s, transform 0.8s cubic-bezier(0.16,1,0.3,1) ${i * 0.04}s`;
+        io.observe(el);
+      });
+      setTimeout(() => {
+        document.querySelectorAll('[data-anim]').forEach(el => {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+        });
+      }, 2500);
+    }, 80);
+
+    // Timeline step animation
+    const timelineSection = document.getElementById('process-timeline');
+    if (timelineSection) {
+      const stepCards = timelineSection.querySelectorAll('[data-step-card]');
+      const timelineLine = timelineSection.querySelector('[data-timeline-line]');
+      let timelineRevealed = false;
+
+      const tio = new IntersectionObserver((entries) => {
+        entries.forEach(e => {
+          if (e.isIntersecting && !timelineRevealed) {
+            timelineRevealed = true;
+            tio.unobserve(e.target);
+            // Animate the vertical line
+            if (timelineLine) {
+              timelineLine.style.height = '100%';
+            }
+            // Stagger each card in
+            stepCards.forEach((card, i) => {
+              setTimeout(() => {
+                card.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)';
+                card.style.opacity = '1';
+                card.style.transform = 'translateX(0)';
+                // Light up the node
+                const node = card.querySelector('[data-step-node]');
+                if (node) {
+                  node.style.borderColor = '#C8F45C';
+                  node.style.background = 'rgba(200,244,92,0.08)';
+                  node.style.boxShadow = '0 0 20px rgba(200,244,92,0.15)';
+                  const num = node.querySelector('span');
+                  if (num) num.style.color = '#C8F45C';
+                }
+              }, i * 180);
+            });
+          }
+        });
+      }, { threshold: 0.1 });
+
+      tio.observe(timelineSection);
+
+      // Fallback
+      setTimeout(() => {
+        stepCards.forEach(card => {
+          card.style.opacity = '1';
+          card.style.transform = 'translateX(0)';
+        });
+        if (timelineLine) timelineLine.style.height = '100%';
+      }, 4000);
+    }
+  }
+
+  renderVals() {
+    const logos = ['FORTINET','CROWDSTRIKE','PALO ALTO','ZSCALER','SENTINELONE','OKTA','CLOUDFLARE','DATADOG','SPLUNK','ELASTIC'];
+    const logosDouble = [...logos, ...logos];
+
+    const accountTypes = [
+      { title: 'Hard-to-Penetrate', desc: 'Open doors to strategic accounts where executive access has been difficult.', color: '#C8F45C' },
+      { title: 'Dormant & Stalled', desc: 'Restart conversations with accounts that have gone quiet.', color: '#34D399' },
+      { title: 'Active Opportunities', desc: 'Deepen executive engagement and help move buying conversations forward.', color: '#C8F45C' },
+      { title: 'Net-New Accounts', desc: 'Create first conversations with security leaders in new target accounts.', color: '#34D399' }
+    ];
+
+    const steps = [
+      { num: '01', title: 'ICP & Target Account Mapping', desc: 'We identify your ideal customer profile, map priority accounts, and define the security decision-makers to target.' },
+      { num: '02', title: 'Intent & Campaign Alignment', desc: 'We align intent signals, account priorities, and campaign goals to focus engagement where it matters.' },
+      { num: '03', title: 'Multi-Channel Targeting', desc: 'We activate a multi-channel strategy to reach relevant security decision-makers across your target accounts.' },
+      { num: '04', title: 'Executive Recruitment', desc: 'We recruit CISOs and security leaders from your priority accounts for your engagement.' },
+      { num: '05', title: 'Engagement Execution', desc: 'We manage the engagement to bring the right security leaders together for meaningful peer conversations.' },
+      { num: '06', title: 'Post-Event Handoff', desc: 'We share attendee and engagement insights with your team to support follow-up and account progression.' }
+    ];
+
+    const caseStudies = [
+      { logo: 'CLIENT A', industry: 'Cloud Security', title: 'Enterprise pipeline acceleration', desc: 'How a leading cloud security vendor activated 40+ dormant Fortune 500 accounts through CISO roundtables.', gradient: 'linear-gradient(135deg,rgba(200,244,92,0.06),rgba(52,211,153,0.04))' },
+      { logo: 'CLIENT B', industry: 'Identity & Access', title: 'Net-new account penetration', desc: 'Breaking into 25 strategic accounts with zero prior executive relationships in 90 days.', gradient: 'linear-gradient(135deg,rgba(52,211,153,0.06),rgba(200,244,92,0.04))' },
+      { logo: 'CLIENT C', industry: 'Endpoint Security', title: 'Stalled deal reactivation', desc: 'Restarting conversations with 18 stalled enterprise accounts through peer benchmarking sessions.', gradient: 'linear-gradient(135deg,rgba(200,244,92,0.04),rgba(52,211,153,0.06))' }
+    ];
+
+    const faqData = [
+      { q: 'How does Evntiqa help cybersecurity companies engage CISOs?', a: 'We run ABM-driven executive engagement programs that connect cybersecurity companies with CISOs from priority accounts through peer-led roundtables and other targeted formats.' },
+      { q: 'Can Evntiqa recruit CISOs from our target accounts?', a: 'Yes. We identify and recruit relevant CISOs and security leaders aligned with your ICP and target-account priorities.' },
+      { q: 'How do you identify the right executives to engage?', a: 'We align your ICP, target accounts, intent signals, and campaign goals to identify relevant security decision-makers.' },
+      { q: 'What types of executive engagement programs do you offer?', a: 'We offer ABM-driven virtual roundtables, account-based webinars, digital demand summits, and audience acquisition services.' },
+      { q: 'Can Evntiqa guarantee the right executives from our ICP and target accounts?', a: 'We commit to recruiting executives aligned with your agreed ICP and target-account criteria. If an engagement does not meet the agreed audience requirements, we\'ll deliver the next virtual event at no additional cost, subject to mutually agreed terms.' },
+      { q: 'How does Evntiqa support pipeline progression after an engagement?', a: 'We share attendee and engagement insights to help your team follow up, strengthen account relationships, and advance opportunities.' }
+    ];
+
+    const faqs = faqData.map((f, i) => ({
+      q: f.q,
+      a: f.a,
+      open: this.state.openFaq === i,
+      icon: this.state.openFaq === i ? '−' : '+',
+      toggle: () => this.setState(s => ({ openFaq: s.openFaq === i ? null : i }))
+    }));
+
+    const stats = [
+      { value: '100%', label: 'ICP-Verified Attendance' },
+      { value: '10X', label: 'Account Engagement Velocity' },
+      { value: '1:1', label: 'Target Account Alignment' },
+      { value: '10–12', label: 'CISOs per Session' },
+      { value: 'Zero', label: 'Operational Friction' }
+    ];
+
+    return { logosDouble, accountTypes, steps, caseStudies, faqs, stats };
+  }
+}
+
+</script>
+</body>
+</html>
