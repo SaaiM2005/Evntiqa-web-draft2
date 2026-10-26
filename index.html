@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script src="./glyph-trail.js"></script>
 </head>
 <body>
 <x-dc>
@@ -60,49 +61,55 @@ a:hover{color:#d8ff8a}
   <!-- Subtle ambient glow -->
   <div style="position:absolute;top:-20%;right:-10%;width:600px;height:600px;background:radial-gradient(circle,rgba(200,244,92,0.04),transparent 60%);pointer-events:none"></div>
 
-  <div style="margin-bottom:32px">
-    
-  </div>
+  <!-- Glyph Trail Component Background (Framer: https://framer.com/m/Glyph-Trail-IibOD8.js@mcfjQvnnHs7ZBfjTsYps) -->
+  <div id="hero-glyph-trail" style="position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;overflow:hidden;mask-image:linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%);-webkit-mask-image:linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 75%, rgba(0,0,0,0) 100%)"></div>
 
-  <!-- Headline — dramatic scale -->
-  <h1 style="font-family:'Space Grotesk';font-size:clamp(52px,7.5vw,110px);font-weight:700;line-height:0.95;letter-spacing:-4px;margin:0 0 40px;color:#fff;max-width:1100px">
-    Virtual CISO<br>Roundtables That<br>
-    <span style="color:#C8F45C">Move Pipeline</span> Forward.
-  </h1>
-
-  <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
-    <p style="font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:rgba(255,255,255,0.45);max-width:520px;margin:0">We bring 10–12 CISOs from your target accounts into invitation-only, peer-led conversations—and handle all the heavy lifting from recruitment to execution.</p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap">
-      <a href="#cta" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#C8F45C;border-radius:100px;font-size:15px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,244,92,0.2)">
-        Talk to an ABM Expert
-        <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
-      </a>
-      <a href="#formats" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border:1px solid rgba(255,255,255,0.1);border-radius:100px;font-size:15px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;transition:all 0.25s" style-hover="border-color:rgba(255,255,255,0.2);color:#fff">Explore Solutions</a>
+  <!-- Hero Content Layer -->
+  <div style="position:relative;z-index:1">
+    <div style="margin-bottom:32px">
+      
     </div>
-  </div>
 
-  <!-- Divider line -->
-  <div style="margin-top:64px;height:1px;background:linear-gradient(90deg,rgba(200,244,92,0.3),rgba(200,244,92,0.05),transparent);transform-origin:left;animation:lineGrow 1.2s ease-out forwards"></div>
+    <!-- Headline — dramatic scale -->
+    <h1 style="font-family:'Space Grotesk';font-size:clamp(52px,7.5vw,110px);font-weight:700;line-height:0.95;letter-spacing:-4px;margin:0 0 40px;color:#fff;max-width:1100px">
+      Virtual CISO<br>Roundtables That<br>
+      <span style="color:#C8F45C">Move Pipeline</span> Forward.
+    </h1>
 
-  <!-- Logo strip -->
-  <div style="margin-top:48px">
-    <p style="font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin:0 0 24px">Engaging Global Enterprise CISOs</p>
-    <div style="overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)">
-      <div style="display:flex;gap:56px;align-items:center;animation:marquee 35s linear infinite;width:max-content">
-        <img src="logos/commvault.png" alt="Commvault" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/fsecure.png" alt="F-Secure" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/informatica.png" alt="Informatica" style="height:24px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/infosys.png" alt="Infosys" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/intel.png" alt="Intel" style="height:32px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/trendmicro.png" alt="Trend Micro" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/zoominfo.png" alt="ZoomInfo" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/commvault.png" alt="Commvault" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/fsecure.png" alt="F-Secure" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/informatica.png" alt="Informatica" style="height:24px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/infosys.png" alt="Infosys" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/intel.png" alt="Intel" style="height:32px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/trendmicro.png" alt="Trend Micro" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
-        <img src="logos/zoominfo.png" alt="ZoomInfo" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+    <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
+      <p style="font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:rgba(255,255,255,0.45);max-width:520px;margin:0">We bring 10–12 CISOs from your target accounts into invitation-only, peer-led conversations—and handle all the heavy lifting from recruitment to execution.</p>
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="#cta" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#C8F45C;border-radius:100px;font-size:15px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,244,92,0.2)">
+          Talk to an ABM Expert
+          <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        </a>
+        <a href="#formats" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;border:1px solid rgba(255,255,255,0.1);border-radius:100px;font-size:15px;font-weight:500;color:rgba(255,255,255,0.6);text-decoration:none;transition:all 0.25s" style-hover="border-color:rgba(255,255,255,0.2);color:#fff">Explore Solutions</a>
+      </div>
+    </div>
+
+    <!-- Divider line -->
+    <div style="margin-top:64px;height:1px;background:linear-gradient(90deg,rgba(200,244,92,0.3),rgba(200,244,92,0.05),transparent);transform-origin:left;animation:lineGrow 1.2s ease-out forwards"></div>
+
+    <!-- Logo strip -->
+    <div style="margin-top:48px">
+      <p style="font-size:11px;font-weight:600;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.2);margin:0 0 24px">Engaging Global Enterprise CISOs</p>
+      <div style="overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)">
+        <div style="display:flex;gap:56px;align-items:center;animation:marquee 35s linear infinite;width:max-content">
+          <img src="logos/commvault.png" alt="Commvault" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/fsecure.png" alt="F-Secure" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/informatica.png" alt="Informatica" style="height:24px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/infosys.png" alt="Infosys" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/intel.png" alt="Intel" style="height:32px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/trendmicro.png" alt="Trend Micro" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/zoominfo.png" alt="ZoomInfo" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/commvault.png" alt="Commvault" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/fsecure.png" alt="F-Secure" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/informatica.png" alt="Informatica" style="height:24px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/infosys.png" alt="Infosys" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/intel.png" alt="Intel" style="height:32px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/trendmicro.png" alt="Trend Micro" style="height:28px;opacity:0.35;filter:brightness(10);flex:none">
+          <img src="logos/zoominfo.png" alt="ZoomInfo" style="height:26px;opacity:0.35;filter:brightness(10);flex:none">
+        </div>
       </div>
     </div>
   </div>
@@ -193,7 +200,6 @@ a:hover{color:#d8ff8a}
 <section id="process" style="padding:clamp(60px,8vw,120px) clamp(24px,4vw,64px);border-top:1px solid rgba(255,255,255,0.04)">
   <div style="max-width:1400px;margin:0 auto">
     <div style="text-align:center;margin-bottom:64px">
-      <span style="font-family:'Space Grotesk';font-size:12px;font-weight:600;color:rgba(200,244,92,0.4);letter-spacing:3px;text-transform:uppercase">04 — Process</span>
       <h2 style="font-family:'Space Grotesk';font-size:clamp(36px,4vw,56px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:16px 0 12px">Six Steps to CISO Engagement.</h2>
       <p style="font-size:16px;color:rgba(255,255,255,0.35);margin:0">A zero-lift execution process from target mapping to handoff.</p>
     </div>
@@ -379,6 +385,23 @@ class Component extends DCLogic {
   state = { openFaq: null };
 
   componentDidMount() {
+    // Initialize Framer Glyph Trail background in Hero
+    if (window.GlyphTrail && window.GlyphTrail.initGlyphTrail) {
+      window.GlyphTrail.initGlyphTrail('#hero-glyph-trail', {
+        cellSize: 10,
+        glyphs: 'mixed',
+        colors: {
+          background: 'transparent',
+          ink: 'rgba(255, 255, 255, 0.07)',
+          trail: '#C8F45C'
+        },
+        pattern: '8',
+        tone: { contrast: 1, brightness: 0, invert: false },
+        trail: { radius: 60, strength: 0.85, duration: 1.6, spread: 0.22, shape: 'beads', touch: true },
+        speed: 0.8
+      });
+    }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
@@ -509,6 +532,33 @@ class Component extends DCLogic {
   }
 }
 
+</script>
+<script>
+  (function() {
+    function tryInit() {
+      var el = document.getElementById('hero-glyph-trail');
+      if (el && window.GlyphTrail && window.GlyphTrail.initGlyphTrail && !el._glyphTrailInstance) {
+        window.GlyphTrail.initGlyphTrail(el, {
+          cellSize: 10,
+          glyphs: 'mixed',
+          colors: {
+            background: 'transparent',
+            ink: 'rgba(255, 255, 255, 0.07)',
+            trail: '#C8F45C'
+          },
+          pattern: '8',
+          tone: { contrast: 1, brightness: 0, invert: false },
+          trail: { radius: 60, strength: 0.85, duration: 1.6, spread: 0.22, shape: 'beads', touch: true },
+          speed: 0.8
+        });
+      }
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', tryInit);
+    } else {
+      tryInit();
+    }
+  })();
 </script>
 </body>
 </html>
