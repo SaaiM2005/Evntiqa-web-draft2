@@ -185,27 +185,23 @@ a:hover{color:#d8ff8a}
   background: #121316;
   color: #fff;
 }
-.expert-close-btn {
+/* Expert Form Vector Shape (Stationary, No Glow, Zero Height Impact) */
+.expert-shape-corner {
   position: absolute;
-  top: 24px;
-  right: 24px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: rgba(255, 255, 255, 0.5);
-  cursor: pointer;
-  transition: all 0.2s ease;
-  z-index: 2;
+  bottom: clamp(36px, 5vw, 64px);
+  left: clamp(36px, 5vw, 64px);
+  pointer-events: none;
+  z-index: 1;
 }
-.expert-close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
-  border-color: rgba(255, 255, 255, 0.25);
+.expert-vector-shape {
+  width: clamp(150px, 15vw, 210px);
+  height: clamp(150px, 15vw, 210px);
+  display: block;
+}
+@media (max-width: 900px) {
+  .expert-shape-corner {
+    display: none;
+  }
 }
 @media (max-width: 900px) {
   .expert-form-grid {
@@ -542,6 +538,13 @@ a:hover{color:#d8ff8a}
 <section id="expert-form-section" class="expert-form-section">
   <div class="expert-card">
     <div class="expert-glow-top"></div>
+
+    <!-- Stationary Vector Shape in bottom-left corner (no motion, no glow, zero height increase) -->
+    <div class="expert-shape-corner">
+      <svg class="expert-vector-shape" viewBox="0 0 256 256" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M 136 108.686 L 212.853 31.833 L 224.166 43.148 L 147.313 120 L 256 120 L 256 136 L 147.314 136 L 224.167 212.853 L 212.853 224.167 L 136 147.313 L 136 256 L 120 256 L 120 147.313 L 43.148 224.167 L 31.833 212.853 L 108.686 136 L 0 136 L 0 120 L 108.687 120 L 31.834 43.148 L 43.148 31.833 L 120 108.686 L 120 0 L 136 0 Z" fill="#C8F45C" />
+      </svg>
+    </div>
 
     <div class="expert-form-grid">
       <!-- Left side: Headline -->
