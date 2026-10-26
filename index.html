@@ -26,16 +26,304 @@
 @keyframes gradientShift { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
 @keyframes textReveal { from{clip-path:inset(0 100% 0 0)} to{clip-path:inset(0 0% 0 0)} }
 @keyframes borderFlow { 0%{background-position:0% 0%} 100%{background-position:200% 0%} }
+html {
+  scroll-behavior: smooth;
+}
+#hero, #accounts, #formats, #process, #results, #faq, #cta, #expert-form-section {
+  scroll-margin-top: clamp(68px, 9vh, 92px);
+}
 body{margin:0;background:#09090B;color:#fff;font-family:Satoshi,system-ui,sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;letter-spacing:-0.01em}
 a{color:#C8F45C;text-decoration:none;transition:color 0.3s}
 a:hover{color:#d8ff8a}
 ::selection{background:rgba(200,244,92,0.25);color:#fff}
+
+/* Responsive Navigation & Mobile Drawer */
+.nav-desktop-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.nav-desktop-cta {
+  display: inline-flex;
+  align-items: center;
+  padding: 9px 22px;
+  background: #C8F45C;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #09090B;
+  text-decoration: none;
+  transition: all 0.25s;
+  white-space: nowrap;
+}
+.nav-mobile-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  cursor: pointer;
+  color: #fff;
+  padding: 0;
+  transition: all 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-mobile-toggle:hover,
+.nav-mobile-toggle:focus-visible {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(200, 244, 92, 0.4);
+}
+.nav-mobile-drawer {
+  display: none;
+  position: fixed;
+  top: 68px;
+  left: 0;
+  right: 0;
+  background: rgba(9, 9, 11, 0.97);
+  backdrop-filter: blur(28px) saturate(1.4);
+  -webkit-backdrop-filter: blur(28px) saturate(1.4);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px clamp(20px, 4vw, 40px) 28px;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 99;
+  max-height: calc(100dvh - 68px);
+  overflow-y: auto;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.85);
+}
+.nav-mobile-drawer.is-open {
+  display: flex;
+  animation: navDrawerFadeDown 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes navDrawerFadeDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.nav-mobile-link {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.75);
+  text-decoration: none;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  transition: color 0.2s ease;
+}
+.nav-mobile-link:hover, .nav-mobile-link:active {
+  color: #C8F45C;
+}
+.nav-mobile-cta {
+  margin-top: 8px;
+  padding: 14px 24px;
+  background: #C8F45C;
+  border-radius: 100px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  color: #09090B;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 8px 24px rgba(200, 244, 92, 0.2);
+}
 @media (max-width: 960px) {
-  #process-timeline { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+  .nav-desktop-links {
+    display: none !important;
+  }
+  .nav-desktop-cta {
+    display: none !important;
+  }
+  .nav-mobile-toggle {
+    display: flex !important;
+  }
+}
+
+/* Responsive Hero Headline & Actions */
+.hero-headline {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(34px, 7.5vw, 110px);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1.5px;
+  margin: 0 0 32px;
+  color: #fff;
+  max-width: 1100px;
+}
+@media (min-width: 768px) {
+  .hero-headline {
+    font-size: clamp(52px, 7.5vw, 110px);
+    line-height: 0.95;
+    letter-spacing: -4px;
+    margin: 0 0 40px;
+  }
+}
+.hero-actions-wrap {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 @media (max-width: 600px) {
-  #process-timeline { grid-template-columns: 1fr !important; gap: 8px !important; max-height: 58vh; overflow-y: auto; }
+  .hero-actions-wrap {
+    width: 100%;
+    flex-direction: column;
+  }
+  .hero-actions-wrap a {
+    width: 100%;
+    justify-content: center;
+    box-sizing: border-box;
+    text-align: center;
+  }
 }
+
+/* Section 3 Bento Formats Grid */
+.formats-bento-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.formats-card-featured {
+  grid-column: span 2;
+  position: relative;
+  padding: 44px 40px;
+  border-radius: 0px;
+  background: linear-gradient(135deg, rgba(200, 244, 92, 0.06), rgba(52, 211, 153, 0.03));
+  border: 1px solid rgba(200, 244, 92, 0.08);
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.formats-card-span2 {
+  grid-column: span 2;
+  padding: 36px 40px;
+  border-radius: 0px;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (max-width: 960px) and (min-width: 641px) {
+  .formats-bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+  .formats-card-featured {
+    grid-column: span 2;
+  }
+  .formats-card-span2 {
+    grid-column: span 2;
+  }
+}
+@media (max-width: 640px) {
+  .formats-bento-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px;
+  }
+  .formats-card-featured,
+  .formats-card-span2 {
+    grid-column: auto !important;
+  }
+  .formats-card-featured {
+    padding: 32px 24px !important;
+  }
+  .formats-card-span2 {
+    padding: 28px 24px !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+}
+
+/* Section 4 Process Timeline Responsive */
+@media (max-width: 960px) {
+  #process-timeline {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+}
+@media (max-width: 600px) {
+  #process-timeline {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 8px !important;
+    max-height: none !important;
+    overflow-y: visible !important;
+  }
+  [data-step-card] {
+    padding: 11px 12px !important;
+    min-height: 80px !important;
+  }
+  [data-step-card] h3 {
+    font-size: 13px !important;
+    margin-bottom: 2px !important;
+  }
+  [data-step-card] p {
+    font-size: 10.5px !important;
+    line-height: 1.35 !important;
+  }
+}
+@media (max-width: 380px) {
+  #process-timeline {
+    grid-template-columns: 1fr !important;
+    gap: 6px !important;
+  }
+  [data-step-card] {
+    padding: 10px 12px !important;
+    min-height: auto !important;
+  }
+}
+
+/* Section 5 Results Mobile Adjustment */
+@media (max-width: 640px) {
+  .result-card {
+    min-height: auto !important;
+    padding: 28px 20px !important;
+  }
+}
+
+/* Section 7 CTA & Stats Responsive */
+@media (max-width: 860px) {
+  .cta-grid {
+    grid-template-columns: 1fr !important;
+    gap: 36px !important;
+  }
+}
+@media (max-width: 500px) {
+  .cta-stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Section 8 Expert Form Mobile Adjustments */
+@media (max-width: 768px) {
+  .expert-input {
+    font-size: 16px !important; /* Prevents unwanted auto-zoom in iOS Safari */
+  }
+  .expert-card {
+    padding: 28px 18px !important;
+  }
+}
+
+/* Footer Responsive */
+@media (max-width: 960px) {
+  .footer-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 36px !important;
+  }
+}
+@media (max-width: 540px) {
+  .footer-grid {
+    grid-template-columns: 1fr !important;
+    gap: 28px !important;
+  }
+  .footer-bottom-bar {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+}
+
 
 /* Accounts Editorial Text Layout (Minimal, typography-focused) */
 .accounts-editorial-list {
@@ -342,7 +630,7 @@ a:hover{color:#d8ff8a}
 </div>
 
 <!-- NAVIGATION -->
-<nav style="position:sticky;top:0;z-index:100;backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);background:rgba(9,9,11,0.85);border-bottom:1px solid rgba(255,255,255,0.04);padding:0 clamp(24px,4vw,64px)">
+<nav style="position:sticky;top:0;z-index:100;backdrop-filter:blur(24px) saturate(1.4);-webkit-backdrop-filter:blur(24px) saturate(1.4);background:rgba(9,9,11,0.85);border-bottom:1px solid rgba(255,255,255,0.04);padding:0 clamp(20px,4vw,64px)">
   <div style="max-width:1400px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:68px">
     <a href="#" style="display:flex;align-items:center;gap:8px;text-decoration:none">
       <div style="width:28px;height:28px;background:#C8F45C;border-radius:6px;display:flex;align-items:center;justify-content:center">
@@ -350,7 +638,7 @@ a:hover{color:#d8ff8a}
       </div>
       <span style="font-family:'Space Grotesk';font-weight:700;font-size:18px;color:#fff;letter-spacing:-0.5px">EVNTIQA</span>
     </a>
-    <div style="display:flex;align-items:center;gap:24px">
+    <div class="nav-desktop-links">
       <a href="#hero" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Roundtables</a>
       <a href="#accounts" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Accounts</a>
       <a href="#formats" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Solutions</a>
@@ -359,7 +647,32 @@ a:hover{color:#d8ff8a}
       <a href="#" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">TheCISOnews</a>
       <a href="#" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">About Evntiqa</a>
     </div>
-    <a href="#expert-form-section" data-expert-trigger="true" style="padding:9px 22px;background:#C8F45C;border-radius:100px;font-size:13px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s;white-space:nowrap" style-hover="background:#d8ff8a;transform:translateY(-1px);box-shadow:0 8px 24px rgba(200,244,92,0.2)">Talk to an ABM Expert</a>
+    <a href="#expert-form-section" data-expert-trigger="true" class="nav-desktop-cta" style-hover="background:#d8ff8a;transform:translateY(-1px);box-shadow:0 8px 24px rgba(200,244,92,0.2)">Talk to an ABM Expert</a>
+    
+    <!-- Mobile Hamburger Toggle Button -->
+    <button id="nav-toggle-btn" class="nav-mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+      <svg id="nav-toggle-icon-bars" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="12" x2="21" y2="12"></line>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <line x1="3" y1="18" x2="21" y2="18"></line>
+      </svg>
+      <svg id="nav-toggle-icon-close" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  
+  <!-- Mobile Navigation Drawer -->
+  <div id="nav-mobile-drawer" class="nav-mobile-drawer">
+    <a href="#hero" class="nav-mobile-link">Roundtables</a>
+    <a href="#accounts" class="nav-mobile-link">Accounts</a>
+    <a href="#formats" class="nav-mobile-link">Solutions</a>
+    <a href="#results" class="nav-mobile-link">Case Studies</a>
+    <a href="#" class="nav-mobile-link">Blog</a>
+    <a href="#" class="nav-mobile-link">TheCISOnews</a>
+    <a href="#" class="nav-mobile-link">About Evntiqa</a>
+    <a href="#expert-form-section" data-expert-trigger="true" class="nav-mobile-cta">Talk to an ABM Expert</a>
   </div>
 </nav>
 
@@ -380,14 +693,14 @@ a:hover{color:#d8ff8a}
     </div>
 
     <!-- Headline — dramatic scale -->
-    <h1 style="font-family:'Space Grotesk';font-size:clamp(52px,7.5vw,110px);font-weight:700;line-height:0.95;letter-spacing:-4px;margin:0 0 40px;color:#fff;max-width:1100px">
+    <h1 class="hero-headline">
       Virtual CISO<br>Roundtables That<br>
       <span style="color:#C8F45C">Move Pipeline</span> Forward.
     </h1>
 
     <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:40px;flex-wrap:wrap">
       <p style="font-size:clamp(16px,1.3vw,19px);line-height:1.7;color:rgba(255,255,255,0.45);max-width:520px;margin:0">We bring 10–12 CISOs from your target accounts into invitation-only, peer-led conversations—and handle all the heavy lifting from recruitment to execution.</p>
-      <div style="display:flex;gap:12px;flex-wrap:wrap">
+      <div class="hero-actions-wrap">
         <a href="#expert-form-section" data-expert-trigger="true" style="display:inline-flex;align-items:center;gap:8px;padding:14px 32px;background:#C8F45C;border-radius:100px;font-size:15px;font-weight:600;color:#09090B;text-decoration:none;transition:all 0.25s" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,244,92,0.2)">
           Talk to an ABM Expert
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
@@ -469,9 +782,9 @@ a:hover{color:#d8ff8a}
   </div>
 
   <!-- Bento: first card spans full width, rest in 3-col -->
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+  <div class="formats-bento-grid">
     <!-- Featured card — spans 2 cols -->
-    <div data-anim style="grid-column:span 2;position:relative;padding:44px 40px;border-radius:0px;background:linear-gradient(135deg,rgba(200,244,92,0.06),rgba(52,211,153,0.03));border:1px solid rgba(200,244,92,0.08);overflow:hidden;transition:all 0.4s cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:rgba(200,244,92,0.25);transform:translateY(-4px);background:linear-gradient(135deg,rgba(200,244,92,0.12),rgba(52,211,153,0.08),rgba(200,244,92,0.04));box-shadow:0 20px 60px rgba(200,244,92,0.08),0 0 0 1px rgba(200,244,92,0.1)">
+    <div data-anim class="formats-card-featured" style-hover="border-color:rgba(200,244,92,0.25);transform:translateY(-4px);background:linear-gradient(135deg,rgba(200,244,92,0.12),rgba(52,211,153,0.08),rgba(200,244,92,0.04));box-shadow:0 20px 60px rgba(200,244,92,0.08),0 0 0 1px rgba(200,244,92,0.1)">
       <div style="position:absolute;top:24px;right:32px;font-family:'Space Grotesk';font-size:120px;font-weight:700;color:rgba(200,244,92,0.04);line-height:1;letter-spacing:-6px;transition:color 0.4s">01</div>
       <div style="position:relative;z-index:1">
         <div style="display:inline-flex;padding:4px 14px;border-radius:100px;background:rgba(200,244,92,0.08);font-size:12px;font-weight:600;color:#C8F45C;letter-spacing:0.5px;margin-bottom:16px">8–12 CISOs · Closed-Door · Camera-On</div>
@@ -498,7 +811,7 @@ a:hover{color:#d8ff8a}
       <div style="display:inline-flex;padding:4px 12px;border-radius:100px;background:rgba(255,255,255,0.04);font-size:11px;font-weight:500;color:rgba(255,255,255,0.3);margin-top:20px;align-self:flex-start">50–150+ Leads · Top-of-Funnel</div>
     </div>
     <!-- Card 4 — spans 2 cols -->
-    <div data-anim style="grid-column:span 2;padding:36px 40px;border-radius:0px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);display:flex;align-items:center;gap:32px;transition:all 0.4s cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:rgba(52,211,153,0.2);transform:translateY(-4px);background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(200,244,92,0.04),rgba(52,211,153,0.02));box-shadow:0 16px 48px rgba(52,211,153,0.06)">
+    <div data-anim class="formats-card-span2" style-hover="border-color:rgba(52,211,153,0.2);transform:translateY(-4px);background:linear-gradient(135deg,rgba(52,211,153,0.06),rgba(200,244,92,0.04),rgba(52,211,153,0.02));box-shadow:0 16px 48px rgba(52,211,153,0.06)">
       <span style="font-family:'Space Grotesk';font-size:48px;font-weight:700;color:rgba(255,255,255,0.04);letter-spacing:-3px;flex:none">04</span>
       <div style="flex:1">
         <h3 style="font-family:'Space Grotesk';font-size:20px;font-weight:600;color:#fff;margin:0 0 8px;letter-spacing:-0.3px">Audience Acquisition</h3>
@@ -514,8 +827,8 @@ a:hover{color:#d8ff8a}
 <!-- ═══════════════════════════════════════════ -->
 <section id="process" style="position:relative;width:100%;height:220vh;background:#09090B">
   
-  <!-- Sticky Video Viewport (100vh) -->
-  <div data-smr-viewport style="position:sticky;top:0;width:100%;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#09090B">
+  <!-- Sticky Video Viewport (100vh / 100dvh) -->
+  <div data-smr-viewport style="position:sticky;top:0;width:100%;height:100vh;height:100dvh;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#09090B">
     
     <!-- Masked Video Layer (Expands on Scroll) -->
     <div data-smr-masked style="position:absolute;inset:0;width:100%;height:100%;will-change:mask-size,-webkit-mask-size;transform:translateZ(0);backface-visibility:hidden;contain:paint;pointer-events:none">
@@ -628,7 +941,7 @@ a:hover{color:#d8ff8a}
   <div style="position:absolute;bottom:0;left:0;right:0;height:60%;background:linear-gradient(180deg,transparent,rgba(200,244,92,0.02));pointer-events:none"></div>
 
   <div style="max-width:1400px;margin:0 auto;position:relative;z-index:1">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,80px);align-items:center">
+    <div class="cta-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(40px,5vw,80px);align-items:center">
       <!-- Left: headline + CTA -->
       <div>
         <span style="font-family:'Space Grotesk';font-size:12px;font-weight:600;color:rgba(200,244,92,0.4);letter-spacing:3px;text-transform:uppercase"></span>
@@ -640,7 +953,7 @@ a:hover{color:#d8ff8a}
         </a>
       </div>
       <!-- Right: stats grid -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);border-radius:0px;overflow:hidden">
+      <div class="cta-stats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);border-radius:0px;overflow:hidden">
         <sc-for list="{{ stats }}" as="stat">
           <div style="padding:32px 28px;background:#09090B;display:flex;flex-direction:column;gap:4px">
             <span style="font-family:'Space Grotesk';font-size:clamp(28px,3vw,44px);font-weight:700;color:#C8F45C;letter-spacing:-1.5px;line-height:1">{{ stat.value }}</span>
@@ -765,7 +1078,7 @@ a:hover{color:#d8ff8a}
 <!-- ═══════════════════════════════════════════ -->
 <footer style="border-top:1px solid rgba(255,255,255,0.04);padding:56px clamp(24px,4vw,64px) 36px">
   <div style="max-width:1400px;margin:0 auto">
-    <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px">
+    <div class="footer-grid" style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px">
       <div>
         <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
           <div style="width:28px;height:28px;background:#C8F45C;border-radius:6px;display:flex;align-items:center;justify-content:center">
@@ -806,7 +1119,7 @@ a:hover{color:#d8ff8a}
         </div>
       </div>
     </div>
-    <div style="border-top:1px solid rgba(255,255,255,0.04);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
+    <div class="footer-bottom-bar" style="border-top:1px solid rgba(255,255,255,0.04);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px">
       <span style="font-size:12px;color:rgba(255,255,255,0.2)">© 2027 EVNTIQA Inc. All rights reserved.</span>
       <div style="display:flex;gap:20px">
         <a href="#" style="font-size:12px;color:rgba(255,255,255,0.2);text-decoration:none" style-hover="color:rgba(255,255,255,0.4)">Privacy Policy</a>
@@ -1048,6 +1361,72 @@ class Component extends DCLogic {
 
       initAccountCardsAnimation();
       initExpertFormSection();
+      initMobileNav();
+    }
+
+    function initMobileNav() {
+      var toggleBtn = document.getElementById('nav-toggle-btn');
+      var drawer = document.getElementById('nav-mobile-drawer');
+      var iconBars = document.getElementById('nav-toggle-icon-bars');
+      var iconClose = document.getElementById('nav-toggle-icon-close');
+
+      if (!toggleBtn || !drawer || toggleBtn._navInitialized) return;
+      toggleBtn._navInitialized = true;
+
+      function closeDrawer() {
+        drawer.classList.remove('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'false');
+        if (iconBars) iconBars.style.display = 'block';
+        if (iconClose) iconClose.style.display = 'none';
+      }
+
+      function openDrawer() {
+        drawer.classList.add('is-open');
+        toggleBtn.setAttribute('aria-expanded', 'true');
+        if (iconBars) iconBars.style.display = 'none';
+        if (iconClose) iconClose.style.display = 'block';
+      }
+
+      toggleBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var isOpen = drawer.classList.contains('is-open');
+        if (isOpen) {
+          closeDrawer();
+        } else {
+          openDrawer();
+        }
+      });
+
+      // Close drawer when any link inside drawer is clicked
+      drawer.querySelectorAll('a').forEach(function(link) {
+        link.addEventListener('click', function() {
+          closeDrawer();
+        });
+      });
+
+      // Close drawer on clicking outside
+      document.addEventListener('click', function(e) {
+        if (!drawer.contains(e.target) && !toggleBtn.contains(e.target)) {
+          closeDrawer();
+        }
+      });
+
+      // Close drawer on resize to desktop
+      window.addEventListener('resize', function() {
+        if (window.innerWidth > 960 && drawer.classList.contains('is-open')) {
+          closeDrawer();
+        }
+      });
+
+      // Handle smooth scroll for anchor hash when page is loaded or clicked
+      if (window.location.hash) {
+        setTimeout(function() {
+          var targetEl = document.querySelector(window.location.hash);
+          if (targetEl) {
+            targetEl.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 400);
+      }
     }
 
     function initAccountCardsAnimation() {
