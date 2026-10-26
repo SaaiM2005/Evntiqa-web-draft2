@@ -170,7 +170,36 @@
       }
     }
 
-    // Video playback management & viewport visibility
+    // Aggressive early video warm-up & playback management
+    if (videoEl) {
+      videoEl.muted = true;
+      videoEl.defaultMuted = true;
+      videoEl.playsInline = true;
+      videoEl.setAttribute('playsinline', '');
+      videoEl.setAttribute('webkit-playsinline', '');
+
+      const startPlay = () => {
+        const p = videoEl.play();
+        if (p !== undefined) {
+          p.catch(() => {
+            const unlockPlay = () => {
+              videoEl.play().catch(() => {});
+              window.removeEventListener('touchstart', unlockPlay);
+              window.removeEventListener('scroll', unlockPlay);
+              window.removeEventListener('click', unlockPlay);
+            };
+            window.addEventListener('touchstart', unlockPlay, { passive: true });
+            window.addEventListener('scroll', unlockPlay, { passive: true });
+            window.addEventListener('click', unlockPlay, { passive: true });
+          });
+        }
+      };
+
+      // Warm up immediately so browser buffers it
+      startPlay();
+    }
+
+    // Video playback management with 800px rootMargin so video is playing BEFORE entering viewport
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -179,12 +208,16 @@
           }
           update();
         } else {
+          // Only pause when far offscreen (>800px away)
           if (videoEl && !videoEl.paused) {
             videoEl.pause();
           }
         }
       });
-    }, { threshold: [0, 0.05, 0.2, 0.5, 0.8, 1.0] });
+    }, {
+      rootMargin: '800px 0px 800px 0px',
+      threshold: 0
+    });
 
     observer.observe(container);
 
