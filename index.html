@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
 <script src="./glyph-trail.js"></script>
-<script src="./scroll-mask-reveal.js?v=full-bleed-v3"></script>
+<script src="./scroll-mask-reveal.js?v=full-bleed-v4"></script>
 <script src="./aurora-flow.js"></script>
 <script src="./dot-grid-bg.js"></script>
 </head>
@@ -520,7 +520,10 @@ a:hover{color:#d8ff8a}
     </div>
 
     <!-- Glowing Accent Ring around the expanding portal -->
-    <div data-smr-border style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(200,244,92,0.4);box-shadow:0 0 40px rgba(200,244,92,0.2), inset 0 0 30px rgba(200,244,92,0.12);pointer-events:none;z-index:2;transition:opacity 0.2s ease-out"></div>
+    <div data-smr-border style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(200,244,92,0.4);box-shadow:0 0 40px rgba(200,244,92,0.2), inset 0 0 30px rgba(200,244,92,0.12);pointer-events:none;z-index:2;transition:opacity 0.2s ease-out">
+      <!-- Monogram Brand Label below "e" -->
+      <div data-smr-label style="position:absolute;top:calc(100% + 24px);left:50%;transform:translateX(-50%);margin-right:-0.22em;font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,1.5vw,22px);font-weight:600;letter-spacing:0.22em;text-transform:lowercase;color:rgba(255,255,255,0.9);white-space:nowrap;pointer-events:none;text-shadow:0 2px 14px rgba(0,0,0,0.85),0 0 24px rgba(200,244,92,0.25)">evntiqa</div>
+    </div>
 
     <!-- Content Layer: Directly Inside Video Viewport -->
     <div style="position:relative;z-index:5;width:100%;max-width:1320px;box-sizing:border-box;padding:clamp(20px,3.5vh,40px) clamp(20px,3vw,48px);display:flex;flex-direction:column;align-items:center">

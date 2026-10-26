@@ -130,6 +130,14 @@
         maskBorder.style.display = borderOpacity <= 0.01 ? 'none' : 'block';
       }
 
+      // Smoothly fade label as scroll starts
+      const labelEl = container.querySelector('[data-smr-label]');
+      if (labelEl) {
+        const labelOpacity = clamp01(1 - rawProgress * 3.0);
+        labelEl.style.opacity = labelOpacity.toFixed(3);
+        labelEl.style.transform = `translateX(-50%) translateY(${(rawProgress * 14).toFixed(1)}px)`;
+      }
+
       // Smoothly reveal header onto the video background as mask expands
       if (headerEl) {
         const headerProgress = clamp01((rawProgress - 0.20) / 0.50);
