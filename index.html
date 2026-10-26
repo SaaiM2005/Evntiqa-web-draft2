@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
 <script src="./glyph-trail.js"></script>
-<script src="./scroll-mask-reveal.js"></script>
+<script src="./scroll-mask-reveal.js?v=full-bleed-v3"></script>
 </head>
 <body>
 <x-dc>
@@ -421,8 +421,8 @@ class Component extends DCLogic {
     // Initialize Scroll Mask Reveal on Process section
     if (window.ScrollMaskReveal && window.ScrollMaskReveal.init) {
       window.ScrollMaskReveal.init('#process', {
-        startSize: 28,
-        endSize: 260
+        startSize: 30,
+        endSize: 2800
       });
     }
 
@@ -570,8 +570,8 @@ class Component extends DCLogic {
       var smrEl = document.getElementById('process');
       if (smrEl && window.ScrollMaskReveal && window.ScrollMaskReveal.init && !smrEl._smrInstance) {
         smrEl._smrInstance = window.ScrollMaskReveal.init(smrEl, {
-          startSize: 28,
-          endSize: 260
+          startSize: 30,
+          endSize: 2800
         });
       }
     }
