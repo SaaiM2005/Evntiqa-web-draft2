@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
 <script src="./glyph-trail.js"></script>
+<script src="./scroll-mask-reveal.js"></script>
 </head>
 <body>
 <x-dc>
@@ -25,6 +26,12 @@ body{margin:0;background:#09090B;color:#fff;font-family:Satoshi,system-ui,sans-s
 a{color:#C8F45C;text-decoration:none;transition:color 0.3s}
 a:hover{color:#d8ff8a}
 ::selection{background:rgba(200,244,92,0.25);color:#fff}
+@media (max-width: 960px) {
+  #process-timeline { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
+}
+@media (max-width: 600px) {
+  #process-timeline { grid-template-columns: 1fr !important; gap: 8px !important; max-height: 58vh; overflow-y: auto; }
+}
 </style>
 </helmet>
 
@@ -195,37 +202,46 @@ a:hover{color:#d8ff8a}
 </section>
 
 <!-- ═══════════════════════════════════════════ -->
-<!-- SECTION 4 — PROCESS (timeline / horizontal) -->
+<!-- SECTION 4 — PROCESS (Fitted Inside Video Frame) -->
 <!-- ═══════════════════════════════════════════ -->
-<section id="process" style="padding:clamp(60px,8vw,120px) clamp(24px,4vw,64px);border-top:1px solid rgba(255,255,255,0.04)">
-  <div style="max-width:1400px;margin:0 auto">
-    <div style="text-align:center;margin-bottom:64px">
-      <h2 style="font-family:'Space Grotesk';font-size:clamp(36px,4vw,56px);font-weight:700;letter-spacing:-2px;line-height:1.05;color:#fff;margin:16px 0 12px">Six Steps to CISO Engagement.</h2>
-      <p style="font-size:16px;color:rgba(255,255,255,0.35);margin:0">A zero-lift execution process from target mapping to handoff.</p>
+<section id="process" style="position:relative;width:100%;height:160vh;background:#09090B">
+  
+  <!-- Sticky Video Viewport (100vh) -->
+  <div data-smr-viewport style="position:sticky;top:0;width:100%;height:100vh;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#09090B">
+    
+    <!-- Masked Video Layer (Expands on Scroll) -->
+    <div data-smr-masked style="position:absolute;inset:0;width:100%;height:100%;will-change:mask-size,-webkit-mask-size;transform:translateZ(0);backface-visibility:hidden;contain:paint;pointer-events:none">
+      <video src="https://framerusercontent.com/assets/MLWPbW1dUQawJLhhun3dBwpgJak.mp4" muted playsinline loop autoplay preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transform:translateZ(0)"></video>
     </div>
 
-    <!-- Timeline layout -->
-    <div id="process-timeline" style="position:relative;display:flex;flex-direction:column;gap:0">
-      <!-- Vertical animated line -->
-      <div data-timeline-line style="position:absolute;left:39px;top:0;width:2px;height:0;background:linear-gradient(180deg,#C8F45C,rgba(52,211,153,0.6),rgba(200,244,92,0.2));border-radius:2px;transition:height 1.8s cubic-bezier(0.16,1,0.3,1);z-index:0;mask-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%22 height=%221000%22><rect width=%222%22 height=%221000%22 fill=%22white%22/></svg>');-webkit-mask-image:url('data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%222%22 height=%221000%22><rect width=%222%22 height=%221000%22 fill=%22white%22/></svg>')"></div>
+    <!-- Glowing Accent Ring around the expanding portal -->
+    <div data-smr-border style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:1px solid rgba(200,244,92,0.4);box-shadow:0 0 40px rgba(200,244,92,0.2), inset 0 0 30px rgba(200,244,92,0.12);pointer-events:none;z-index:2;transition:opacity 0.2s ease-out"></div>
 
-      <sc-for list="{{ steps }}" as="step">
-        <div data-step-card style="display:flex;gap:28px;align-items:flex-start;padding:0 0 48px;opacity:0;transform:translateX(-30px);position:relative">
-          <!-- Number node -->
-          <div style="flex:none;width:80px;display:flex;flex-direction:column;align-items:center;position:relative;z-index:5">
-            <div data-step-node style="width:44px;height:44px;border-radius:12px;background:#151518;border:2px solid rgba(200,244,92,0.25);display:flex;align-items:center;justify-content:center;transition:all 0.5s cubic-bezier(0.16,1,0.3,1);position:relative;box-shadow:0 0 12px rgba(200,244,92,0.06)">
-              <span style="font-family:'Space Grotesk';font-size:14px;font-weight:700;color:#C8F45C;transition:color 0.5s">{{ step.num }}</span>
+    <!-- Content Layer: Directly Inside Video Viewport -->
+    <div style="position:relative;z-index:5;width:100%;max-width:1320px;box-sizing:border-box;padding:clamp(20px,3.5vh,40px) clamp(20px,3vw,48px);display:flex;flex-direction:column;align-items:center">
+      
+      <!-- Section Header -->
+      <div data-smr-header style="text-align:center;margin-bottom:clamp(20px,2.8vh,32px);transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)">
+        <h2 style="font-family:'Space Grotesk';font-size:clamp(26px,3vw,44px);font-weight:700;letter-spacing:-1.8px;line-height:1.05;color:#fff;margin:0 0 8px;text-shadow:0 8px 30px rgba(0,0,0,0.85)">Six Steps to CISO Engagement.</h2>
+        <p style="font-size:clamp(13px,1vw,15px);line-height:1.5;color:rgba(255,255,255,0.7);max-width:500px;margin:0 auto;text-shadow:0 3px 12px rgba(0,0,0,0.9)">A zero-lift execution process from target mapping to handoff.</p>
+      </div>
+
+      <!-- 6 Steps Grid (3 cols x 2 rows, perfectly fitted inside frame) -->
+      <div id="process-timeline" style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;width:100%">
+        <sc-for list="{{ steps }}" as="step">
+          <div data-step-card style="position:relative;padding:18px 22px;border-radius:14px;background:rgba(9,9,11,0.65);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border:1px solid rgba(255,255,255,0.08);box-shadow:0 10px 28px rgba(0,0,0,0.4);opacity:0;transform:translateY(24px);transition:all 0.35s cubic-bezier(0.16,1,0.3,1);display:flex;flex-direction:column;justify-content:space-between;min-height:105px" style-hover="border-color:rgba(200,244,92,0.35);background:rgba(15,15,19,0.85);transform:translateY(-3px);box-shadow:0 16px 36px rgba(0,0,0,0.6),0 0 20px rgba(200,244,92,0.08)">
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+                <span style="font-family:'Space Grotesk';font-size:12px;font-weight:700;color:#C8F45C;padding:2px 8px;border-radius:6px;background:rgba(200,244,92,0.12);border:1px solid rgba(200,244,92,0.25);letter-spacing:0.5px">{{ step.num }}</span>
+                <span style="font-family:'Space Grotesk';font-size:10px;font-weight:600;color:rgba(255,255,255,0.35);letter-spacing:1px;text-transform:uppercase">Phase {{ step.num }}</span>
+              </div>
+              <h3 style="font-family:'Space Grotesk';font-size:15px;font-weight:600;color:#fff;margin:0 0 6px;letter-spacing:-0.2px;line-height:1.25">{{ step.title }}</h3>
+              <p style="font-size:12px;line-height:1.55;color:rgba(255,255,255,0.55);margin:0">{{ step.desc }}</p>
             </div>
           </div>
-          <!-- Content card -->
-          <div style="flex:1;padding:24px 28px;border-radius:14px;background:rgba(255,255,255,0.015);border:1px solid rgba(255,255,255,0.04);transition:all 0.4s cubic-bezier(0.16,1,0.3,1)" style-hover="border-color:rgba(200,244,92,0.12);background:linear-gradient(135deg,rgba(200,244,92,0.04),rgba(52,211,153,0.02));transform:translateX(6px);box-shadow:0 12px 40px rgba(200,244,92,0.04)">
-            <div style="display:flex;align-items:center;gap:12px;margin-bottom:10px">
-              <h3 style="font-family:'Space Grotesk';font-size:17px;font-weight:600;color:#fff;margin:0;letter-spacing:-0.2px">{{ step.title }}</h3>
-            </div>
-            <p style="font-size:13px;line-height:1.65;color:rgba(255,255,255,0.3);margin:0">{{ step.desc }}</p>
-          </div>
-        </div>
-      </sc-for>
+        </sc-for>
+      </div>
+
     </div>
   </div>
 </section>
@@ -402,6 +418,14 @@ class Component extends DCLogic {
       });
     }
 
+    // Initialize Scroll Mask Reveal on Process section
+    if (window.ScrollMaskReveal && window.ScrollMaskReveal.init) {
+      window.ScrollMaskReveal.init('#process', {
+        startSize: 28,
+        endSize: 260
+      });
+    }
+
     const io = new IntersectionObserver((entries) => {
       entries.forEach(e => {
         if (e.isIntersecting) {
@@ -446,19 +470,10 @@ class Component extends DCLogic {
             // Stagger each card in
             stepCards.forEach((card, i) => {
               setTimeout(() => {
-                card.style.transition = 'opacity 0.7s cubic-bezier(0.16,1,0.3,1), transform 0.7s cubic-bezier(0.16,1,0.3,1)';
+                card.style.transition = 'opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)';
                 card.style.opacity = '1';
-                card.style.transform = 'translateX(0)';
-                // Light up the node
-                const node = card.querySelector('[data-step-node]');
-                if (node) {
-                  node.style.borderColor = '#C8F45C';
-                  node.style.background = 'rgba(200,244,92,0.08)';
-                  node.style.boxShadow = '0 0 20px rgba(200,244,92,0.15)';
-                  const num = node.querySelector('span');
-                  if (num) num.style.color = '#C8F45C';
-                }
-              }, i * 180);
+                card.style.transform = 'translateY(0)';
+              }, i * 90);
             });
           }
         });
@@ -470,10 +485,9 @@ class Component extends DCLogic {
       setTimeout(() => {
         stepCards.forEach(card => {
           card.style.opacity = '1';
-          card.style.transform = 'translateX(0)';
+          card.style.transform = 'translateY(0)';
         });
-        if (timelineLine) timelineLine.style.height = '100%';
-      }, 4000);
+      }, 3000);
     }
   }
 
@@ -550,6 +564,14 @@ class Component extends DCLogic {
           tone: { contrast: 1, brightness: 0, invert: false },
           trail: { radius: 60, strength: 0.85, duration: 1.6, spread: 0.22, shape: 'beads', touch: true },
           speed: 0.8
+        });
+      }
+
+      var smrEl = document.getElementById('process');
+      if (smrEl && window.ScrollMaskReveal && window.ScrollMaskReveal.init && !smrEl._smrInstance) {
+        smrEl._smrInstance = window.ScrollMaskReveal.init(smrEl, {
+          startSize: 28,
+          endSize: 260
         });
       }
     }
