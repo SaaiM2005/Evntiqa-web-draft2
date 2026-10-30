@@ -943,6 +943,100 @@ a:hover{color:#d8ff8a}
   }
 }
 
+/* Calendar Request Modal */
+.cal-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(5, 5, 7, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.25s ease, visibility 0s linear 0.25s;
+}
+.cal-modal.is-open {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease, visibility 0s;
+}
+.cal-modal-panel {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  background: #0E0F12;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.6);
+  padding: clamp(24px, 4vw, 36px);
+  box-sizing: border-box;
+  transform: translateY(12px);
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cal-modal.is-open .cal-modal-panel {
+  transform: none;
+}
+.cal-modal-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.6px;
+  line-height: 1.15;
+  color: #fff;
+  margin: 0 40px 24px 0;
+}
+.cal-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  color: rgba(255, 255, 255, 0.6);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.cal-modal-close:hover {
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+.cal-modal-submit {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 6px;
+  padding: 16px 28px;
+  background: #C8F45C;
+  border: none;
+  border-radius: 100px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #09090B;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+.cal-modal-submit:hover {
+  background: #d8ff8a;
+}
+@media (prefers-reduced-motion: reduce) {
+  .cal-modal, .cal-modal-panel {
+    transition: none;
+  }
+}
+
 /* Proven Results Section — Sleek Grey Cards */
 .results-grid {
   display: grid;
@@ -1030,7 +1124,7 @@ a:hover{color:#d8ff8a}
 
 <!-- ANNOUNCEMENT BAR -->
 <div style="background:#C8F45C;padding:10px 24px;text-align:center;font-size:13px;font-weight:600;color:#09090B;letter-spacing:0.2px">
-  2027 Virtual CISO Roundtable Calendar Is Live <a href="#" style="color:#09090B;margin-left:6px;text-decoration:underline;text-underline-offset:3px" style-hover="opacity:0.7">Get the Calendar →</a>
+  2027 Virtual CISO Roundtable Calendar Is Live <a href="#" data-calendar-trigger="true" style="color:#09090B;margin-left:6px;text-decoration:underline;text-underline-offset:3px" style-hover="opacity:0.7">Get the Calendar →</a>
 </div>
 
 <!-- NAVIGATION -->
@@ -1303,7 +1397,7 @@ a:hover{color:#d8ff8a}
             <div class="result-card-date">{{ cs.date }}</div>
             <p class="result-card-desc">{{ cs.desc }}</p>
           </div>
-          <a href="#expert-form-section" data-expert-trigger="true" class="result-card-btn">Read More</a>
+          <a href="#" data-casestudy-trigger="true" class="result-card-btn">Read More</a>
         </div>
       </sc-for>
     </div>
@@ -1543,6 +1637,69 @@ a:hover{color:#d8ff8a}
   </div>
 </footer>
 
+<!-- CALENDAR REQUEST MODAL -->
+<div id="cal-modal" class="cal-modal" role="dialog" aria-modal="true" aria-labelledby="cal-modal-title" aria-hidden="true">
+  <div class="cal-modal-panel">
+    <button type="button" class="cal-modal-close" data-cal-close="true" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+    </button>
+
+    <form id="cal-form" onsubmit="return false;" style="display:flex;flex-direction:column;gap:18px">
+      <h3 id="cal-modal-title" class="cal-modal-title" style="margin-bottom:6px">Get the 2027 CISO Roundtable Calendar</h3>
+
+      <div class="expert-form-fields-2col" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="expert-input-group">
+          <label for="cal-name" class="expert-label">Full Name <span>*</span></label>
+          <input type="text" id="cal-name" name="name" class="expert-input" placeholder="Elena Vance" required autocomplete="name">
+        </div>
+        <div class="expert-input-group">
+          <label for="cal-email" class="expert-label">Work Email <span>*</span></label>
+          <input type="email" id="cal-email" name="email" class="expert-input" placeholder="elena@company.com" required autocomplete="email">
+        </div>
+      </div>
+
+      <div class="expert-form-fields-2col" style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="expert-input-group">
+          <label for="cal-company" class="expert-label">Company Name <span>*</span></label>
+          <input type="text" id="cal-company" name="company" class="expert-input" placeholder="Acme Security" required autocomplete="organization">
+        </div>
+        <div class="expert-input-group">
+          <label for="cal-title" class="expert-label">Job Title / Role</label>
+          <input type="text" id="cal-title" name="title" class="expert-input" placeholder="VP Demand Gen / CMO" autocomplete="organization-title">
+        </div>
+      </div>
+
+      <div class="expert-input-group">
+        <label for="cal-objective" class="expert-label">Engagement Program Focus</label>
+        <select id="cal-objective" name="objective" class="expert-input expert-select">
+          <option value="roundtables">Virtual CISO Roundtables (8–12 Verified CISOs)</option>
+          <option value="stalled-deals">Dormant &amp; Stalled Account Reactivation</option>
+          <option value="net-new">Net-New Enterprise Account Penetration</option>
+          <option value="webinars">Account-Based Webinars &amp; Summits</option>
+          <option value="custom">Custom Multi-Channel ABM Program</option>
+        </select>
+      </div>
+
+      <div class="expert-input-group">
+        <label for="cal-message" class="expert-label">Target Accounts or Program Notes <span style="color:rgba(255,255,255,0.3);font-size:11px;font-weight:400">(Optional)</span></label>
+        <textarea id="cal-message" name="message" class="expert-input" rows="3" placeholder="Share priority accounts, target industry (e.g. FinServ, Healthcare), or timeline..." style="resize:vertical;min-height:76px"></textarea>
+      </div>
+
+      <button type="submit" id="cal-submit-btn" class="cal-modal-submit">
+        <span id="cal-submit-label">Get the Calendar</span>
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+    </form>
+
+    <div id="cal-success" style="display:none;padding:16px 0 4px;text-align:center">
+      <div style="width:52px;height:52px;border-radius:50%;background:rgba(200,244,92,0.12);border:1px solid rgba(200,244,92,0.3);display:inline-flex;align-items:center;justify-content:center;margin-bottom:18px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8F45C" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+      </div>
+      <h4 style="font-family:'Space Grotesk';font-size:22px;font-weight:700;color:#fff;margin:0 0 8px;letter-spacing:-0.5px">You're on the list.</h4>
+      <p id="cal-success-msg" style="font-size:14px;line-height:1.7;color:rgba(255,255,255,0.6);margin:0 auto;max-width:380px"></p>
+    </div>
+  </div>
+</div>
 </x-dc>
 <script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:&quot;100%&quot;,&quot;height&quot;:&quot;100%&quot;},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:&quot;#C8F45C&quot;,&quot;options&quot;:[&quot;#C8F45C&quot;,&quot;#34D399&quot;,&quot;#F97316&quot;,&quot;#A78BFA&quot;],&quot;section&quot;:&quot;Theme&quot;},&quot;showAnnouncement&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;section&quot;:&quot;Layout&quot;}}">
 
@@ -1785,7 +1942,111 @@ class Component extends DCLogic {
       initAccountCardsAnimation();
       initCtaStatsAnimation();
       initExpertFormSection();
+      initCalendarModal();
       initMobileNav();
+    }
+
+    function initCalendarModal() {
+      var modal = document.getElementById('cal-modal');
+      if (!modal || modal._initialized) return;
+      modal._initialized = true;
+
+      var form = document.getElementById('cal-form');
+      var successBox = document.getElementById('cal-success');
+      var submitBtn = document.getElementById('cal-submit-btn');
+      var submitHtml = submitBtn ? submitBtn.innerHTML : '';
+      var lastFocus = null;
+      var successText = '';
+
+      var CALENDAR = {
+        title: 'Get the 2027 CISO Roundtable Calendar',
+        submit: 'Get the Calendar',
+        success: 'The 2027 CISO Roundtable Calendar is on its way to '
+      };
+
+      function openModal(config) {
+        lastFocus = document.activeElement;
+        document.getElementById('cal-modal-title').textContent = config.title;
+        successText = config.success;
+        if (form) {
+          form.reset();
+          form.style.display = 'flex';
+        }
+        if (successBox) successBox.style.display = 'none';
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.style.opacity = '1';
+          submitBtn.innerHTML = submitHtml;
+          document.getElementById('cal-submit-label').textContent = config.submit;
+        }
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.documentElement.style.overflow = 'hidden';
+        setTimeout(function() {
+          var firstInput = document.getElementById('cal-name');
+          if (firstInput) firstInput.focus();
+        }, 250);
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.documentElement.style.overflow = '';
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      }
+
+      document.addEventListener('click', function(e) {
+        var caseStudy = e.target.closest('[data-casestudy-trigger]');
+        if (e.target.closest('[data-calendar-trigger]')) {
+          e.preventDefault();
+          openModal(CALENDAR);
+        } else if (caseStudy) {
+          e.preventDefault();
+          var card = caseStudy.closest('.result-card');
+          var cardTitle = card && card.querySelector('.result-card-title');
+          openModal({
+            title: cardTitle ? cardTitle.textContent.trim() : 'Read the Full Case Study',
+            submit: 'Read the Case Study',
+            success: 'The full case study is on its way to '
+          });
+        } else if (e.target === modal || e.target.closest('[data-cal-close]')) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('is-open')) closeModal();
+      });
+
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          e.preventDefault();
+          if (!form.checkValidity()) {
+            form.reportValidity();
+            return;
+          }
+
+          var nameVal = document.getElementById('cal-name').value;
+          var emailVal = document.getElementById('cal-email').value;
+
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+            submitBtn.innerHTML = '<span>Submitting...</span>';
+          }
+
+          setTimeout(function() {
+            form.style.display = 'none';
+            if (successBox) {
+              var msgEl = document.getElementById('cal-success-msg');
+              if (msgEl) {
+                msgEl.textContent = 'Thank you, ' + nameVal + '! ' + successText + emailVal + '.';
+              }
+              successBox.style.display = 'block';
+            }
+          }, 600);
+        });
+      }
     }
 
     function initMobileNav() {
