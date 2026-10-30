@@ -384,28 +384,43 @@ img { display: block; }
 }
 .why-hud b { color: var(--lime); font-weight: 600; }
 /* Diagram states, driven by data-step on .why */
+.dg-axis { stroke: rgba(255,255,255,0.16); }
 .dg-label { font-family: 'Space Grotesk', sans-serif; font-size: 12px; font-weight: 500; fill: rgba(255,255,255,0.6); letter-spacing: 0.2px; }
-.dg-touch { fill: rgba(255,255,255,0.75); transition: fill 0.6s ease, opacity 0.6s ease; }
-.dg-touch-ring { fill: none; stroke: rgba(255,255,255,0.35); transform-box: fill-box; transform-origin: center; animation: ping 2.6s var(--ease) infinite; animation-delay: var(--pd, 0s); }
+.dg-small { font-family: 'Space Grotesk', sans-serif; font-size: 10px; font-weight: 600; letter-spacing: 1.5px; fill: rgba(255,255,255,0.45); }
+/* 01 — engagement spikes at each one-time event, then falls back to zero */
+.dg-spikes { stroke: rgba(255,255,255,0.75); stroke-width: 1.75; stroke-linejoin: round; transition: stroke 0.6s ease; }
+.dg-peak { fill: #fff; transition: fill 0.6s ease; }
+.dg-peak-ring { fill: none; stroke: rgba(255,255,255,0.5); transform-box: fill-box; transform-origin: center; animation: ping 2.6s var(--ease) infinite; animation-delay: var(--pd, 0s); transition: stroke 0.6s ease; }
 @keyframes ping { 0% { transform: scale(1); opacity: 0.8; } 100% { transform: scale(3.2); opacity: 0; } }
-.dg-broken { stroke: rgba(255,255,255,0.22); stroke-dasharray: 4 7; fill: none; transition: opacity 0.6s ease, stroke 0.6s ease; opacity: 0; }
+/* 02 — the dead zones between events */
 .dg-gap { opacity: 0; transition: opacity 0.6s ease; }
-.dg-gap-box { fill: rgba(9,9,11,0.9); stroke: rgba(255,255,255,0.25); stroke-dasharray: 3 4; }
-.dg-gap-text { font-family: 'Space Grotesk', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 1.5px; fill: rgba(255,255,255,0.75); }
-.dg-bridge { fill: none; stroke: url(#bridgeGrad); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 1.6s var(--ease); filter: drop-shadow(0 0 6px rgba(200,244,92,0.55)); }
-.dg-runner { opacity: 0; transition: opacity 0.6s ease 1.2s; }
-.dg-rel-core { fill: #1b1d14; stroke: rgba(255,255,255,0.35); transition: fill 0.8s ease, stroke 0.8s ease; }
-.dg-rel-halo { fill: none; stroke: rgba(200,244,92,0); stroke-width: 1; transition: stroke 0.8s ease; }
-.dg-hub { opacity: 0; transform-box: fill-box; transform-origin: center; transform: scale(0.6); transition: opacity 0.6s ease 0.5s, transform 0.8s var(--ease) 0.5s; }
-.why[data-step="1"] .dg-broken, .why[data-step="2"] .dg-broken { opacity: 1; }
+.dg-gap rect { fill: rgba(255,255,255,0.025); stroke: rgba(255,255,255,0.28); stroke-dasharray: 3 4; }
+.dg-gap .dg-small { fill: rgba(255,255,255,0.7); }
+/* 03 — Evntiqa's continuous line fills the gaps and keeps rising */
+.dg-ev { stroke: url(#evGrad); stroke-width: 2.5; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; transition: stroke-dashoffset 1.6s var(--ease), opacity 0.3s ease; filter: drop-shadow(0 0 6px rgba(200,244,92,0.5)); }
+/* Round caps of the undrawn dash would otherwise leave a dot at the path end */
+.why[data-step="2"] .dg-ev { opacity: 1; }
+.dg-area { opacity: 0; transition: opacity 1s ease 0.6s; }
+.dg-runner, .dg-end { opacity: 0; transition: opacity 0.6s ease 1.2s; }
+.dg-legend-ev { opacity: 0.3; transition: opacity 0.6s ease; }
+/* Logo node pops in as the line reaches it, then its label settles below */
+.dg-logo { opacity: 0; transform-box: view-box; transform-origin: 188px 137px; transform: scale(0.6); transition: opacity 0.4s ease, transform 0.6s var(--ease); }
+.dg-logo-label { fill: #fff; opacity: 0; transition: opacity 0.6s ease; }
+.why[data-step="2"] .dg-logo { opacity: 1; transform: none; transition-delay: 0.3s; }
+.why[data-step="2"] .dg-logo-label { opacity: 1; transition-delay: 0.6s; }
+.dg-logo-ring { opacity: 0; transform-box: view-box; transform-origin: 188px 137px; }
+.why[data-step="2"] .dg-logo-ring { animation: logoPing 1.4s var(--ease) 0.6s both; }
+@keyframes logoPing { 0% { opacity: 0.7; transform: scale(1); } 100% { opacity: 0; transform: scale(1.9); } }
+.why[data-step="1"] .dg-spikes { stroke: rgba(255,255,255,0.45); }
 .why[data-step="1"] .dg-gap { opacity: 1; }
-.why[data-step="2"] .dg-broken { opacity: 0.25; }
-.why[data-step="2"] .dg-bridge { stroke-dashoffset: 0; }
-.why[data-step="2"] .dg-runner { opacity: 1; }
-.why[data-step="2"] .dg-touch { fill: var(--lime); }
-.why[data-step="2"] .dg-rel-core { fill: var(--lime); stroke: var(--lime); }
-.why[data-step="2"] .dg-rel-halo { stroke: rgba(200,244,92,0.35); }
-.why[data-step="2"] .dg-hub { opacity: 1; transform: none; }
+.why[data-step="2"] .dg-spikes { stroke: rgba(255,255,255,0.22); }
+.why[data-step="2"] .dg-peak { fill: var(--lime); }
+.why[data-step="2"] .dg-peak-ring { stroke: var(--lime); }
+.why[data-step="2"] .dg-ev { stroke-dashoffset: 0; }
+.why[data-step="2"] .dg-area,
+.why[data-step="2"] .dg-runner,
+.why[data-step="2"] .dg-end,
+.why[data-step="2"] .dg-legend-ev { opacity: 1; }
 .why-chapters { display: flex; flex-direction: column; }
 .chapter {
   min-height: 62vh;
@@ -856,7 +871,7 @@ img { display: block; }
   .js [data-split] .wi { transform: none; transition: none; }
   .js .intro-divider, .js .pipe-fill { transform: none; transition: none; }
   .stack-inner { transform: none; filter: none; }
-  .dg-bridge, .dg-runner { transition: none; }
+  .dg-ev, .dg-area, .dg-runner, .dg-end, .dg-logo, .dg-logo-label { transition: none; }
   .offer:hover { transform: none; }
   .marquee-track { flex-wrap: wrap; width: auto; justify-content: center; }
   .marquee-track [aria-hidden="true"] { display: none; }
@@ -967,57 +982,84 @@ img { display: block; }
     <div class="why-sticky">
       <h2 class="h2" data-split>Why Evntiqa Exists</h2>
       <div class="why-visual" aria-hidden="true">
-        <div class="why-hud"><span>Engagement map</span><span data-why-status><b>01</b> / 03</span></div>
+        <div class="why-hud"><span>Engagement over time</span><span data-why-status><b>01</b> / 03</span></div>
         <svg viewBox="0 0 520 340" fill="none">
           <defs>
-            <linearGradient id="bridgeGrad" x1="0" x2="1" y1="0" y2="0">
+            <linearGradient id="evGrad" x1="0" x2="1" y1="0" y2="0">
               <stop offset="0" stop-color="#34D399"/>
               <stop offset="1" stop-color="#C8F45C"/>
             </linearGradient>
+            <radialGradient id="logoHalo">
+              <stop offset="0" stop-color="#C8F45C" stop-opacity="0.28"/>
+              <stop offset="1" stop-color="#C8F45C" stop-opacity="0"/>
+            </radialGradient>
+            <linearGradient id="evArea" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0" stop-color="#C8F45C" stop-opacity="0.16"/>
+              <stop offset="1" stop-color="#C8F45C" stop-opacity="0"/>
+            </linearGradient>
           </defs>
-          <!-- Isolated touchpoints -->
-          <g>
-            <circle class="dg-touch-ring" cx="78" cy="132" r="4" style="--pd:0s"/>
-            <circle class="dg-touch" cx="78" cy="132" r="4"/>
-            <circle class="dg-touch-ring" cx="122" cy="200" r="4" style="--pd:0.7s"/>
-            <circle class="dg-touch" cx="122" cy="200" r="4"/>
-            <circle class="dg-touch-ring" cx="60" cy="226" r="3.5" style="--pd:1.3s"/>
-            <circle class="dg-touch" cx="60" cy="226" r="3.5"/>
-            <circle class="dg-touch-ring" cx="110" cy="102" r="3" style="--pd:1.9s"/>
-            <circle class="dg-touch" cx="110" cy="102" r="3"/>
-            <circle class="dg-touch-ring" cx="148" cy="156" r="5" style="--pd:0.4s"/>
-            <circle class="dg-touch" cx="148" cy="156" r="5"/>
-          </g>
-          <text class="dg-label" x="48" y="276">Campaigns &amp; one-time events</text>
 
-          <!-- Broken connection & the gap -->
-          <path class="dg-broken" d="M156 170 L392 170"/>
+          <!-- Axes -->
+          <path class="dg-axis" d="M44 70V262H488"/>
+          <path class="dg-axis" d="M482 257l6 5-6 5"/>
+          <text class="dg-small" x="488" y="282" text-anchor="end">TIME</text>
+          <text class="dg-small" x="0" y="0" transform="translate(30 262) rotate(-90)">ENGAGEMENT</text>
+
+          <!-- 02: gaps between one-time events -->
           <g class="dg-gap">
-            <rect class="dg-gap-box" x="232" y="156" width="84" height="28" rx="2"/>
-            <text class="dg-gap-text" x="274" y="174" text-anchor="middle">THE GAP</text>
+            <rect x="158" y="100" width="54" height="160" rx="2"/>
+            <rect x="278" y="100" width="54" height="160" rx="2"/>
+            <rect x="398" y="100" width="84" height="160" rx="2"/>
+            <text class="dg-small" x="185" y="118" text-anchor="middle">GAP</text>
+            <text class="dg-small" x="305" y="118" text-anchor="middle">GAP</text>
+            <text class="dg-small" x="440" y="118" text-anchor="middle">GAP</text>
           </g>
 
-          <!-- Evntiqa bridge -->
-          <path id="bridgePath" class="dg-bridge" pathLength="1" d="M150 162 C 210 60, 340 60, 400 166"/>
-          <g class="dg-hub">
-            <circle cx="275" cy="86" r="15" fill="#09090B" stroke="#C8F45C"/>
-            <text x="275" y="91" text-anchor="middle" font-family="Space Grotesk" font-weight="700" font-size="13" fill="#C8F45C">E</text>
-          </g>
+          <!-- 03: Evntiqa continuous engagement -->
+          <path class="dg-area" d="M112 128C150 136 190 140 232 134C280 128 310 118 352 112C400 106 440 90 484 78V262H112Z" fill="url(#evArea)"/>
+          <path id="evPath" class="dg-ev" pathLength="1" d="M112 128C150 136 190 140 232 134C280 128 310 118 352 112C400 106 440 90 484 78"/>
+
+          <!-- 01: isolated spikes that fall back to zero -->
+          <path class="dg-spikes" d="M44 262H92C102 262 104 128 112 128C120 128 128 252 156 260V262H212C222 262 224 134 232 134C240 134 248 252 276 260V262H332C342 262 344 112 352 112C360 112 368 252 396 260V262H488"/>
+          <circle class="dg-peak-ring" cx="112" cy="128" r="4" style="--pd:0s"/>
+          <circle class="dg-peak-ring" cx="232" cy="134" r="4" style="--pd:0.9s"/>
+          <circle class="dg-peak-ring" cx="352" cy="112" r="4" style="--pd:1.8s"/>
+          <circle class="dg-peak" cx="112" cy="128" r="4"/>
+          <circle class="dg-peak" cx="232" cy="134" r="4"/>
+          <circle class="dg-peak" cx="352" cy="112" r="4"/>
+
           <g class="dg-runner">
-            <circle r="3.5" fill="#f2ffd0" data-smil>
-              <animateMotion dur="2.6s" repeatCount="indefinite"><mpath href="#bridgePath"/></animateMotion>
+            <circle r="3.5" fill="#F2FFD0" data-smil>
+              <animateMotion dur="3s" repeatCount="indefinite"><mpath href="#evPath"/></animateMotion>
             </circle>
             <circle r="2.5" fill="#C8F45C" data-smil>
-              <animateMotion dur="2.6s" begin="1.3s" repeatCount="indefinite"><mpath href="#bridgePath"/></animateMotion>
+              <animateMotion dur="3s" begin="1.5s" repeatCount="indefinite"><mpath href="#evPath"/></animateMotion>
             </circle>
           </g>
+          <!-- Evntiqa node: sits on the bridge where the curve is flat, so the line plugs in on both sides -->
+          <g class="dg-logo">
+            <circle cx="188" cy="137" r="26" fill="url(#logoHalo)"/>
+            <rect class="dg-logo-ring" x="173" y="122" width="30" height="30" rx="8" stroke="#C8F45C"/>
+            <rect x="173" y="122" width="30" height="30" rx="8" fill="#0E100B" stroke="rgba(200,244,92,0.55)"/>
+            <rect x="177" y="126" width="22" height="22" rx="5" fill="#C8F45C"/>
+            <text x="188" y="142" text-anchor="middle" font-family="Space Grotesk, sans-serif" font-weight="700" font-size="13" fill="#09090B">E</text>
+          </g>
+          <text class="dg-label dg-logo-label" x="188" y="172" text-anchor="middle">Evntiqa</text>
+          <g class="dg-end">
+            <circle cx="484" cy="78" r="5" fill="#C8F45C"/>
+            <circle cx="484" cy="78" r="11" stroke="rgba(200,244,92,0.35)"/>
+            <text class="dg-label" x="470" y="58" text-anchor="end" style="fill:#fff">Ongoing executive relationships</text>
+          </g>
 
-          <!-- Ongoing executive relationship -->
-          <circle class="dg-rel-halo" cx="420" cy="170" r="40"/>
-          <circle class="dg-rel-core" cx="420" cy="170" r="22"/>
-          <path d="M412 170 h16 M420 162 v16" stroke="#09090B" stroke-width="2" stroke-linecap="round"/>
-          <text class="dg-label" x="420" y="236" text-anchor="middle">Ongoing executive</text>
-          <text class="dg-label" x="420" y="252" text-anchor="middle">relationships</text>
+          <!-- Legend -->
+          <g>
+            <path d="M44 312H64" stroke="rgba(255,255,255,0.7)" stroke-width="1.75"/>
+            <text class="dg-label" x="72" y="316">Campaigns &amp; one-time events</text>
+          </g>
+          <g class="dg-legend-ev">
+            <path d="M286 312H306" stroke="#C8F45C" stroke-width="2.5" stroke-linecap="round"/>
+            <text class="dg-label" x="314" y="316">Continuous CISO engagement</text>
+          </g>
         </svg>
       </div>
     </div>
