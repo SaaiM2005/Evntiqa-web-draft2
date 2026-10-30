@@ -121,7 +121,7 @@ img { display: block; }
 .brand-mark { width: 28px; height: 28px; background: var(--lime); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk'; font-weight: 700; font-size: 15px; color: var(--bg); }
 .brand-name { font-family: 'Space Grotesk'; font-weight: 700; font-size: 18px; color: #fff; letter-spacing: -0.5px; }
 .nav-desktop-links { display: flex; align-items: center; gap: 24px; }
-.nav-desktop-links a { font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+.nav-desktop-links a { white-space: nowrap; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); transition: color 0.2s; }
 .nav-desktop-links a:hover { color: #fff; }
 .nav-desktop-links a[aria-current="page"] { color: #fff; position: relative; }
 .nav-desktop-links a[aria-current="page"]::after {
@@ -160,7 +160,7 @@ img { display: block; }
   margin-top: 8px; padding: 14px 24px; background: var(--lime); border-radius: 100px; font-family: 'Space Grotesk', sans-serif;
   font-size: 15px; font-weight: 600; color: var(--bg) !important; text-align: center; box-shadow: 0 8px 24px rgba(200,244,92,0.2);
 }
-@media (max-width: 960px) {
+@media (max-width: 1180px) {
   .nav-desktop-links, .nav-desktop-cta { display: none !important; }
   .nav-mobile-toggle { display: flex !important; }
 }
@@ -897,6 +897,7 @@ img { display: block; }
       <a href="#">Blog</a>
       <a href="#">TheCISOnews</a>
       <a href="about.html" aria-current="page">About Evntiqa</a>
+      <a href="careers.html">Careers</a>
     </div>
     <a href="index.html#expert-form-section" class="nav-desktop-cta">Talk to an ABM Expert</a>
     <button id="nav-toggle-btn" class="nav-mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="nav-mobile-drawer">
@@ -912,6 +913,7 @@ img { display: block; }
     <a href="#" class="nav-mobile-link">Blog</a>
     <a href="#" class="nav-mobile-link">TheCISOnews</a>
     <a href="about.html" class="nav-mobile-link" aria-current="page">About Evntiqa</a>
+    <a href="careers.html" class="nav-mobile-link">Careers</a>
     <a href="index.html#expert-form-section" class="nav-mobile-cta">Talk to an ABM Expert</a>
   </div>
 </nav>
@@ -1410,7 +1412,7 @@ img { display: block; }
         <div class="footer-links">
           <a href="about.html" aria-current="page">About us</a>
           <a href="#">Blogs</a>
-          <a href="#">Careers</a>
+          <a href="careers.html">Careers</a>
         </div>
       </div>
       <div>
