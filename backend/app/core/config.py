@@ -6,7 +6,8 @@ from pydantic_settings import BaseSettings, NoDecode, SettingsConfigDict
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    # Empty values (e.g. `ADMIN_API_KEY=` from .env.example) count as unset.
+    model_config = SettingsConfigDict(env_file=".env", extra="ignore", env_ignore_empty=True)
 
     env: Literal["dev", "test", "prod"] = "dev"
     database_url: PostgresDsn
