@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Evntiqa Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/admin/assets/admin.css">
+<script src="/admin/assets/admin.js" defer></script>
+</head>
+<body>
+
+<!-- Sign in -->
+<main id="login-view" class="login" hidden>
+  <form id="login-form" class="login-card">
+    <div class="wordmark">Evntiqa<span class="dot"></span></div>
+    <h1>Admin portal</h1>
+    <p class="muted">Sign in to view form responses.</p>
+    <label for="login-email" class="field-label">Email</label>
+    <input id="login-email" type="email" class="input" required autocomplete="username" spellcheck="false">
+    <label for="login-password" class="field-label field-gap">Password</label>
+    <input id="login-password" type="password" class="input" required autocomplete="current-password">
+    <p id="login-error" class="error" role="alert" hidden></p>
+    <button id="login-btn" type="submit" class="btn btn-primary btn-block">Sign in</button>
+  </form>
+</main>
+
+<!-- App -->
+<div id="app-view" class="app" hidden>
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="wordmark">Evntiqa<span class="dot"></span></div>
+      <span class="topbar-title">Form responses</span>
+    </div>
+    <div class="topbar-actions">
+      <span id="user-email" class="user-email"></span>
+      <button id="refresh-btn" type="button" class="btn btn-ghost">Refresh</button>
+      <button id="export-btn" type="button" class="btn btn-ghost">Export CSV</button>
+      <button id="logout-btn" type="button" class="btn btn-ghost">Sign out</button>
+    </div>
+  </header>
+
+  <section class="stats" aria-label="Summary">
+    <div class="stat"><span class="stat-label">All responses</span><span class="stat-value" data-stat="total">–</span></div>
+    <div class="stat"><span class="stat-label">Consultations</span><span class="stat-value" data-stat="expert_consultation">–</span></div>
+    <div class="stat"><span class="stat-label">Calendar requests</span><span class="stat-value" data-stat="calendar_request">–</span></div>
+    <div class="stat"><span class="stat-label">Case study requests</span><span class="stat-value" data-stat="case_study_request">–</span></div>
+    <div class="stat stat-accent"><span class="stat-label">Not yet contacted</span><span class="stat-value" data-stat="new">–</span></div>
+  </section>
+
+  <section class="toolbar">
+    <div class="tabs" role="tablist" aria-label="Form">
+      <button type="button" role="tab" class="tab is-active" data-form="">All</button>
+      <button type="button" role="tab" class="tab" data-form="expert_consultation">Consultation</button>
+      <button type="button" role="tab" class="tab" data-form="calendar_request">Calendar</button>
+      <button type="button" role="tab" class="tab" data-form="case_study_request">Case study</button>
+    </div>
+    <div class="toolbar-right">
+      <select id="status-filter" class="input input-sm" aria-label="Status">
+        <option value="">Any status</option>
+        <option value="new">New</option>
+        <option value="contacted">Contacted</option>
+        <option value="archived">Archived</option>
+      </select>
+      <input id="search" type="search" class="input input-sm" placeholder="Search name, email, company" aria-label="Search">
+    </div>
+  </section>
+
+  <section class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Received</th>
+          <th>Form</th>
+          <th>Name</th>
+          <th>Company</th>
+          <th>Email</th>
+          <th>Program focus</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+    <div id="empty" class="empty" hidden>No responses match these filters yet.</div>
+    <div id="list-error" class="error error-block" role="alert" hidden></div>
+  </section>
+
+  <footer class="pager">
+    <span id="pager-info" class="muted"></span>
+    <div class="pager-btns">
+      <button id="prev-btn" type="button" class="btn btn-ghost">Previous</button>
+      <button id="next-btn" type="button" class="btn btn-ghost">Next</button>
+    </div>
+  </footer>
+</div>
+
+<!-- Detail drawer -->
+<div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
+<aside id="drawer" class="drawer" aria-labelledby="d-name" aria-hidden="true">
+  <div class="drawer-head">
+    <div>
+      <span id="d-form" class="badge"></span>
+      <h2 id="d-name"></h2>
+      <p id="d-sub" class="muted"></p>
+    </div>
+    <button id="drawer-close" type="button" class="icon-btn" aria-label="Close">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M1 1l12 12M13 1L1 13" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <dl id="d-fields" class="fields"></dl>
+    <div class="drawer-section">
+      <h3>Message</h3>
+      <p id="d-message" class="message"></p>
+    </div>
+    <div class="drawer-section">
+      <h3>Status</h3>
+      <div id="d-status" class="status-group" role="radiogroup" aria-label="Status">
+        <button type="button" class="status-btn" data-status="new">New</button>
+        <button type="button" class="status-btn" data-status="contacted">Contacted</button>
+        <button type="button" class="status-btn" data-status="archived">Archived</button>
+      </div>
+    </div>
+    <a id="d-reply" class="btn btn-primary btn-block" href="#">Reply by email</a>
+  </div>
+</aside>
+
+<div id="toast" class="toast" role="status" hidden></div>
+</body>
+</html>

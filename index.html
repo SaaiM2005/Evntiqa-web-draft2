@@ -1010,6 +1010,19 @@ a:hover{color:#d8ff8a}
   color: #fff;
   border-color: rgba(255, 255, 255, 0.2);
 }
+.form-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+.form-error {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: #F87171;
+}
 .cal-modal-submit {
   width: 100%;
   display: inline-flex;
@@ -1539,6 +1552,11 @@ a:hover{color:#d8ff8a}
               <textarea id="expert-message" name="message" class="expert-input" rows="3" placeholder="Share priority accounts, target industry (e.g. FinServ, Healthcare), or timeline..." style="resize:vertical;min-height:76px"></textarea>
             </div>
 
+            <!-- Honeypot: hidden from people, bots fill it in -->
+            <input type="text" name="website" class="form-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+            <p id="expert-form-error" class="form-error" role="alert" hidden></p>
+
             <!-- Submit Button & Security Micro-copy -->
             <div style="margin-top:6px;display:flex;flex-direction:column;gap:14px">
               <button type="submit" id="expert-submit-btn" style="width:100%;display:inline-flex;align-items:center;justify-content:center;gap:10px;padding:16px 28px;background:#C8F45C;border:none;border-radius:100px;font-family:'Space Grotesk';font-size:16px;font-weight:600;color:#09090B;cursor:pointer;transition:all 0.25s ease" style-hover="background:#d8ff8a;transform:translateY(-2px);box-shadow:0 12px 32px rgba(200,244,92,0.25)">
@@ -1684,6 +1702,10 @@ a:hover{color:#d8ff8a}
         <label for="cal-message" class="expert-label">Target Accounts or Program Notes <span style="color:rgba(255,255,255,0.3);font-size:11px;font-weight:400">(Optional)</span></label>
         <textarea id="cal-message" name="message" class="expert-input" rows="3" placeholder="Share priority accounts, target industry (e.g. FinServ, Healthcare), or timeline..." style="resize:vertical;min-height:76px"></textarea>
       </div>
+
+      <input type="text" name="website" class="form-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+
+      <p id="cal-form-error" class="form-error" role="alert" hidden></p>
 
       <button type="submit" id="cal-submit-btn" class="cal-modal-submit">
         <span id="cal-submit-label">Get the Calendar</span>
@@ -1883,6 +1905,57 @@ class Component extends DCLogic {
 </script>
 <script>
   (function() {
+    var API_BASE = (location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
+      ? 'http://localhost:8000'
+      : 'https://api.evntiqa.com';
+
+    function submitForm(formType, form, extraMeta) {
+      var fd = new FormData(form);
+      var params = new URLSearchParams(location.search);
+      var meta = { page_url: location.href.split('#')[0] };
+      if (document.referrer) meta.referrer = document.referrer;
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function(k) {
+        if (params.get(k)) meta[k] = params.get(k);
+      });
+      Object.assign(meta, extraMeta || {});
+      Object.keys(meta).forEach(function(k) { meta[k] = String(meta[k]).slice(0, 500); });
+
+      return fetch(API_BASE + '/api/v1/submissions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          form_type: formType,
+          name: fd.get('name'),
+          email: fd.get('email'),
+          company: fd.get('company'),
+          job_title: fd.get('title') || null,
+          objective: fd.get('objective') || null,
+          message: fd.get('message') || null,
+          metadata: meta,
+          website: fd.get('website') || null
+        })
+      }).then(function(res) {
+        if (!res.ok) {
+          var err = new Error('Submission failed: HTTP ' + res.status);
+          err.status = res.status;
+          throw err;
+        }
+        return res.json();
+      });
+    }
+
+    function submitErrorText(err) {
+      if (err && err.status === 429) return 'Too many requests. Please wait a minute and try again.';
+      if (err && err.status === 422) return 'Please check your details (especially the email address) and try again.';
+      return 'Something went wrong sending your request. Please try again in a moment.';
+    }
+
+    function showFormError(el, message) {
+      if (!el) return;
+      el.textContent = message || '';
+      el.hidden = !message;
+    }
+
     function tryInit() {
       var el = document.getElementById('hero-glyph-trail');
       if (el && window.GlyphTrail && window.GlyphTrail.initGlyphTrail && !el._glyphTrailInstance) {
@@ -1954,31 +2027,38 @@ class Component extends DCLogic {
       var form = document.getElementById('cal-form');
       var successBox = document.getElementById('cal-success');
       var submitBtn = document.getElementById('cal-submit-btn');
+      var errorBox = document.getElementById('cal-form-error');
       var submitHtml = submitBtn ? submitBtn.innerHTML : '';
       var lastFocus = null;
-      var successText = '';
+      var current = null;
 
       var CALENDAR = {
+        formType: 'calendar_request',
         title: 'Get the 2027 CISO Roundtable Calendar',
         submit: 'Get the Calendar',
         success: 'The 2027 CISO Roundtable Calendar is on its way to '
       };
 
+      function resetSubmitBtn() {
+        if (!submitBtn) return;
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.innerHTML = submitHtml;
+        var label = submitBtn.querySelector('#cal-submit-label');
+        if (label) label.textContent = current.submit;
+      }
+
       function openModal(config) {
         lastFocus = document.activeElement;
+        current = config;
         document.getElementById('cal-modal-title').textContent = config.title;
-        successText = config.success;
         if (form) {
           form.reset();
           form.style.display = 'flex';
         }
         if (successBox) successBox.style.display = 'none';
-        if (submitBtn) {
-          submitBtn.disabled = false;
-          submitBtn.style.opacity = '1';
-          submitBtn.innerHTML = submitHtml;
-          document.getElementById('cal-submit-label').textContent = config.submit;
-        }
+        showFormError(errorBox, '');
+        resetSubmitBtn();
         modal.classList.add('is-open');
         modal.setAttribute('aria-hidden', 'false');
         document.documentElement.style.overflow = 'hidden';
@@ -2004,8 +2084,11 @@ class Component extends DCLogic {
           e.preventDefault();
           var card = caseStudy.closest('.result-card');
           var cardTitle = card && card.querySelector('.result-card-title');
+          var caseTitle = cardTitle ? cardTitle.textContent.trim() : 'Read the Full Case Study';
           openModal({
-            title: cardTitle ? cardTitle.textContent.trim() : 'Read the Full Case Study',
+            formType: 'case_study_request',
+            meta: { case_study_title: caseTitle },
+            title: caseTitle,
             submit: 'Read the Case Study',
             success: 'The full case study is on its way to '
           });
@@ -2034,17 +2117,21 @@ class Component extends DCLogic {
             submitBtn.style.opacity = '0.7';
             submitBtn.innerHTML = '<span>Submitting...</span>';
           }
+          showFormError(errorBox, '');
 
-          setTimeout(function() {
+          submitForm(current.formType, form, current.meta).then(function() {
             form.style.display = 'none';
             if (successBox) {
               var msgEl = document.getElementById('cal-success-msg');
               if (msgEl) {
-                msgEl.textContent = 'Thank you, ' + nameVal + '! ' + successText + emailVal + '.';
+                msgEl.textContent = 'Thank you, ' + nameVal + '! ' + current.success + emailVal + '.';
               }
               successBox.style.display = 'block';
             }
-          }, 600);
+          }).catch(function(err) {
+            resetSubmitBtn();
+            showFormError(errorBox, submitErrorText(err));
+          });
         });
       }
     }
@@ -2246,6 +2333,15 @@ class Component extends DCLogic {
       var successBox = document.getElementById('expert-form-success');
       var submitBtn = document.getElementById('expert-submit-btn');
       var resetBtn = document.getElementById('expert-reset-btn');
+      var errorBox = document.getElementById('expert-form-error');
+      var submitHtml = submitBtn ? submitBtn.innerHTML : '';
+
+      function resetSubmitBtn() {
+        if (!submitBtn) return;
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.innerHTML = submitHtml;
+      }
 
       if (form) {
         form.addEventListener('submit', function(e) {
@@ -2265,8 +2361,9 @@ class Component extends DCLogic {
             submitBtn.style.opacity = '0.7';
             submitBtn.innerHTML = '<span>Submitting Request...</span>';
           }
+          showFormError(errorBox, '');
 
-          setTimeout(function() {
+          submitForm('expert_consultation', form).then(function() {
             form.style.display = 'none';
             if (successBox) {
               var msgEl = document.getElementById('expert-success-msg');
@@ -2275,7 +2372,10 @@ class Component extends DCLogic {
               }
               successBox.style.display = 'block';
             }
-          }, 600);
+          }).catch(function(err) {
+            resetSubmitBtn();
+            showFormError(errorBox, submitErrorText(err));
+          });
         });
       }
 
@@ -2289,11 +2389,8 @@ class Component extends DCLogic {
           if (successBox) {
             successBox.style.display = 'none';
           }
-          if (submitBtn) {
-            submitBtn.disabled = false;
-            submitBtn.style.opacity = '1';
-            submitBtn.innerHTML = '<span>Schedule Expert Consultation</span><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="#09090B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>';
-          }
+          showFormError(errorBox, '');
+          resetSubmitBtn();
         });
       }
     }

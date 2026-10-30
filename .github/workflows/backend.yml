@@ -1,0 +1,49 @@
+name: backend
+
+on:
+  push:
+    branches: [main]
+    paths: ["backend/**", "docker-compose*.yml", ".github/workflows/backend.yml"]
+  pull_request:
+    paths: ["backend/**", "docker-compose*.yml", ".github/workflows/backend.yml"]
+
+defaults:
+  run:
+    working-directory: backend
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: evntiqa_test
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 3s --health-retries 10
+    env:
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/evntiqa_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+      - run: uv sync --locked
+      - run: uv run ruff check .
+      - run: uv run ruff format --check .
+      - run: uv run mypy app
+        env:
+          ADMIN_API_KEY: ci-only-key-0123456789abcdef0123456789
+          IP_HASH_SALT: ci-only-salt-0123
+      - run: uv run pytest -q
+
+  docker:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t evntiqa-api:ci .
