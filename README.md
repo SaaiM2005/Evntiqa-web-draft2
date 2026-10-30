@@ -69,9 +69,9 @@ uv run uvicorn app.main:app --reload
 ```
 
 ```bash
-# Terminal 2: website on http://localhost:8080
+# Terminal 2: website on http://127.0.0.1:8080
 cd frontend
-python3 -m http.server 8080
+python3 -m http.server 8080 --bind 127.0.0.1
 ```
 
 ### 3. Try it
@@ -105,7 +105,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm api \
   python -m app.cli create-admin you@evntiqa.com
 ```
 
-Then serve the website with `cd frontend && python3 -m http.server 8080` and follow **Try it** above.
+Then serve the website with `cd frontend && python3 -m http.server 8080 --bind 127.0.0.1` and follow **Try it** above.
 
 ---
 

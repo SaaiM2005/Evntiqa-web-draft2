@@ -11,7 +11,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
 API: http://localhost:8000 · docs: http://localhost:8000/docs · site: serve `frontend/` on
-`http://localhost:8080` (e.g. `cd frontend && python3 -m http.server 8080`) — the forms post to `localhost:8000`
+`http://localhost:8080` (e.g. `cd frontend && python3 -m http.server 8080 --bind 127.0.0.1`) — the forms post to `localhost:8000`
 automatically when the page is opened from localhost.
 
 ## Deploy (single VPS)
