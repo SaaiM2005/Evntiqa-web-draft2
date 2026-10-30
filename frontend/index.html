@@ -7,7 +7,8 @@
 <meta name="description" content="Turn priority target accounts into active pipeline through closed-door, virtual benchmarking roundtables with 10–12 verified security leaders.">
 <script src="./support.js"></script>
 <script src="./glyph-trail.js"></script>
-<script src="./scroll-mask-reveal.js?v=full-bleed-v5"></script>
+<script src="./process-timeline.js"></script>
+<script src="./stars-galaxy.js"></script>
 <script src="./aurora-flow.js"></script>
 <script src="./dot-grid-bg.js"></script>
 </head>
@@ -267,7 +268,7 @@ a:hover{color:#d8ff8a}
 }
 
 /* Section 4 Process Timeline */
-/* Vars set by scroll-mask-reveal.js:
+/* Vars set by process-timeline.js:
    --t    (timeline) intro progress of rail + nodes, 0→1
    --rail (rail)     how far the rail has filled, 0→1
    --p    (each step) reveal progress of that step, 0→1 */
@@ -477,7 +478,7 @@ a:hover{color:#d8ff8a}
 /* Phone: vertical timeline, rail on the left */
 @media (max-width: 680px) {
   /* Inline desktop gap would push the header under the fixed nav */
-  #process [data-smr-header] { margin-bottom: clamp(16px, 2.8vh, 28px) !important; }
+  #process [data-process-header] { margin-bottom: clamp(16px, 2.8vh, 28px) !important; }
   .steps-timeline {
     --num: 22px;
     --num-w: 28px;
@@ -1341,31 +1342,24 @@ a:hover{color:#d8ff8a}
 </section>
 
 <!-- ═══════════════════════════════════════════ -->
-<!-- SECTION 4 — PROCESS (Fitted Inside Video Frame) -->
+<!-- SECTION 4 — PROCESS (Account Map background) -->
 <!-- ═══════════════════════════════════════════ -->
-<section id="process" style="position:relative;width:100%;height:320vh;background:#09090B">
+<section id="process" style="position:relative;width:100%;height:260vh;background:#09090B">
   
-  <!-- Sticky Video Viewport (100vh / 100dvh) -->
-  <div data-smr-viewport style="position:sticky;top:0;width:100%;height:100vh;height:100dvh;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#09090B">
+  <!-- Sticky Viewport (100vh / 100dvh) -->
+  <div style="position:sticky;top:0;width:100%;height:100vh;height:100dvh;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#09090B">
     
-    <!-- Masked Video Layer (Expands on Scroll) -->
-    <div data-smr-masked style="position:absolute;inset:0;width:100%;height:100%;will-change:mask-size,-webkit-mask-size;transform:translateZ(0);backface-visibility:hidden;contain:paint;pointer-events:none">
-      <video src="./uploads/process-bg.mp4" poster="./uploads/process-video-poster.jpg" muted playsinline webkit-playsinline loop autoplay preload="auto" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;transform:translateZ(0)"></video>
-      <!-- Navy scrim keeps timeline copy legible over bright footage -->
-      <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(7,14,30,0.35) 0%,rgba(7,14,30,0.55) 45%,rgba(7,14,30,0.7) 100%)"></div>
+    <!-- Background Layer -->
+    <div style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none">
+      <!-- Stars Galaxy Canvas Background -->
+      <div id="process-stars" style="position:absolute;inset:0;width:100%;height:100%;overflow:hidden"></div>
     </div>
 
-    <!-- Monogram aperture border & label container (border removed) -->
-    <div data-smr-border style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);border-radius:50%;border:none;box-shadow:none;pointer-events:none;z-index:2;transition:opacity 0.2s ease-out">
-      <!-- Monogram Brand Label below "e" -->
-      <div data-smr-label style="position:absolute;top:calc(100% + 24px);left:50%;transform:translateX(-50%);margin-right:-0.22em;font-family:'Space Grotesk',sans-serif;font-size:clamp(16px,1.5vw,22px);font-weight:600;letter-spacing:0.22em;text-transform:lowercase;color:rgba(255,255,255,0.9);white-space:nowrap;pointer-events:none;text-shadow:0 2px 14px rgba(0,0,0,0.85),0 0 24px rgba(200,244,92,0.25)">evntiqa</div>
-    </div>
-
-    <!-- Content Layer: Directly Inside Video Viewport -->
+    <!-- Content Layer -->
     <div style="position:relative;z-index:5;width:100%;max-width:1480px;box-sizing:border-box;padding:clamp(20px,3.5vh,40px) clamp(20px,3vw,48px);display:flex;flex-direction:column;align-items:center">
       
       <!-- Section Header -->
-      <div data-smr-header style="text-align:center;margin-bottom:clamp(28px,7vh,72px);transition:opacity 0.6s cubic-bezier(0.16,1,0.3,1), transform 0.6s cubic-bezier(0.16,1,0.3,1)">
+      <div data-process-header style="text-align:center;margin-bottom:clamp(28px,7vh,72px)">
         <h2 style="font-family:'Space Grotesk';font-size:clamp(26px,3vw,44px);font-weight:700;letter-spacing:-1.8px;line-height:1.05;color:#fff;margin:0 0 8px;text-shadow:0 8px 30px rgba(0,0,0,0.85)">Six Steps to CISO Engagement.</h2>
         <p style="font-size:clamp(13px,1vw,15px);line-height:1.5;color:rgba(255,255,255,0.7);max-width:500px;margin:0 auto;text-shadow:0 3px 12px rgba(0,0,0,0.9)">A zero-lift execution process from target mapping to handoff.</p>
       </div>
@@ -1748,12 +1742,14 @@ class Component extends DCLogic {
       });
     }
 
-    // Initialize Scroll Mask Reveal on Process section
-    if (window.ScrollMaskReveal && window.ScrollMaskReveal.init) {
-      window.ScrollMaskReveal.init('#process', {
-        startSize: 28,
-        endSize: 520
-      });
+    // Initialize Stars Galaxy Background on Process section
+    if (window.StarsGalaxy && window.StarsGalaxy.init) {
+      window.StarsGalaxy.init('#process-stars', { background: '#09090B' });
+    }
+
+    // Initialize Process Timeline on Process section
+    if (window.ProcessTimeline && window.ProcessTimeline.init) {
+      window.ProcessTimeline.init('#process');
     }
 
     // Initialize Dot Grid Background on FAQ section
@@ -1794,14 +1790,14 @@ class Component extends DCLogic {
       }, 2500);
     }, 80);
 
-    // Timeline step cards are animated smoothly in sync with mask expansion by ScrollMaskReveal
-    // Fallback only if ScrollMaskReveal is not initialized
+    // Timeline step cards are revealed on scroll by ProcessTimeline
+    // Fallback only if ProcessTimeline is not initialized
     const timelineSection = document.getElementById('process-timeline');
     if (timelineSection) {
       const stepCards = timelineSection.querySelectorAll('[data-step-card]');
       setTimeout(() => {
         const processEl = document.getElementById('process');
-        if (!processEl || !processEl._smrInstance) {
+        if (!processEl || !processEl._timelineInstance) {
           timelineSection.style.setProperty('--t', '1');
           timelineSection.style.setProperty('--rail', '1');
           stepCards.forEach(card => {
@@ -1993,12 +1989,14 @@ class Component extends DCLogic {
         });
       }
 
-      var smrEl = document.getElementById('process');
-      if (smrEl && window.ScrollMaskReveal && window.ScrollMaskReveal.init && !smrEl._smrInstance) {
-        smrEl._smrInstance = window.ScrollMaskReveal.init(smrEl, {
-          startSize: 28,
-          endSize: 520
-        });
+      var processStarsEl = document.getElementById('process-stars');
+      if (processStarsEl && window.StarsGalaxy && window.StarsGalaxy.init) {
+        window.StarsGalaxy.init(processStarsEl, { background: '#09090B' });
+      }
+
+      var processEl = document.getElementById('process');
+      if (processEl && window.ProcessTimeline && window.ProcessTimeline.init) {
+        window.ProcessTimeline.init(processEl);
       }
 
       var faqDotEl = document.getElementById('faq-dot-grid');
