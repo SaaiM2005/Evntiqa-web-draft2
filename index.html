@@ -43,6 +43,9 @@ a:hover{color:#d8ff8a}
   align-items: center;
   gap: 24px;
 }
+.nav-desktop-links a:hover {
+  color: #fff !important;
+}
 .nav-desktop-cta {
   display: inline-flex;
   align-items: center;
@@ -51,10 +54,20 @@ a:hover{color:#d8ff8a}
   border-radius: 100px;
   font-size: 13px;
   font-weight: 600;
-  color: #09090B;
+  color: #09090B !important;
   text-decoration: none;
-  transition: all 0.25s;
+  transition: all 0.25s ease;
   white-space: nowrap;
+}
+.nav-desktop-cta:hover,
+.nav-desktop-cta:focus-visible {
+  background: #d8ff8a;
+  color: #09090B !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(200, 244, 92, 0.25);
+}
+.nav-desktop-cta:active {
+  transform: translateY(0);
 }
 .nav-mobile-toggle {
   display: none;
@@ -123,10 +136,21 @@ a:hover{color:#d8ff8a}
   font-family: 'Space Grotesk', sans-serif;
   font-size: 15px;
   font-weight: 600;
-  color: #09090B;
+  color: #09090B !important;
   text-align: center;
   text-decoration: none;
   box-shadow: 0 8px 24px rgba(200, 244, 92, 0.2);
+  transition: all 0.25s ease;
+}
+.nav-mobile-cta:hover,
+.nav-mobile-cta:focus-visible {
+  background: #d8ff8a;
+  color: #09090B !important;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 28px rgba(200, 244, 92, 0.3);
+}
+.nav-mobile-cta:active {
+  transform: translateY(0);
 }
 @media (max-width: 960px) {
   .nav-desktop-links {
@@ -639,7 +663,7 @@ a:hover{color:#d8ff8a}
       <span style="font-family:'Space Grotesk';font-weight:700;font-size:18px;color:#fff;letter-spacing:-0.5px">EVNTIQA</span>
     </a>
     <div class="nav-desktop-links">
-      <a href="#hero" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Roundtables</a>
+      <a href="#hero" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">CISO Roundtables</a>
       <a href="#accounts" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Accounts</a>
       <a href="#formats" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Solutions</a>
       <a href="#results" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">Case Studies</a>
@@ -647,7 +671,7 @@ a:hover{color:#d8ff8a}
       <a href="#" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">TheCISOnews</a>
       <a href="#" style="font-size:13px;font-weight:500;color:rgba(255,255,255,0.5);text-decoration:none;transition:color 0.2s" style-hover="color:#fff">About Evntiqa</a>
     </div>
-    <a href="#expert-form-section" data-expert-trigger="true" class="nav-desktop-cta" style-hover="background:#d8ff8a;transform:translateY(-1px);box-shadow:0 8px 24px rgba(200,244,92,0.2)">Talk to an ABM Expert</a>
+    <a href="#expert-form-section" data-expert-trigger="true" class="nav-desktop-cta">Talk to an ABM Expert</a>
     
     <!-- Mobile Hamburger Toggle Button -->
     <button id="nav-toggle-btn" class="nav-mobile-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
@@ -665,7 +689,7 @@ a:hover{color:#d8ff8a}
   
   <!-- Mobile Navigation Drawer -->
   <div id="nav-mobile-drawer" class="nav-mobile-drawer">
-    <a href="#hero" class="nav-mobile-link">Roundtables</a>
+    <a href="#hero" class="nav-mobile-link">CISO Roundtables</a>
     <a href="#accounts" class="nav-mobile-link">Accounts</a>
     <a href="#formats" class="nav-mobile-link">Solutions</a>
     <a href="#results" class="nav-mobile-link">Case Studies</a>
