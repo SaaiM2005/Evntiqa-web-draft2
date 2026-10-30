@@ -596,8 +596,6 @@ img { display: block; }
 
 /* ═══════════ APPROACH (stacking cards) ═══════════ */
 .approach-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; flex-wrap: wrap; margin-bottom: clamp(40px, 5vw, 72px); }
-.approach-count { font-family: 'Space Grotesk'; font-size: 14px; color: var(--text-3); letter-spacing: 1px; }
-.approach-count b { color: var(--lime); font-weight: 600; }
 .stack { display: flex; flex-direction: column; gap: 24px; padding-bottom: 8vh; }
 .stack-card {
   position: sticky;
@@ -673,7 +671,26 @@ img { display: block; }
 }
 .mission-ring svg { width: 100%; height: 100%; }
 .mission .wrap { z-index: 2; text-align: center; }
+.mission-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: clamp(15px, 1.2vw, 18px);
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin: 0 0 clamp(28px, 3vw, 44px);
+}
+.mission-title::before, .mission-title::after {
+  content: '';
+  width: clamp(28px, 4vw, 56px);
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--lime));
+}
+.mission-title::after { transform: scaleX(-1); }
 .mission-text {
+  font-family: 'Space Grotesk', sans-serif;
   font-size: clamp(30px, 4.4vw, 68px);
   font-weight: 600;
   line-height: 1.1;
@@ -1031,7 +1048,6 @@ img { display: block; }
       <div>
         <h2 class="h2" data-split>Four Principles Behind<br>Every Program.</h2>
       </div>
-      <p class="approach-count" aria-hidden="true"><b data-approach-current>01</b> / 04</p>
     </div>
 
     <div class="stack">
@@ -1138,7 +1154,8 @@ img { display: block; }
     </svg>
   </div>
   <div class="wrap">
-    <h2 class="mission-text" data-split>To help cybersecurity companies build <span class="accent">meaningful relationships</span> with security leaders, activate priority accounts, and <span class="accent">accelerate enterprise pipeline</span> through targeted executive engagement programs.</h2>
+    <h2 class="mission-title" data-reveal>Our Mission</h2>
+    <p class="mission-text" data-split>To help cybersecurity companies build <span class="accent">meaningful relationships</span> with security leaders, activate priority accounts, and <span class="accent">accelerate enterprise pipeline</span> through targeted executive engagement programs.</p>
   </div>
 </section>
 
@@ -1339,7 +1356,6 @@ img { display: block; }
   var whyStatus = document.querySelector('[data-why-status]');
   var chapters = why ? why.querySelectorAll('[data-chapter]') : [];
   var stackCards = document.querySelectorAll('.stack-card');
-  var approachCurrent = document.querySelector('[data-approach-current]');
   var parallaxEls = [];
   var vh = window.innerHeight;
   var ticking = false;
@@ -1403,18 +1419,13 @@ img { display: block; }
     }
 
     // Approach: each card shrinks/dims as the next one slides over it
-    if (stackCards.length) {
-      var current = 0;
-      for (var k = 0; k < stackCards.length; k++) {
-        var card = stackCards[k];
-        var rect = card.getBoundingClientRect();
-        if (rect.top < vh * 0.6) current = k;
-        if (reduceMotion || k === stackCards.length - 1) continue;
+    if (stackCards.length && !reduceMotion) {
+      for (var k = 0; k < stackCards.length - 1; k++) {
+        var rect = stackCards[k].getBoundingClientRect();
         var next = stackCards[k + 1].getBoundingClientRect();
         var cover = clamp((rect.bottom - next.top) / rect.height, 0, 1);
-        card.style.setProperty('--cover', cover.toFixed(3));
+        stackCards[k].style.setProperty('--cover', cover.toFixed(3));
       }
-      if (approachCurrent) approachCurrent.textContent = '0' + (current + 1);
     }
   }
 
