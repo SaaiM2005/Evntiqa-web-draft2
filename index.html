@@ -615,7 +615,8 @@ a:hover{color:#d8ff8a}
   color: #C8F45C;
   letter-spacing: -1.5px;
   line-height: 1;
-  transition: text-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  font-variant-numeric: tabular-nums;
+  transition: text-shadow 0.4s ease;
 }
 .cta-stat-label {
   font-size: 12px;
@@ -643,6 +644,29 @@ a:hover{color:#d8ff8a}
   transform: scaleX(1);
   transition-delay: calc(var(--stat-delay, 0s) + 0.25s);
 }
+/* Light pulse that travels along each accent line, in sync across cards */
+.cta-stats-grid.is-inview .cta-stat .cta-stat-pulse {
+  animation: ctaStatPulse 3.5s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+  animation-delay: 1.6s;
+}
+.cta-stat-pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 30%;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(200, 244, 92, 0), #eaffb0, rgba(200, 244, 92, 0));
+  box-shadow: 0 0 10px rgba(200, 244, 92, 0.6);
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+@keyframes ctaStatPulse {
+  0% { transform: translateX(-100%); opacity: 0; }
+  10% { opacity: 1; }
+  65% { transform: translateX(340%); opacity: 0; }
+  100% { transform: translateX(340%); opacity: 0; }
+}
 @media (hover: hover) {
   .cta-stat:hover::before {
     opacity: 1;
@@ -652,7 +676,6 @@ a:hover{color:#d8ff8a}
   }
   .cta-stat:hover .cta-stat-value {
     text-shadow: 0 0 24px rgba(200, 244, 92, 0.35);
-    transform: translateY(-2px);
   }
   .cta-stat:hover .cta-stat-label {
     color: rgba(255, 255, 255, 0.6);
@@ -668,8 +691,8 @@ a:hover{color:#d8ff8a}
     transform: scaleX(1);
     transition: none !important;
   }
-  .cta-stat-value {
-    transform: none !important;
+  .cta-stat-pulse {
+    display: none;
   }
 }
 
@@ -1339,6 +1362,7 @@ a:hover{color:#d8ff8a}
       <div id="cta-stats-grid" class="cta-stats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);border-radius:0px;overflow:hidden">
         <sc-for list="{{ stats }}" as="stat">
           <div class="cta-stat" data-cta-stat>
+            <span class="cta-stat-pulse" aria-hidden="true"></span>
             <span class="cta-stat-value" data-cta-stat-value>{{ stat.value }}</span>
             <span class="cta-stat-label">{{ stat.label }}</span>
           </div>
@@ -2035,8 +2059,9 @@ class Component extends DCLogic {
       // Numeric values ("100%", "10X", "10–12", "1:1") count up; words ("Zero") decode from glyphs
       function animateValue(el, delay) {
         var node = getTextNode(el);
-        if (!node) return;
-        var finalText = node.nodeValue;
+        if (!node || el._statAnimating) return;
+        el._statAnimating = true;
+        var finalText = el._statFinal || (el._statFinal = node.nodeValue);
         var parts = finalText.split(/(\d+)/);
         var hasNumber = parts.some(function(p) { return /^\d+$/.test(p); });
         var duration = hasNumber ? 1600 : 1100;
@@ -2071,6 +2096,7 @@ class Component extends DCLogic {
             lastScramble = now;
           }
           if (t < 1) requestAnimationFrame(frame);
+          else el._statAnimating = false;
         }
 
         setTimeout(function() { requestAnimationFrame(frame); }, delay);
@@ -2079,8 +2105,10 @@ class Component extends DCLogic {
       function bindSpotlight(card) {
         card.addEventListener('pointermove', function(e) {
           var rect = card.getBoundingClientRect();
-          card.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
-          card.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+          var x = e.clientX - rect.left;
+          var y = e.clientY - rect.top;
+          card.style.setProperty('--mx', x + 'px');
+          card.style.setProperty('--my', y + 'px');
         });
       }
 
