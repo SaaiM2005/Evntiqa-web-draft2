@@ -643,9 +643,78 @@ img { display: block; }
 .spin-slow { transform-box: fill-box; transform-origin: center; animation: spin 28s linear infinite; }
 .spin-rev { transform-box: fill-box; transform-origin: center; animation: spin 40s linear infinite reverse; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.art-pulse { animation: blink 2.2s ease-in-out infinite; animation-delay: var(--pd, 0s); }
-.art-flow { animation: flow 1.6s linear infinite; }
-@keyframes flow { to { stroke-dashoffset: -32; } }
+/* Approach illustrations: every loop pivots on the 200×200 viewBox, never the element's bbox */
+.stack-art svg * { transform-box: view-box; }
+.art-dim { stroke: rgba(255,255,255,0.14); }
+.art-dot { fill: rgba(255,255,255,0.28); }
+
+/* 01 Radar: sweep turns every 4s; each target flares as the leading edge crosses it */
+.radar-sweep { transform-origin: 100px 100px; animation: spin 4s linear infinite; }
+.radar-blip { fill: var(--lime); opacity: 0.25; transform-origin: var(--o); animation: blip 4s linear infinite; animation-delay: var(--d); }
+@keyframes blip {
+  0%   { opacity: 1; transform: scale(1.5); }
+  12%  { opacity: 1; transform: scale(1); }
+  70%, 100% { opacity: 0.3; transform: scale(1); }
+}
+.radar-ping { fill: none; stroke: var(--lime); opacity: 0; transform-origin: var(--o); animation: blipRing 4s ease-out infinite; animation-delay: var(--d); }
+@keyframes blipRing { 0% { opacity: 0.8; transform: scale(1); } 25%, 100% { opacity: 0; transform: scale(3); } }
+
+/* 02 Profile scan: highlight steps down four rows; rows 1 and 3 match */
+.scan-bar { animation: scan 6s cubic-bezier(0.65,0,0.35,1) infinite; }
+@keyframes scan {
+  0%, 15%  { transform: translateY(0); }
+  25%, 40% { transform: translateY(36px); }
+  50%, 65% { transform: translateY(72px); }
+  75%, 90% { transform: translateY(108px); }
+  100%     { transform: translateY(0); }
+}
+.match-row { stroke: rgba(255,255,255,0.14); animation: var(--a) 6s ease infinite; }
+.match-check { stroke-dasharray: 1; stroke-dashoffset: 1; animation: var(--c) 6s ease infinite; }
+.match-badge { fill: rgba(200,244,92,0); animation: var(--b) 6s ease infinite; }
+@keyframes rowA { 0%, 6% { stroke: rgba(255,255,255,0.14); } 10%, 92% { stroke: rgba(200,244,92,0.6); } 100% { stroke: rgba(255,255,255,0.14); } }
+@keyframes rowC { 0%, 56% { stroke: rgba(255,255,255,0.14); } 60%, 92% { stroke: rgba(200,244,92,0.6); } 100% { stroke: rgba(255,255,255,0.14); } }
+@keyframes checkA { 0%, 6% { stroke-dashoffset: 1; } 14%, 92% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
+@keyframes checkC { 0%, 56% { stroke-dashoffset: 1; } 64%, 92% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: 1; } }
+@keyframes badgeA { 0%, 6% { fill: rgba(200,244,92,0); } 10%, 92% { fill: rgba(200,244,92,0.15); } 100% { fill: rgba(200,244,92,0); } }
+@keyframes badgeC { 0%, 56% { fill: rgba(200,244,92,0); } 60%, 92% { fill: rgba(200,244,92,0.15); } 100% { fill: rgba(200,244,92,0); } }
+
+/* 03 Roundtable: each seat speaks for 1s of a 6s cycle and its line reaches a peer */
+.seat { fill: #121214; stroke: rgba(255,255,255,0.45); animation: speak 6s ease infinite; animation-delay: var(--d); }
+@keyframes speak {
+  0%, 18%, 100% { fill: #121214; stroke: rgba(255,255,255,0.45); }
+  3%, 14% { fill: var(--lime); stroke: var(--lime); }
+}
+.seat-ring { fill: none; stroke: var(--lime); opacity: 0; transform-origin: var(--o); animation: speakRing 6s ease-out infinite; animation-delay: var(--d); }
+@keyframes speakRing { 0% { opacity: 0.7; transform: scale(1); } 16%, 100% { opacity: 0; transform: scale(2.4); } }
+.talk { stroke: var(--lime); stroke-dasharray: 1; stroke-dashoffset: 1; opacity: 0; animation: talk 6s ease infinite; animation-delay: var(--d); }
+@keyframes talk {
+  0% { stroke-dashoffset: 1; opacity: 0.9; }
+  10% { stroke-dashoffset: 0; opacity: 0.9; }
+  20%, 100% { stroke-dashoffset: 0; opacity: 0; }
+}
+
+/* 04 Pipeline: token travels 0→75%, holds for the handoff, then resets */
+.flow-fill { transform-origin: 28px 100px; animation: flowFill 5s cubic-bezier(0.45,0,0.2,1) infinite; }
+@keyframes flowFill { 0% { transform: scaleX(0); opacity: 1; } 75% { transform: scaleX(1); opacity: 1; } 92% { opacity: 1; } 100% { transform: scaleX(1); opacity: 0; } }
+.flow-token { animation: flowToken 5s cubic-bezier(0.45,0,0.2,1) infinite; }
+@keyframes flowToken { 0% { transform: translateX(0); opacity: 0; } 4% { opacity: 1; } 75% { transform: translateX(144px); opacity: 1; } 80%, 100% { transform: translateX(144px); opacity: 0; } }
+.station { fill: #121214; stroke: rgba(255,255,255,0.4); animation: var(--a) 5s ease infinite; }
+@keyframes st0 { 0%, 96% { fill: var(--lime); stroke: var(--lime); } 100% { fill: #121214; stroke: rgba(255,255,255,0.4); } }
+@keyframes st1 { 0%, 24% { fill: #121214; stroke: rgba(255,255,255,0.4); } 27%, 96% { fill: var(--lime); stroke: var(--lime); } 100% { fill: #121214; stroke: rgba(255,255,255,0.4); } }
+@keyframes st2 { 0%, 49% { fill: #121214; stroke: rgba(255,255,255,0.4); } 52%, 96% { fill: var(--lime); stroke: var(--lime); } 100% { fill: #121214; stroke: rgba(255,255,255,0.4); } }
+@keyframes st3 { 0%, 74% { fill: #121214; stroke: rgba(255,255,255,0.4); } 77%, 96% { fill: var(--lime); stroke: var(--lime); } 100% { fill: #121214; stroke: rgba(255,255,255,0.4); } }
+.handoff { fill: none; stroke: var(--lime); opacity: 0; transform-origin: 172px 100px; animation: handoff 5s ease-out infinite; }
+@keyframes handoff { 0%, 75% { opacity: 0; transform: scale(1); } 77% { opacity: 0.8; } 100% { opacity: 0; transform: scale(2.6); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .radar-blip { opacity: 1; }
+  .match-row { stroke: rgba(200,244,92,0.6); }
+  .match-check { stroke-dashoffset: 0; }
+  .match-badge { fill: rgba(200,244,92,0.15); }
+  .flow-fill { transform: none; }
+  .flow-token { transform: translateX(144px); }
+  .station { fill: var(--lime); stroke: var(--lime); }
+}
 @media (max-width: 900px) {
   .stack-inner { grid-template-columns: 1fr; gap: 20px; align-content: start; }
   .stack-art { position: absolute; right: -40px; top: -30px; max-width: 200px; opacity: 0.35; }
@@ -1059,13 +1128,29 @@ img { display: block; }
             <p>We start with your ICP, target account list, and campaign objectives to identify the right security leaders.</p>
           </div>
           <div class="stack-art" aria-hidden="true">
-            <svg viewBox="0 0 200 200" fill="none" stroke="currentColor">
-              <circle cx="100" cy="100" r="92" stroke-opacity="0.15"/>
-              <circle class="spin-slow" cx="100" cy="100" r="68" stroke-opacity="0.4" stroke-dasharray="2 8"/>
-              <circle cx="100" cy="100" r="44" stroke-opacity="0.25"/>
-              <circle cx="100" cy="100" r="20" stroke-opacity="0.6"/>
-              <circle class="art-pulse" cx="100" cy="100" r="5" fill="currentColor" stroke="none"/>
-              <path d="M100 0v40M100 160v40M0 100h40M160 100h40" stroke-opacity="0.35"/>
+            <!-- Radar sweep: only the three target accounts light up -->
+            <svg viewBox="0 0 200 200" fill="none">
+              <circle class="art-dim" cx="100" cy="100" r="80"/>
+              <circle class="art-dim" cx="100" cy="100" r="56"/>
+              <circle class="art-dim" cx="100" cy="100" r="32"/>
+              <path class="art-dim" d="M100 12V188M12 100H188"/>
+              <g class="radar-sweep">
+                <path d="M100 100L100 20A80 80 0 0 1 151.42 38.72Z" fill="rgba(200,244,92,0.07)"/>
+                <path d="M100 100L127.36 24.82A80 80 0 0 1 151.42 38.72Z" fill="rgba(200,244,92,0.12)"/>
+                <path d="M100 100L151.42 38.72" stroke="#C8F45C" stroke-width="1.5" stroke-linecap="round"/>
+              </g>
+              <circle class="art-dot" cx="128" cy="128" r="2.5"/>
+              <circle class="art-dot" cx="62" cy="124" r="2.5"/>
+              <circle class="art-dot" cx="118" cy="46" r="2.5"/>
+              <circle class="art-dot" cx="160" cy="112" r="2.5"/>
+              <circle class="art-dot" cx="72" cy="56" r="2.5"/>
+              <circle class="radar-ping" cx="147.63" cy="72.5" r="4" style="--o:147.63px 72.5px;--d:0.22s"/>
+              <circle class="radar-blip" cx="147.63" cy="72.5" r="4" style="--o:147.63px 72.5px;--d:0.22s"/>
+              <circle class="radar-ping" cx="84.61" cy="142.29" r="4" style="--o:84.61px 142.29px;--d:1.78s"/>
+              <circle class="radar-blip" cx="84.61" cy="142.29" r="4" style="--o:84.61px 142.29px;--d:1.78s"/>
+              <circle class="radar-ping" cx="39.86" cy="78.11" r="4" style="--o:39.86px 78.11px;--d:2.78s"/>
+              <circle class="radar-blip" cx="39.86" cy="78.11" r="4" style="--o:39.86px 78.11px;--d:2.78s"/>
+              <circle cx="100" cy="100" r="3" fill="#C8F45C"/>
             </svg>
           </div>
         </div>
@@ -1078,18 +1163,29 @@ img { display: block; }
             <p>We identify and recruit CISOs and security decision-makers aligned with your priority accounts.</p>
           </div>
           <div class="stack-art" aria-hidden="true">
-            <svg viewBox="0 0 200 200" fill="none" stroke="currentColor">
-              <g class="spin-rev">
-                <circle cx="100" cy="100" r="86" stroke-opacity="0.15"/>
-                <circle cx="100" cy="14" r="4" fill="currentColor" stroke="none" fill-opacity="0.5"/>
-                <circle cx="186" cy="100" r="4" fill="currentColor" stroke="none" fill-opacity="0.5"/>
-                <circle cx="14" cy="100" r="4" fill="currentColor" stroke="none" fill-opacity="0.5"/>
-                <circle cx="100" cy="186" r="4" fill="currentColor" stroke="none" fill-opacity="0.5"/>
-              </g>
-              <path d="M70 128V88a30 30 0 0 1 60 0v40" stroke-opacity="0.5"/>
-              <rect x="58" y="104" width="84" height="60" rx="6" stroke-opacity="0.7"/>
-              <circle class="art-pulse" cx="100" cy="130" r="7" fill="currentColor" stroke="none"/>
-              <path d="M100 137v12" stroke-width="3" stroke-linecap="round"/>
+            <!-- Profile scan: the highlight checks each executive; aligned ones get a check -->
+            <svg viewBox="0 0 200 200" fill="none" stroke-linecap="round" stroke-linejoin="round">
+              <rect class="match-row" x="28" y="34" width="144" height="28" rx="4" style="--a:rowA"/>
+              <circle class="art-dim" cx="44" cy="48" r="7"/>
+              <path class="art-dim" d="M58 44H118M58 53H100"/>
+              <circle class="match-badge" cx="154" cy="48" r="7" stroke="rgba(200,244,92,0.5)" style="--b:badgeA"/>
+              <path class="match-check" d="M150.5 48l2.5 2.5l4.5-5" pathLength="1" stroke="#C8F45C" stroke-width="1.6" style="--c:checkA"/>
+
+              <rect class="art-dim" x="28" y="70" width="144" height="28" rx="4"/>
+              <circle class="art-dim" cx="44" cy="84" r="7"/>
+              <path class="art-dim" d="M58 80H110M58 89H92"/>
+
+              <rect class="match-row" x="28" y="106" width="144" height="28" rx="4" style="--a:rowC"/>
+              <circle class="art-dim" cx="44" cy="120" r="7"/>
+              <path class="art-dim" d="M58 116H122M58 125H96"/>
+              <circle class="match-badge" cx="154" cy="120" r="7" stroke="rgba(200,244,92,0.5)" style="--b:badgeC"/>
+              <path class="match-check" d="M150.5 120l2.5 2.5l4.5-5" pathLength="1" stroke="#C8F45C" stroke-width="1.6" style="--c:checkC"/>
+
+              <rect class="art-dim" x="28" y="142" width="144" height="28" rx="4"/>
+              <circle class="art-dim" cx="44" cy="156" r="7"/>
+              <path class="art-dim" d="M58 152H106M58 161H88"/>
+
+              <rect class="scan-bar" x="22" y="30" width="156" height="36" rx="6" stroke="#C8F45C" stroke-opacity="0.85" fill="rgba(200,244,92,0.05)"/>
             </svg>
           </div>
         </div>
@@ -1102,16 +1198,28 @@ img { display: block; }
             <p>We create focused environments where security leaders can exchange perspectives, share experiences, and benchmark challenges.</p>
           </div>
           <div class="stack-art" aria-hidden="true">
-            <svg viewBox="0 0 200 200" fill="none" stroke="currentColor">
-              <g stroke-opacity="0.3">
-                <path d="M100 26L170 76L144 160H56L30 76Z"/>
-                <path d="M100 26L144 160M100 26L56 160M30 76H170M30 76L144 160M170 76L56 160"/>
-              </g>
-              <circle class="art-pulse" cx="100" cy="26" r="9" fill="currentColor" stroke="none" style="--pd:0s"/>
-              <circle class="art-pulse" cx="170" cy="76" r="9" fill="currentColor" stroke="none" style="--pd:0.4s"/>
-              <circle class="art-pulse" cx="144" cy="160" r="9" fill="currentColor" stroke="none" style="--pd:0.8s"/>
-              <circle class="art-pulse" cx="56" cy="160" r="9" fill="currentColor" stroke="none" style="--pd:1.2s"/>
-              <circle class="art-pulse" cx="30" cy="76" r="9" fill="currentColor" stroke="none" style="--pd:1.6s"/>
+            <!-- Roundtable: each leader speaks in turn and the exchange reaches a peer -->
+            <svg viewBox="0 0 200 200" fill="none" stroke-linecap="round">
+              <circle class="art-dim" cx="100" cy="100" r="36"/>
+              <circle class="art-dim" cx="100" cy="100" r="26" stroke-dasharray="2 5"/>
+              <path class="talk" d="M100 36Q100 100 155.43 132" pathLength="1" style="--d:0s"/>
+              <path class="talk" d="M155.43 68Q100 100 100 164" pathLength="1" style="--d:1s"/>
+              <path class="talk" d="M155.43 132Q100 100 44.57 132" pathLength="1" style="--d:2s"/>
+              <path class="talk" d="M100 164Q100 100 44.57 68" pathLength="1" style="--d:3s"/>
+              <path class="talk" d="M44.57 132Q100 100 100 36" pathLength="1" style="--d:4s"/>
+              <path class="talk" d="M44.57 68Q100 100 155.43 68" pathLength="1" style="--d:5s"/>
+              <circle class="seat-ring" cx="100" cy="36" r="8" style="--o:100px 36px;--d:0s"/>
+              <circle class="seat-ring" cx="155.43" cy="68" r="8" style="--o:155.43px 68px;--d:1s"/>
+              <circle class="seat-ring" cx="155.43" cy="132" r="8" style="--o:155.43px 132px;--d:2s"/>
+              <circle class="seat-ring" cx="100" cy="164" r="8" style="--o:100px 164px;--d:3s"/>
+              <circle class="seat-ring" cx="44.57" cy="132" r="8" style="--o:44.57px 132px;--d:4s"/>
+              <circle class="seat-ring" cx="44.57" cy="68" r="8" style="--o:44.57px 68px;--d:5s"/>
+              <circle class="seat" cx="100" cy="36" r="8" style="--d:0s"/>
+              <circle class="seat" cx="155.43" cy="68" r="8" style="--d:1s"/>
+              <circle class="seat" cx="155.43" cy="132" r="8" style="--d:2s"/>
+              <circle class="seat" cx="100" cy="164" r="8" style="--d:3s"/>
+              <circle class="seat" cx="44.57" cy="132" r="8" style="--d:4s"/>
+              <circle class="seat" cx="44.57" cy="68" r="8" style="--d:5s"/>
             </svg>
           </div>
         </div>
@@ -1124,15 +1232,22 @@ img { display: block; }
             <p>We manage recruitment, coordination, engagement delivery, and post-event handoff so your team can focus on account progression.</p>
           </div>
           <div class="stack-art" aria-hidden="true">
-            <svg viewBox="0 0 200 200" fill="none" stroke="currentColor">
-              <path d="M20 100H180" stroke-opacity="0.25"/>
-              <path d="M20 100H180" stroke-dasharray="6 10" class="art-flow"/>
-              <circle cx="20" cy="100" r="8" fill="currentColor" stroke="none"/>
-              <circle cx="73" cy="100" r="8" stroke-opacity="0.7"/>
-              <circle cx="127" cy="100" r="8" stroke-opacity="0.7"/>
-              <circle cx="180" cy="100" r="14" stroke-opacity="0.8"/>
-              <circle class="art-pulse" cx="180" cy="100" r="6" fill="currentColor" stroke="none"/>
-              <path d="M150 62l30 38-30 38" stroke-opacity="0.2"/>
+            <!-- Pipeline: a token runs recruit → handoff, lighting each stage it clears -->
+            <svg viewBox="0 0 200 200" fill="none">
+              <path class="art-dim" d="M28 100H172" stroke-width="1.5"/>
+              <path class="flow-fill" d="M28 100H172" stroke="#C8F45C" stroke-width="2"/>
+              <circle class="handoff" cx="172" cy="100" r="9"/>
+              <circle class="station" cx="28" cy="100" r="7" stroke-width="1.5" style="--a:st0"/>
+              <circle class="station" cx="76" cy="100" r="7" stroke-width="1.5" style="--a:st1"/>
+              <circle class="station" cx="124" cy="100" r="7" stroke-width="1.5" style="--a:st2"/>
+              <circle class="station" cx="172" cy="100" r="9" stroke-width="1.5" style="--a:st3"/>
+              <circle class="flow-token" cx="28" cy="100" r="4" fill="#F2FFD0" style="filter:drop-shadow(0 0 4px #C8F45C)"/>
+              <g font-family="Space Grotesk, sans-serif" font-size="10" fill="rgba(255,255,255,0.55)" text-anchor="middle">
+                <text x="28" y="130">Recruit</text>
+                <text x="76" y="130">Coordinate</text>
+                <text x="124" y="130">Deliver</text>
+                <text x="172" y="130">Handoff</text>
+              </g>
             </svg>
           </div>
         </div>
