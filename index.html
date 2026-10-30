@@ -322,6 +322,112 @@ a:hover{color:#d8ff8a}
   }
 }
 
+/* Section 7 Stat Cards — reveal, count-up & pointer spotlight */
+.cta-stat {
+  position: relative;
+  padding: 32px 28px;
+  background: #09090B;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow: hidden;
+  isolation: isolate;
+}
+/* Odd last card spans the full row so the grid never leaves an empty cell */
+.cta-stat:last-child:nth-child(odd) {
+  grid-column: 1 / -1;
+}
+/* Pointer-following lime spotlight */
+.cta-stat::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 50%), rgba(200, 244, 92, 0.09), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  pointer-events: none;
+}
+/* Accent line that sweeps in on reveal */
+.cta-stat::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, #C8F45C, rgba(200, 244, 92, 0));
+  transform: scaleX(0);
+  transform-origin: left;
+  opacity: 0.6;
+  transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+  pointer-events: none;
+}
+.cta-stat-value {
+  font-family: 'Space Grotesk';
+  font-size: clamp(28px, 3vw, 44px);
+  font-weight: 700;
+  color: #C8F45C;
+  letter-spacing: -1.5px;
+  line-height: 1;
+  transition: text-shadow 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.cta-stat-label {
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.3px;
+  transition: color 0.4s ease;
+}
+/* Hidden start state only applies once JS has armed the grid */
+.cta-stats-grid[data-stats-anim] .cta-stat {
+  opacity: 0;
+  transform: translateY(24px);
+  filter: blur(6px);
+  transition: opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.9s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+  transition-delay: var(--stat-delay, 0s);
+}
+.cta-stats-grid[data-stats-anim].is-inview .cta-stat {
+  opacity: 1;
+  transform: translateY(0);
+  filter: blur(0);
+}
+.cta-stats-grid[data-stats-anim].is-inview .cta-stat::after {
+  transform: scaleX(1);
+  transition-delay: calc(var(--stat-delay, 0s) + 0.25s);
+}
+@media (hover: hover) {
+  .cta-stat:hover::before {
+    opacity: 1;
+  }
+  .cta-stat:hover::after {
+    opacity: 1;
+  }
+  .cta-stat:hover .cta-stat-value {
+    text-shadow: 0 0 24px rgba(200, 244, 92, 0.35);
+    transform: translateY(-2px);
+  }
+  .cta-stat:hover .cta-stat-label {
+    color: rgba(255, 255, 255, 0.6);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cta-stats-grid[data-stats-anim] .cta-stat {
+    transform: none !important;
+    filter: none !important;
+    transition: opacity 0.4s ease !important;
+  }
+  .cta-stat::after {
+    transform: scaleX(1);
+    transition: none !important;
+  }
+  .cta-stat-value {
+    transform: none !important;
+  }
+}
+
 /* Section 8 Expert Form Mobile Adjustments */
 @media (max-width: 768px) {
   .expert-input {
@@ -980,11 +1086,11 @@ a:hover{color:#d8ff8a}
         </a>
       </div>
       <!-- Right: stats grid -->
-      <div class="cta-stats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);border-radius:0px;overflow:hidden">
+      <div id="cta-stats-grid" class="cta-stats-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:rgba(255,255,255,0.04);border-radius:0px;overflow:hidden">
         <sc-for list="{{ stats }}" as="stat">
-          <div style="padding:32px 28px;background:#09090B;display:flex;flex-direction:column;gap:4px">
-            <span style="font-family:'Space Grotesk';font-size:clamp(28px,3vw,44px);font-weight:700;color:#C8F45C;letter-spacing:-1.5px;line-height:1">{{ stat.value }}</span>
-            <span style="font-size:12px;font-weight:500;color:rgba(255,255,255,0.3);letter-spacing:0.3px">{{ stat.label }}</span>
+          <div class="cta-stat" data-cta-stat>
+            <span class="cta-stat-value" data-cta-stat-value>{{ stat.value }}</span>
+            <span class="cta-stat-label">{{ stat.label }}</span>
           </div>
         </sc-for>
       </div>
@@ -1387,6 +1493,7 @@ class Component extends DCLogic {
       }
 
       initAccountCardsAnimation();
+      initCtaStatsAnimation();
       initExpertFormSection();
       initMobileNav();
     }
@@ -1638,6 +1745,106 @@ class Component extends DCLogic {
           }
         });
       }
+    }
+
+    function initCtaStatsAnimation() {
+      var grid = document.getElementById('cta-stats-grid');
+      if (!grid || grid._statsInitialized) return;
+
+      var cards = grid.querySelectorAll('[data-cta-stat]');
+      if (!cards || cards.length === 0) return;
+
+      grid._statsInitialized = true;
+
+      var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      var GLYPHS = '#%&*+=<>/01ABCDEFXZ';
+
+      function easeOutExpo(t) {
+        return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+      }
+
+      // Mutate the runtime's own text node (inside .sc-interp) so re-renders stay in sync
+      function getTextNode(el) {
+        var walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT, {
+          acceptNode: function(n) { return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP; }
+        });
+        return walker.nextNode();
+      }
+
+      // Numeric values ("100%", "10X", "10–12", "1:1") count up; words ("Zero") decode from glyphs
+      function animateValue(el, delay) {
+        var node = getTextNode(el);
+        if (!node) return;
+        var finalText = node.nodeValue;
+        var parts = finalText.split(/(\d+)/);
+        var hasNumber = parts.some(function(p) { return /^\d+$/.test(p); });
+        var duration = hasNumber ? 1600 : 1100;
+        var lastScramble = 0;
+        var start = null;
+
+        function render(t) {
+          if (hasNumber) {
+            var eased = easeOutExpo(t);
+            return parts.map(function(p) {
+              return /^\d+$/.test(p) ? String(Math.round(parseInt(p, 10) * eased)) : p;
+            }).join('');
+          }
+          var resolved = Math.floor(t * finalText.length);
+          var out = '';
+          for (var i = 0; i < finalText.length; i++) {
+            out += i < resolved || finalText[i] === ' '
+              ? finalText[i]
+              : GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
+          }
+          return out;
+        }
+
+        node.nodeValue = render(0);
+
+        function frame(now) {
+          if (start === null) start = now;
+          var t = Math.min((now - start) / duration, 1);
+          // Throttle glyph swaps so the decode reads as flicker, not noise
+          if (hasNumber || t === 1 || now - lastScramble > 45) {
+            node.nodeValue = t === 1 ? finalText : render(t);
+            lastScramble = now;
+          }
+          if (t < 1) requestAnimationFrame(frame);
+        }
+
+        setTimeout(function() { requestAnimationFrame(frame); }, delay);
+      }
+
+      function bindSpotlight(card) {
+        card.addEventListener('pointermove', function(e) {
+          var rect = card.getBoundingClientRect();
+          card.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+          card.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+        });
+      }
+
+      Array.prototype.forEach.call(cards, function(card, i) {
+        card.style.setProperty('--stat-delay', (i * 0.09) + 's');
+        bindSpotlight(card);
+      });
+
+      if (reduceMotion || !('IntersectionObserver' in window)) return;
+
+      grid.setAttribute('data-stats-anim', '');
+
+      var observer = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (!entry.isIntersecting) return;
+          observer.disconnect();
+          grid.classList.add('is-inview');
+          Array.prototype.forEach.call(cards, function(card, i) {
+            var valueEl = card.querySelector('[data-cta-stat-value]');
+            if (valueEl) animateValue(valueEl, i * 90 + 200);
+          });
+        });
+      }, { threshold: 0.3 });
+
+      observer.observe(grid);
     }
 
     window.initAccountCardsAnimation = initAccountCardsAnimation;
