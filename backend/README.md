@@ -10,8 +10,8 @@ cp .env.example .env            # from the repo root; fill in ADMIN_API_KEY and 
 docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 ```
 
-API: http://localhost:8000 · docs: http://localhost:8000/docs · site: serve the repo root on
-`http://localhost:8080` (e.g. `python3 -m http.server 8080`) — the forms post to `localhost:8000`
+API: http://localhost:8000 · docs: http://localhost:8000/docs · site: serve `frontend/` on
+`http://localhost:8080` (e.g. `cd frontend && python3 -m http.server 8080`) — the forms post to `localhost:8000`
 automatically when the page is opened from localhost.
 
 ## Deploy (single VPS)
@@ -27,7 +27,7 @@ This starts Postgres, runs migrations, starts the API, Caddy (automatic HTTPS) a
 `pg_dump` into `./backups`. Copy `./backups` off the server on a schedule.
 
 If the API lives somewhere other than `https://api.evntiqa.com`, update `API_BASE` in
-`index.html`.
+`frontend/index.html`.
 
 ## Admin portal
 

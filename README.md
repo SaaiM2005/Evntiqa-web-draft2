@@ -5,7 +5,7 @@ portal to view them.
 
 | Part | What it is | Where |
 |---|---|---|
-| Website | Static HTML/CSS/JS pages (`index.html`, `about.html`, `careers.html`) | repo root |
+| Website | Static HTML/CSS/JS pages (`index.html`, `about.html`, `careers.html`) | `frontend/` |
 | Backend API | FastAPI + PostgreSQL. Stores submissions from the homepage forms | `backend/` |
 | Admin portal | Email + password login to view, search, update and export responses | served by the API at `/admin` |
 
@@ -17,7 +17,7 @@ The homepage has three forms, all saved by the API:
 
 ```
 .
-├── index.html, about.html, careers.html, *.js   # website
+├── frontend/                                    # website: HTML pages, effect scripts, logos/, uploads/
 ├── backend/                                     # API, admin portal, tests (see backend/README.md)
 ├── deploy/                                      # Caddyfile (HTTPS proxy), backup script
 ├── docker-compose.yml                           # production stack
@@ -69,7 +69,8 @@ uv run uvicorn app.main:app --reload
 ```
 
 ```bash
-# Terminal 2: website on http://localhost:8080 (run from the repo root)
+# Terminal 2: website on http://localhost:8080
+cd frontend
 python3 -m http.server 8080
 ```
 
@@ -80,7 +81,7 @@ python3 -m http.server 8080
 3. Your submission appears in the list. Click it to see details, change its status, or reply.
 
 > Open the site through a local server (step 2 above or VS Code Live Server). Don't
-> double-click `index.html`: pages opened as `file://` can't call the API.
+> double-click `frontend/index.html`: pages opened as `file://` can't call the API.
 
 ---
 
@@ -104,7 +105,7 @@ docker compose -f docker-compose.yml -f docker-compose.dev.yml run --rm api \
   python -m app.cli create-admin you@evntiqa.com
 ```
 
-Then serve the website with `python3 -m http.server 8080` and follow **Try it** above.
+Then serve the website with `cd frontend && python3 -m http.server 8080` and follow **Try it** above.
 
 ---
 
@@ -162,9 +163,9 @@ docker compose run --rm api python -m app.cli create-admin you@evntiqa.com
 This runs Postgres, the API, Caddy (automatic HTTPS) and a daily database backup into
 `./backups`. Copy that folder off the server regularly.
 
-The website itself is static: host the HTML files anywhere (Netlify, Vercel, S3, the same
+The website itself is static: host the `frontend/` folder anywhere (Netlify, Vercel, S3, the same
 server). The forms post to `https://api.evntiqa.com`. If the API lives somewhere else,
-change `API_BASE` near the top of the main `<script>` in `index.html`.
+change `API_BASE` near the top of the main `<script>` in `frontend/index.html`.
 
 To update after a `git pull`: `docker compose --profile proxy up -d --build` (migrations run
 automatically).
