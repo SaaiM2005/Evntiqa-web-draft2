@@ -298,42 +298,109 @@ img { display: block; }
 }
 .intro-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1px;
-  background: var(--line);
-  border: 1px solid var(--line);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
 }
-.intro-cell {
-  background: var(--bg);
+.intro-card {
+  --tint: 200,244,92;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   padding: clamp(28px, 3vw, 40px);
+  border-radius: 0;
+  border: 1px solid var(--line);
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgba(var(--tint),0.07), transparent 55%),
+    linear-gradient(180deg, var(--surface-2), var(--surface));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.06), 0 24px 48px -24px rgba(0,0,0,0.6);
+  transition: border-color 0.35s ease;
 }
-.cell-label {
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--text-3);
-  margin: 0 0 20px;
+.intro-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(var(--tint),0.5), transparent);
 }
-.chips { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; padding: 0; margin: 0; }
-.chip {
-  display: inline-flex;
+.intro-card:hover { border-color: rgba(var(--tint),0.28); }
+.intro-card--accounts { --tint: 47,211,242; }
+.intro-card--deliver {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+  gap: clamp(32px, 5vw, 80px);
   align-items: center;
-  gap: 8px;
-  padding: 8px 14px;
-  border: 1px solid var(--line-2);
-  border-radius: 100px;
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.85);
-  background: rgba(255,255,255,0.02);
-  transition: border-color 0.3s ease, background 0.3s ease, color 0.3s ease;
 }
-.chip:hover { border-color: rgba(200,244,92,0.4); background: rgba(200,244,92,0.06); color: #fff; }
-.chip-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--c, var(--lime)); box-shadow: 0 0 10px var(--c, var(--lime)); }
-.intro-copy { font-size: 16px; line-height: 1.75; color: var(--text-2); margin: 0; }
+.card-head { display: flex; align-items: center; gap: 14px; margin-bottom: 28px; }
+.card-icon {
+  flex: none;
+  display: grid; place-items: center;
+  width: 44px; height: 44px;
+  border-radius: 0;
+  border: 1px solid rgba(var(--tint),0.22);
+  background: rgba(var(--tint),0.08);
+  color: rgb(var(--tint));
+}
+.card-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(20px, 1.7vw, 24px);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0;
+}
+
+/* Teams — icon rows */
+.team-list { list-style: none; padding: 0; margin: auto 0 0; }
+.team-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  font-size: 16px; font-weight: 500;
+  color: rgba(255,255,255,0.88);
+  transition: color 0.3s ease;
+}
+.team-row svg { flex: none; color: var(--text-3); transition: color 0.3s ease; }
+.team-row:hover, .team-row:hover svg { color: var(--lime); }
+
+/* Accounts — colour-coded state tiles */
+.state-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; list-style: none; padding: 0; margin: auto 0 0; }
+.state {
+  position: relative;
+  display: flex; flex-direction: column; gap: 22px;
+  padding: 18px 18px 16px;
+  border-radius: 0;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.02);
+  transition: border-color 0.3s ease, background 0.3s ease;
+}
+.state:hover { border-color: color-mix(in srgb, var(--c) 45%, transparent); background: color-mix(in srgb, var(--c) 7%, transparent); }
+.state-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--c); box-shadow: 0 0 0 4px color-mix(in srgb, var(--c) 18%, transparent), 0 0 14px var(--c); }
+.state-name { font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 500; letter-spacing: -0.01em; }
+
+/* Deliver — copy + format list */
+.intro-card--deliver .card-head { margin-bottom: 20px; }
+.intro-copy { font-size: 16px; line-height: 1.75; color: var(--text-2); margin: 0; max-width: 520px; }
+.format-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; list-style: none; padding: 0; margin: 0; }
+.format {
+  display: flex; align-items: center; gap: 14px;
+  padding: 18px;
+  border-radius: 0;
+  border: 1px solid var(--line);
+  background: rgba(9,9,11,0.5);
+  font-size: 15px; font-weight: 500;
+  color: rgba(255,255,255,0.9);
+  transition: border-color 0.3s ease;
+}
+.format svg { flex: none; color: var(--lime); }
+.format:hover { border-color: rgba(200,244,92,0.35); }
 @media (max-width: 960px) {
   .intro-grid { grid-template-columns: 1fr; }
+  .intro-card--deliver { grid-template-columns: 1fr; gap: 28px; }
+}
+@media (max-width: 480px) {
+  .format-grid { grid-template-columns: 1fr; }
 }
 
 /* ═══════════ WHY ═══════════ */
@@ -948,28 +1015,47 @@ img { display: block; }
     <p class="intro-statement" data-lit>We partner with <span class="lit-key">Field Marketing, ABM, Demand Generation, and Event Marketing</span> teams globally to engage CISOs and security leaders across <span class="lit-key">stalled, dormant, active, and net-new</span> target accounts.</p>
 
     <div class="intro-grid">
-      <div class="intro-cell" data-reveal>
-        <p class="cell-label">Teams we partner with</p>
-        <ul class="chips">
-          <li class="chip"><span class="chip-dot"></span>Field Marketing</li>
-          <li class="chip"><span class="chip-dot"></span>ABM</li>
-          <li class="chip"><span class="chip-dot"></span>Demand Generation</li>
-          <li class="chip"><span class="chip-dot"></span>Event Marketing</li>
+      <article class="intro-card intro-card--teams" data-reveal>
+        <div class="card-head">
+          <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.8 5.5-4.8s4.9 1.8 5.5 4.8"/><circle cx="17" cy="9" r="2.4"/><path d="M16.5 14.3c2.2.2 3.6 1.7 4 4.2"/></svg></span>
+          <h3 class="card-title">Teams we partner with</h3>
+        </div>
+        <ul class="team-list">
+          <li class="team-row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.3"/></svg>Field Marketing</li>
+          <li class="team-row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="0.8" fill="currentColor"/></svg>ABM</li>
+          <li class="team-row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>Demand Generation</li>
+          <li class="team-row"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>Event Marketing</li>
         </ul>
-      </div>
-      <div class="intro-cell" data-reveal style="--d:0.1s">
-        <p class="cell-label">Accounts we activate</p>
-        <ul class="chips">
-          <li class="chip"><span class="chip-dot" style="--c:#F5B544"></span>Stalled</li>
-          <li class="chip"><span class="chip-dot" style="--c:#7B61FF"></span>Dormant</li>
-          <li class="chip"><span class="chip-dot" style="--c:#34D399"></span>Active</li>
-          <li class="chip"><span class="chip-dot" style="--c:#2FD3F2"></span>Net-New</li>
+      </article>
+
+      <article class="intro-card intro-card--accounts" data-reveal style="--d:0.1s">
+        <div class="card-head">
+          <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.8"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.8"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.8"/></svg></span>
+          <h3 class="card-title">Accounts we activate</h3>
+        </div>
+        <ul class="state-grid">
+          <li class="state" style="--c:#F5B544"><span class="state-dot"></span><span class="state-name">Stalled</span></li>
+          <li class="state" style="--c:#7B61FF"><span class="state-dot"></span><span class="state-name">Dormant</span></li>
+          <li class="state" style="--c:#34D399"><span class="state-dot"></span><span class="state-name">Active</span></li>
+          <li class="state" style="--c:#2FD3F2"><span class="state-dot"></span><span class="state-name">Net-New</span></li>
         </ul>
-      </div>
-      <div class="intro-cell" data-reveal style="--d:0.2s">
-        <p class="cell-label">How we deliver</p>
-        <p class="intro-copy">Our solutions include virtual CISO roundtables, executive dinners, webinars, and audience acquisition. From executive recruitment to post-event handoff, we manage the process to strengthen account relationships and support pipeline progression.</p>
-      </div>
+      </article>
+
+      <article class="intro-card intro-card--deliver" data-reveal style="--d:0.2s">
+        <div>
+          <div class="card-head">
+            <span class="card-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+            <h3 class="card-title">How we deliver</h3>
+          </div>
+          <p class="intro-copy">From executive recruitment to post-event handoff, we manage the process to strengthen account relationships and support pipeline progression.</p>
+        </div>
+        <ul class="format-grid" aria-label="Our solutions">
+          <li class="format"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><circle cx="12" cy="3.8" r="1.4"/><circle cx="12" cy="20.2" r="1.4"/><circle cx="3.8" cy="12" r="1.4"/><circle cx="20.2" cy="12" r="1.4"/></svg>Virtual CISO roundtables</li>
+          <li class="format"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 3v7a2 2 0 0 0 2 2v9M11 3v7a2 2 0 0 1-2 2M17 21V3c-2 0-3 2.5-3 6s1.2 4 3 4"/></svg>Executive dinners</li>
+          <li class="format"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="18" height="12" rx="2"/><path d="M8.5 20h7M12 16.5V20"/><path d="M10.5 8.3l4 2.2-4 2.2z" fill="currentColor"/></svg>Webinars</li>
+          <li class="format"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="8" r="3.2"/><path d="M4 19c.6-3 3-4.8 6-4.8 1.3 0 2.5.3 3.4.9"/><path d="M18 14v6M15 17h6"/></svg>Audience acquisition</li>
+        </ul>
+      </article>
     </div>
   </div>
 </section>
