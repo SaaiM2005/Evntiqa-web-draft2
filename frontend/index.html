@@ -926,6 +926,11 @@ a:hover{color:#d8ff8a}
   width: clamp(150px, 15vw, 210px);
   height: clamp(150px, 15vw, 210px);
   display: block;
+  animation: expertStarSpin 36s linear infinite;
+}
+@keyframes expertStarSpin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) {
+  .expert-vector-shape { animation: none; }
 }
 @media (max-width: 900px) {
   .expert-shape-corner {

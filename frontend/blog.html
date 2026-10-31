@@ -435,9 +435,13 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
   position: absolute; inset: 0; z-index: 1; pointer-events: none;
   background: radial-gradient(ellipse 60% 70% at 30% 50%, rgba(14,15,18,0.95), rgba(14,15,18,0.4) 70%, transparent);
 }
+.connect-star { position: absolute; right: clamp(-60px, -2vw, 0px); bottom: clamp(-60px, -4vw, -20px); width: clamp(180px, 22vw, 320px); z-index: 1; pointer-events: none; }
+.connect-star svg { width: 100%; height: auto; display: block; animation: spin 36s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
 .connect-inner { position: relative; z-index: 2; max-width: 760px; }
 .connect-title { font-size: clamp(34px, 4.6vw, 68px); font-weight: 700; letter-spacing: -0.045em; line-height: 1.02; margin: 0 0 36px; }
 @media (max-width: 640px) {
+  .connect-star { opacity: 0.4; }
   .connect .btn-primary { width: 100%; justify-content: center; }
 }
 
@@ -639,6 +643,9 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
     <div class="connect-card" data-reveal>
       <div class="connect-dots" id="connect-dot-grid" aria-hidden="true"></div>
       <div class="connect-shade" aria-hidden="true"></div>
+      <div class="connect-star" aria-hidden="true">
+        <svg viewBox="0 0 256 256" fill="none"><path d="M 136 108.686 L 212.853 31.833 L 224.166 43.148 L 147.313 120 L 256 120 L 256 136 L 147.314 136 L 224.167 212.853 L 212.853 224.167 L 136 147.313 L 136 256 L 120 256 L 120 147.313 L 43.148 224.167 L 31.833 212.853 L 108.686 136 L 0 136 L 0 120 L 108.687 120 L 31.834 43.148 L 43.148 31.833 L 120 108.686 L 120 0 L 136 0 Z" fill="#C8F45C"/></svg>
+      </div>
       <div class="connect-inner">
         <h2 class="connect-title" data-split>Ready to engage CISOs across your <span class="accent">priority accounts?</span></h2>
         <a href="index.html#expert-form-section" class="btn-primary" data-magnetic>
