@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Article | Evntiqa</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<meta name="description" content="Evntiqa Editorial Dispatch: Executive perspectives, ABM playbooks, and CISO engagement benchmarking.">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<link href="https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&amp;display=swap" rel="stylesheet">
+<script src="./dot-grid-bg.js"></script>
+<style>
+:root {
+  --bg: #09090B;
+  --surface: #101012;
+  --surface-2: #151518;
+  --surface-3: #1c1c20;
+  --lime: #C8F45C;
+  --lime-hover: #d8ff8a;
+  --emerald: #34D399;
+  --cyan: #2FD3F2;
+  --violet: #7B61FF;
+  --amber: #F5B544;
+  --text: #ffffff;
+  --text-2: rgba(255,255,255,0.72);
+  --text-3: rgba(255,255,255,0.45);
+  --line: rgba(255,255,255,0.08);
+  --line-2: rgba(255,255,255,0.14);
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+  --pad-x: clamp(20px, 4vw, 64px);
+  --maxw: 1400px;
+  --nav-h: 68px;
+}
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Satoshi, system-ui, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.01em;
+}
+a { color: var(--lime); text-decoration: none; transition: color 0.3s; }
+a:hover { color: var(--lime-hover); }
+::selection { background: rgba(200,244,92,0.25); color: #fff; }
+h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
+.wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 var(--pad-x); position: relative; }
+
+/* ── Navigation ── */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(24px) saturate(1.4);
+  -webkit-backdrop-filter: blur(24px) saturate(1.4);
+  background: rgba(9,9,11,0.85);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  padding: 0 clamp(20px, 4vw, 64px);
+}
+.nav-inner { max-width: var(--maxw); margin: 0 auto; display: flex; align-items: center; justify-content: space-between; height: var(--nav-h); }
+.brand { display: flex; align-items: center; gap: 8px; }
+.brand-name { font-family: 'Space Grotesk'; font-weight: 700; font-size: 22px; color: #fff; letter-spacing: -0.5px; }
+.nav-desktop-links { display: flex; align-items: center; gap: 24px; }
+.nav-desktop-links a { white-space: nowrap; font-size: 13px; font-weight: 500; color: rgba(255,255,255,0.5); transition: color 0.2s; }
+.nav-desktop-links a:hover { color: #fff; }
+.nav-desktop-links a[aria-current="page"] { color: #fff; position: relative; }
+.nav-desktop-cta {
+  display: inline-flex; align-items: center; padding: 9px 22px; background: var(--lime); border-radius: 100px;
+  font-size: 13px; font-weight: 600; color: var(--bg) !important; white-space: nowrap; transition: all 0.25s ease;
+}
+.nav-desktop-cta:hover { background: var(--lime-hover); transform: translateY(-1px); }
+
+/* ── Main Article Layout ── */
+.article-page {
+  padding: clamp(40px, 6vw, 80px) 0 clamp(80px, 10vw, 140px);
+  position: relative;
+}
+.article-container {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+/* Breadcrumb & Back bar */
+.top-action-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+}
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 18px;
+  border-radius: 100px;
+  border: 1px solid var(--line-2);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-2);
+  font: 500 13px Satoshi, system-ui, sans-serif;
+  transition: all 0.25s ease;
+}
+.back-btn:hover {
+  color: var(--lime);
+  border-color: var(--lime);
+  background: rgba(200,244,92,0.06);
+  transform: translateX(-2px);
+}
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+.breadcrumbs a { color: var(--text-3); }
+.breadcrumbs a:hover { color: #fff; }
+.breadcrumbs span { color: var(--line-2); }
+
+/* Header Elements */
+.cat-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--lime);
+  margin-bottom: 16px;
+}
+.cat-tag::before {
+  content: '';
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--lime);
+  box-shadow: 0 0 10px var(--lime);
+}
+
+.article-title {
+  font-size: clamp(34px, 4.8vw, 62px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  margin: 0 0 24px;
+  color: #fff;
+  text-wrap: balance;
+}
+
+.article-brief {
+  font-size: clamp(18px, 1.4vw, 22px);
+  line-height: 1.6;
+  color: var(--text-2);
+  margin: 0 0 36px;
+}
+
+/* Author & Meta Bar */
+.author-meta-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+.author-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.author-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--line-2);
+  background: var(--surface-2);
+}
+.author-info strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+}
+.author-info small {
+  display: block;
+  font-size: 13px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.article-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--text-3);
+}
+.article-meta-right i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Hero / Cover Image */
+.cover-hero-img {
+  width: 100%;
+  max-height: 500px;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid var(--line-2);
+  margin-bottom: 48px;
+  display: block;
+  background: #000;
+}
+
+/* Rich Content Body */
+.content-body {
+  font-size: clamp(17px, 1.25vw, 19px);
+  line-height: 1.85;
+  color: rgba(255, 255, 255, 0.88);
+}
+.content-body h2 {
+  font-size: clamp(26px, 2.6vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 2.2em 0 0.6em;
+  color: #fff;
+}
+.content-body h3 {
+  font-size: clamp(21px, 2vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 1.8em 0 0.5em;
+  color: #fff;
+}
+.content-body p { margin: 0 0 1.6em; }
+.content-body blockquote {
+  border-left: 3px solid var(--lime);
+  padding: 16px 24px;
+  margin: 2.2em 0;
+  background: rgba(200, 244, 92, 0.04);
+  font-style: italic;
+  font-size: 1.08em;
+  color: #fff;
+  border-radius: 0 8px 8px 0;
+}
+.content-body pre {
+  background: #111114;
+  border: 1px solid var(--line-2);
+  padding: 22px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 14px;
+  color: var(--cyan);
+  margin: 2em 0;
+}
+.content-body code { font-family: monospace; }
+.content-body ul, .content-body ol { margin: 0 0 1.6em 1.6em; padding: 0; }
+.content-body li { margin-bottom: 0.6em; }
+.content-body img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin: 2em 0;
+  border: 1px solid var(--line);
+}
+.content-body iframe.ql-video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  margin: 2.2em 0;
+  border: 1px solid var(--line);
+}
+
+/* FAQs Accordion */
+.faqs-section {
+  margin-top: 56px;
+  padding-top: 40px;
+  border-top: 1px solid var(--line);
+}
+.faqs-section h2 { font-size: 26px; margin-bottom: 24px; }
+.faq-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 14px;
+}
+.faq-q { font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 8px; }
+.faq-a { font-size: 15px; line-height: 1.7; color: var(--text-2); margin: 0; }
+
+/* Share Bar */
+.share-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 24px 0;
+  margin-top: 56px;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.share-label { font-size: 13px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; color: var(--text-3); }
+.share-links { display: flex; gap: 10px; }
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 100px;
+  border: 1px solid var(--line-2);
+  background: rgba(255,255,255,0.03);
+  color: var(--text-2);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.share-btn:hover { color: var(--lime); border-color: var(--lime); }
+
+/* Related Section */
+.related-section {
+  margin-top: 72px;
+}
+.related-h { font-size: 24px; margin-bottom: 24px; }
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+}
+.rel-card {
+  padding: 24px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  transition: border-color 0.3s ease, transform 0.3s ease;
+}
+.rel-card:hover { border-color: rgba(200,244,92,0.3); transform: translateY(-3px); }
+.rel-card h3 { font-size: 18px; margin: 12px 0 8px; line-height: 1.35; }
+.rel-card h3 a { color: #fff; }
+.rel-card p { font-size: 14px; color: var(--text-2); margin: 0 0 16px; line-height: 1.6; }
+@media (max-width: 700px) {
+  .related-grid { grid-template-columns: 1fr; }
+}
+
+/* Skeleton Loading */
+.loading-box {
+  padding: 80px 0;
+  text-align: center;
+  color: var(--text-3);
+  font-size: 16px;
+}
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--line-2);
+  border-top-color: var(--lime);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  margin: 0 auto 16px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Footer */
+.site-footer { border-top: 1px solid rgba(255,255,255,0.04); padding: 56px var(--pad-x) 36px; }
+.footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px; margin-bottom: 48px; }
+.footer-blurb { font-size: 14px; line-height: 1.7; color: rgba(255,255,255,0.4); max-width: 300px; margin: 16px 0 0; }
+.footer-h { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.4); letter-spacing: 2px; text-transform: uppercase; margin: 0 0 20px; }
+.footer-links { display: flex; flex-direction: column; gap: 12px; }
+.footer-links a { font-size: 14px; color: rgba(255,255,255,0.45); }
+.footer-links a:hover { color: var(--lime); }
+.footer-bottom { border-top: 1px solid rgba(255,255,255,0.04); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-size: 12px; color: rgba(255,255,255,0.35); }
+@media (max-width: 960px) { .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 36px; } }
+@media (max-width: 540px) { .footer-grid { grid-template-columns: 1fr; gap: 28px; } }
+</style>
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="site-nav" aria-label="Primary">
+  <div class="nav-inner">
+    <a href="index.html" class="brand" aria-label="Evntiqa home">
+      <span class="brand-name">Evntiqa<span style="color:var(--lime)">.</span></span>
+    </a>
+    <div class="nav-desktop-links">
+      <a href="index.html#hero">CISO Roundtables</a>
+      <a href="index.html#accounts">Accounts</a>
+      <a href="index.html#formats">Solutions</a>
+      <a href="index.html#results">Case Studies</a>
+      <a href="blog.html" aria-current="page">Blog</a>
+      <a href="#">TheCISOnews</a>
+      <a href="about.html">About Evntiqa</a>
+      <a href="careers.html">Careers</a>
+    </div>
+    <a href="index.html#expert-form-section" class="nav-desktop-cta">Talk to an ABM Expert</a>
+  </div>
+</nav>
+
+<main class="article-page">
+  <div class="wrap">
+    <div class="article-container">
+
+      <!-- Breadcrumbs & Back -->
+      <div class="top-action-bar">
+        <a href="blog.html" class="back-btn">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Back to Blog
+        </a>
+        <div class="breadcrumbs">
+          <a href="index.html">Home</a>
+          <span>/</span>
+          <a href="blog.html">Blog</a>
+          <span>/</span>
+          <span id="crumb-current">Article</span>
+        </div>
+      </div>
+
+      <!-- Loading State -->
+      <div id="article-loading" class="loading-box">
+        <div class="spinner"></div>
+        <p>Loading article dispatch...</p>
+      </div>
+
+      <!-- Error State -->
+      <div id="article-error" class="loading-box" hidden>
+        <h2 style="color:#fff;font-size:24px;margin-bottom:8px">Article Not Found</h2>
+        <p style="margin-bottom:24px">The requested editorial item could not be found or may have been unpublished.</p>
+        <a href="blog.html" class="back-btn">Return to all articles</a>
+      </div>
+
+      <!-- Article Content View -->
+      <article id="article-content-view" hidden>
+        <header>
+          <div id="art-cat" class="cat-tag">Editorial</div>
+          <h1 id="art-title" class="article-title"></h1>
+          <p id="art-brief" class="article-brief"></p>
+
+          <div class="author-meta-bar">
+            <div id="art-author-left" class="author-meta-left">
+              <img id="art-avatar" class="author-avatar" alt="Author avatar">
+              <div class="author-info">
+                <strong id="art-author-name">Evntiqa Editorial</strong>
+                <small id="art-author-role"></small>
+              </div>
+            </div>
+            <div class="article-meta-right">
+              <time id="art-date"></time>
+              <i></i>
+              <span id="art-reading-time">5 min read</span>
+              <i></i>
+              <span id="art-views">0 reads</span>
+            </div>
+          </div>
+        </header>
+
+        <img id="art-cover" class="cover-hero-img" alt="Cover" hidden>
+
+        <div id="art-body" class="content-body"></div>
+
+        <!-- FAQs Section -->
+        <div id="art-faqs-section" class="faqs-section" hidden>
+          <h2>Frequently Asked Questions</h2>
+          <div id="art-faqs-list"></div>
+        </div>
+
+        <!-- Share Bar -->
+        <div class="share-bar">
+          <span class="share-label">Share this insight</span>
+          <div class="share-links">
+            <button id="btn-copy-link" type="button" class="share-btn">Copy link</button>
+            <a id="btn-share-linkedin" target="_blank" rel="noopener noreferrer" class="share-btn">LinkedIn</a>
+            <a id="btn-share-twitter" target="_blank" rel="noopener noreferrer" class="share-btn">X / Twitter</a>
+          </div>
+        </div>
+
+        <!-- Related Articles -->
+        <div id="related-section" class="related-section" hidden>
+          <h2 class="related-h">More from Evntiqa Editorial</h2>
+          <div id="related-grid" class="related-grid"></div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="site-footer">
+  <div style="max-width:var(--maxw);margin:0 auto">
+    <div class="footer-grid">
+      <div>
+        <a href="index.html" class="brand" aria-label="Evntiqa home"><span class="brand-name">Evntiqa<span style="color:var(--lime)">.</span></span></a>
+        <p class="footer-blurb">Zero-lift CISO engagement programs engineered to activate priority accounts and accelerate enterprise pipeline.</p>
+      </div>
+      <div>
+        <h3 class="footer-h">Explore</h3>
+        <div class="footer-links">
+          <a href="index.html#hero">CISO Roundtables</a>
+          <a href="index.html#accounts">Accounts We Activate</a>
+          <a href="index.html#formats">Solutions</a>
+          <a href="index.html#results">Case Studies</a>
+          <a href="blog.html">Blog</a>
+        </div>
+      </div>
+      <div>
+        <h3 class="footer-h">Company</h3>
+        <div class="footer-links">
+          <a href="about.html">About us</a>
+          <a href="blog.html">Blogs</a>
+          <a href="careers.html">Careers</a>
+        </div>
+      </div>
+      <div>
+        <h3 class="footer-h">Legal</h3>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms &amp; Conditions</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2027 Evntiqa Inc. All rights reserved.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  var API_BASE = window.location.port === '8000'
+    ? ''
+    : window.location.protocol + '//' + (window.location.hostname || '127.0.0.1') + ':8000';
+
+  var params = new URLSearchParams(window.location.search);
+  var slug = params.get('slug') || (window.location.hash.startsWith('#post/') ? window.location.hash.replace('#post/', '') : '');
+
+  var loadingEl = document.getElementById('article-loading');
+  var errorEl = document.getElementById('article-error');
+  var viewEl = document.getElementById('article-content-view');
+
+  if (!slug) {
+    loadingEl.hidden = true;
+    errorEl.hidden = false;
+    return;
+  }
+
+  function formatDate(isoStr) {
+    if (!isoStr) return '';
+    try {
+      var d = new Date(isoStr);
+      return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    } catch (e) {
+      return '';
+    }
+  }
+
+  fetch(API_BASE + '/api/v1/content/by-slug/' + encodeURIComponent(slug))
+    .then(function (res) {
+      if (!res.ok) throw new Error('Not found');
+      return res.json();
+    })
+    .then(function (item) {
+      document.title = item.title + ' | Evntiqa';
+      document.getElementById('crumb-current').textContent = item.title;
+
+      document.getElementById('art-title').textContent = item.title;
+      if (item.brief) {
+        document.getElementById('art-brief').textContent = item.brief;
+      } else {
+        document.getElementById('art-brief').hidden = true;
+      }
+
+      var catEl = document.getElementById('art-cat');
+      if (item.category) {
+        catEl.textContent = item.category.name;
+      } else {
+        catEl.textContent = item.type || 'Editorial';
+      }
+
+      // Author attribution
+      var authorLeft = document.getElementById('art-author-left');
+      if (item.author) {
+        document.getElementById('art-author-name').textContent = item.author.name;
+        document.getElementById('art-author-role').textContent = item.author.designation || '';
+        var av = document.getElementById('art-avatar');
+        if (item.author.avatar_url) {
+          av.src = item.author.avatar_url;
+          av.style.display = 'block';
+        } else {
+          av.style.display = 'none';
+        }
+      } else {
+        document.getElementById('art-author-name').textContent = 'Evntiqa Editorial';
+        document.getElementById('art-author-role').textContent = 'Benchmark Research Team';
+        document.getElementById('art-avatar').style.display = 'none';
+      }
+
+      document.getElementById('art-date').textContent = formatDate(item.published_at || item.created_at);
+      document.getElementById('art-reading-time').textContent = (item.reading_time_minutes || 5) + ' min read';
+      document.getElementById('art-views').textContent = Number(item.views_count || 1).toLocaleString() + ' reads';
+
+      // Cover image
+      var coverImg = document.getElementById('art-cover');
+      if (item.cover_image_url) {
+        coverImg.src = item.cover_image_url.startsWith('http') || item.cover_image_url.startsWith('data:')
+          ? item.cover_image_url
+          : API_BASE + item.cover_image_url;
+        coverImg.hidden = false;
+      } else {
+        coverImg.hidden = true;
+      }
+
+      // Rich body
+      var bodyEl = document.getElementById('art-body');
+      bodyEl.innerHTML = item.content || '<p>Content in preparation.</p>';
+
+      // Rewrite any local upload image paths
+      bodyEl.querySelectorAll('img').forEach(function (img) {
+        var src = img.getAttribute('src');
+        if (src && src.startsWith('/uploads/')) {
+          img.src = API_BASE + src;
+        }
+      });
+
+      // FAQs
+      if (item.faqs && item.faqs.length > 0) {
+        var faqsSection = document.getElementById('art-faqs-section');
+        var faqsList = document.getElementById('art-faqs-list');
+        faqsList.innerHTML = '';
+        item.faqs.forEach(function (faq) {
+          var box = document.createElement('div');
+          box.className = 'faq-box';
+          var q = document.createElement('div');
+          q.className = 'faq-q';
+          q.textContent = faq.q;
+          var a = document.createElement('p');
+          a.className = 'faq-a';
+          a.textContent = faq.a;
+          box.appendChild(q);
+          box.appendChild(a);
+          faqsList.appendChild(box);
+        });
+        faqsSection.hidden = false;
+      }
+
+      // Share links
+      var shareUrl = window.location.href;
+      document.getElementById('btn-copy-link').addEventListener('click', function () {
+        navigator.clipboard.writeText(shareUrl).then(function () {
+          alert('Article link copied to clipboard!');
+        });
+      });
+      document.getElementById('btn-share-linkedin').href = 'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeURIComponent(shareUrl);
+      document.getElementById('btn-share-twitter').href = 'https://twitter.com/intent/tweet?url=' + encodeURIComponent(shareUrl) + '&text=' + encodeURIComponent(item.title);
+
+      loadingEl.hidden = true;
+      viewEl.hidden = false;
+
+      // Fetch related articles
+      fetch(API_BASE + '/api/v1/content?limit=5')
+        .then(function (r) { return r.json(); })
+        .then(function (list) {
+          if (!list || list.length <= 1) return;
+          var other = list.filter(function (x) { return x.slug !== slug; }).slice(0, 2);
+          if (other.length === 0) return;
+          var relGrid = document.getElementById('related-grid');
+          relGrid.innerHTML = '';
+          other.forEach(function (rItem) {
+            var card = document.createElement('article');
+            card.className = 'rel-card';
+            var catSpan = document.createElement('span');
+            catSpan.className = 'cat-tag';
+            catSpan.textContent = rItem.category ? rItem.category.name : 'Editorial';
+            var h3 = document.createElement('h3');
+            var a = document.createElement('a');
+            a.href = 'article.html?slug=' + encodeURIComponent(rItem.slug);
+            a.textContent = rItem.title;
+            h3.appendChild(a);
+            var p = document.createElement('p');
+            p.textContent = rItem.brief || '';
+            card.appendChild(catSpan);
+            card.appendChild(h3);
+            card.appendChild(p);
+            relGrid.appendChild(card);
+          });
+          document.getElementById('related-section').hidden = false;
+        }).catch(function () {});
+    })
+    .catch(function () {
+      loadingEl.hidden = true;
+      errorEl.hidden = false;
+    });
+})();
+</script>
+</body>
+</html>

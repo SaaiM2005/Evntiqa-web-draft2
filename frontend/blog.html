@@ -294,6 +294,10 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
   font-size: 15px;
   font-weight: 600;
   color: var(--lime);
+  position: relative;
+  z-index: 2;
+  text-decoration: none;
+  cursor: pointer;
 }
 .read-link svg { transition: transform 0.35s var(--ease); }
 .feature:hover .read-link svg, .card:hover .card-arrow svg { transform: translateX(4px); }
@@ -533,19 +537,19 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
 <!-- FEATURED -->
 <section class="featured" aria-label="Featured article">
   <div class="wrap">
-    <article class="feature" data-reveal data-spotlight style="--d:0.55s">
+    <article class="feature" id="featured-article" data-reveal data-spotlight style="--d:0.55s">
       <div>
         <div class="feature-tag">
           <span class="feature-badge">Featured</span>
-          <span class="cat" data-cat="engagement">CISO Engagement</span>
+          <span class="cat" id="featured-cat" data-cat="engagement">CISO Engagement</span>
         </div>
-        <h2><a href="#">Why one-time CISO events stall pipeline, and what continuous engagement fixes</a></h2>
+        <h2><a id="featured-title-link" href="article.html?slug=why-one-time-ciso-events-stall-pipeline">Why one-time CISO events stall pipeline, and what continuous engagement fixes</a></h2>
       </div>
       <div class="feature-side">
-        <p>A single dinner or webinar can open a door, but it rarely keeps it open. We look at where engagement drops off between events and how a steady cadence of peer-led conversations keeps priority accounts moving.</p>
+        <p id="featured-brief">A single dinner or webinar can open a door, but it rarely keeps it open. We look at where engagement drops off between events and how a steady cadence of peer-led conversations keeps priority accounts moving.</p>
         <div class="feature-foot">
-          <span class="meta"><time datetime="2026-10-22">Oct 22, 2026</time><i></i>7 min read</span>
-          <span class="read-link" aria-hidden="true">Read article <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          <span class="meta"><time id="featured-date" datetime="2026-10-22">Oct 22, 2026</time><i></i><span id="featured-readtime">7 min read</span></span>
+          <a id="featured-read-link" href="article.html?slug=why-one-time-ciso-events-stall-pipeline" class="read-link">Read article <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
         </div>
       </div>
     </article>
@@ -577,55 +581,55 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
     <div class="grid" id="post-grid">
       <article class="card" data-reveal data-cat="abm">
         <div class="card-top"><span class="cat">ABM</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">Building a target account list CISOs will actually respond to</a></h3>
+        <h3><a href="article.html?slug=building-target-account-list-cisos-respond">Building a target account list CISOs will actually respond to</a></h3>
         <p>Start from buying groups, not firmographics, and map the security leaders who shape each deal.</p>
         <span class="meta"><time datetime="2026-10-15">Oct 15, 2026</time><i></i>6 min read</span>
       </article>
       <article class="card" data-reveal data-cat="roundtables" style="--d:0.08s">
         <div class="card-top"><span class="cat">Roundtables</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">Inside a virtual CISO roundtable: what 10–12 peers need to speak openly</a></h3>
+        <h3><a href="article.html?slug=inside-virtual-ciso-roundtable">Inside a virtual CISO roundtable: what 10–12 peers need to speak openly</a></h3>
         <p>Group size, moderation, and confidentiality rules that turn a call into a real benchmarking session.</p>
         <span class="meta"><time datetime="2026-10-08">Oct 8, 2026</time><i></i>5 min read</span>
       </article>
       <article class="card" data-reveal data-cat="pipeline" style="--d:0.16s">
         <div class="card-top"><span class="cat">Pipeline</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">Reactivating stalled accounts with peer-led conversations</a></h3>
+        <h3><a href="article.html?slug=reactivating-stalled-accounts-peer-conversations">Reactivating stalled accounts with peer-led conversations</a></h3>
         <p>When outreach goes quiet, an invitation to sit with peers can restart the relationship on new terms.</p>
         <span class="meta"><time datetime="2026-10-01">Oct 1, 2026</time><i></i>6 min read</span>
       </article>
       <article class="card" data-reveal data-cat="field">
         <div class="card-top"><span class="cat">Field Marketing</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">Field marketing in 2027: fewer events, deeper executive relationships</a></h3>
+        <h3><a href="article.html?slug=why-one-time-ciso-events-stall-pipeline">Field marketing in 2027: fewer events, deeper executive relationships</a></h3>
         <p>Why field teams are trading large booths for smaller, recurring rooms with the right security leaders.</p>
         <span class="meta"><time datetime="2026-09-24">Sep 24, 2026</time><i></i>4 min read</span>
       </article>
       <article class="card" data-reveal data-cat="pipeline" style="--d:0.08s">
         <div class="card-top"><span class="cat">Pipeline</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">The post-event handoff: turning a roundtable into a sales conversation</a></h3>
+        <h3><a href="article.html?slug=post-event-handoff-sales-conversation">The post-event handoff: turning a roundtable into a sales conversation</a></h3>
         <p>What to capture in the room, what to send within 48 hours, and how sales should follow up.</p>
         <span class="meta"><time datetime="2026-09-17">Sep 17, 2026</time><i></i>5 min read</span>
       </article>
       <article class="card" data-reveal data-cat="engagement" style="--d:0.16s">
         <div class="card-top"><span class="cat">CISO Engagement</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">How to recruit CISOs without adding to their outreach fatigue</a></h3>
+        <h3><a href="article.html?slug=recruit-cisos-without-outreach-fatigue">How to recruit CISOs without adding to their outreach fatigue</a></h3>
         <p>Security leaders ignore most invitations. The ones they accept offer peers, privacy, and a clear agenda.</p>
         <span class="meta"><time datetime="2026-09-10">Sep 10, 2026</time><i></i>6 min read</span>
       </article>
       <article class="card" data-reveal data-cat="abm">
         <div class="card-top"><span class="cat">ABM</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">ABM metrics that matter after the roundtable ends</a></h3>
+        <h3><a href="article.html?slug=building-target-account-list-cisos-respond">ABM metrics that matter after the roundtable ends</a></h3>
         <p>Attendance is the start. Track account progression, buying-group coverage, and meetings sourced.</p>
         <span class="meta"><time datetime="2026-09-03">Sep 3, 2026</time><i></i>5 min read</span>
       </article>
       <article class="card" data-reveal data-cat="roundtables" style="--d:0.08s">
         <div class="card-top"><span class="cat">Roundtables</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">Benchmarking topics that bring security leaders to the table</a></h3>
+        <h3><a href="article.html?slug=why-one-time-ciso-events-stall-pipeline">Benchmarking topics that bring security leaders to the table</a></h3>
         <p>The discussion themes CISOs ask for, and how to frame them so vendors stay out of the spotlight.</p>
         <span class="meta"><time datetime="2026-08-27">Aug 27, 2026</time><i></i>4 min read</span>
       </article>
       <article class="card" data-reveal data-cat="field" style="--d:0.16s">
         <div class="card-top"><span class="cat">Field Marketing</span><span class="card-arrow" aria-hidden="true"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-        <h3><a href="#">Executive dinners vs. virtual roundtables: choosing the right format</a></h3>
+        <h3><a href="article.html?slug=inside-virtual-ciso-roundtable">Executive dinners vs. virtual roundtables: choosing the right format</a></h3>
         <p>A side-by-side look at reach, cost, and depth of conversation for each format by account stage.</p>
         <span class="meta"><time datetime="2026-08-20">Aug 20, 2026</time><i></i>6 min read</span>
       </article>
@@ -810,17 +814,179 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
     });
   }
 
+  /* ── Dynamic API Integration ── */
+  var API_BASE = window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
+
+  function formatDate(isoStr) {
+    if (!isoStr) return '';
+    try {
+      var d = new Date(isoStr);
+      return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    } catch (e) {
+      return '';
+    }
+  }
+
+  // Load Featured Article
+  function loadFeaturedArticle() {
+    fetch(API_BASE + '/api/v1/content/featured')
+      .then(function (res) {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then(function (it) {
+        if (!it) return;
+        var card = document.getElementById('featured-article');
+        if (!card) return;
+
+        var catEl = document.getElementById('featured-cat');
+        var linkEl = document.getElementById('featured-title-link');
+        var readLinkEl = document.getElementById('featured-read-link');
+        var briefEl = document.getElementById('featured-brief');
+        var dateEl = document.getElementById('featured-date');
+        var readEl = document.getElementById('featured-readtime');
+
+        var articleUrl = 'article.html?slug=' + encodeURIComponent(it.slug);
+
+        if (catEl && it.category) {
+          catEl.textContent = it.category.name;
+          catEl.setAttribute('data-cat', it.category.slug || 'engagement');
+        }
+        if (linkEl) {
+          linkEl.textContent = it.title;
+          linkEl.href = articleUrl;
+        }
+        if (readLinkEl) {
+          readLinkEl.href = articleUrl;
+        }
+        if (briefEl && it.brief) {
+          briefEl.textContent = it.brief;
+        }
+        if (dateEl) {
+          dateEl.textContent = formatDate(it.published_at || it.created_at);
+        }
+        if (readEl) {
+          readEl.textContent = (it.reading_time_minutes || 5) + ' min read';
+        }
+
+        card.style.cursor = 'pointer';
+        card.onclick = function (e) {
+          if (e.target.closest('a')) return;
+          window.location.href = articleUrl;
+        };
+      })
+      .catch(function () {});
+  }
+
+  // Load Published Articles List
+  function loadGridArticles() {
+    fetch(API_BASE + '/api/v1/content?limit=50')
+      .then(function (res) {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then(function (items) {
+        if (!items || items.length === 0) return;
+        var grid = document.getElementById('post-grid');
+        if (!grid) return;
+
+        // Clear existing static sample cards except empty message
+        var emptyEl = document.getElementById('post-empty');
+        grid.innerHTML = '';
+        if (emptyEl) grid.appendChild(emptyEl);
+
+        items.forEach(function (it, idx) {
+          var catSlug = it.category ? it.category.slug : 'abm';
+          var catName = it.category ? it.category.name : 'Editorial';
+          var articleUrl = 'article.html?slug=' + encodeURIComponent(it.slug);
+
+          var art = document.createElement('article');
+          art.className = 'card is-in is-settled';
+          art.setAttribute('data-cat', catSlug);
+          art.style.setProperty('--d', (idx * 0.08) + 's');
+          art.style.cursor = 'pointer';
+
+          var topDiv = document.createElement('div');
+          topDiv.className = 'card-top';
+
+          var catSpan = document.createElement('span');
+          catSpan.className = 'cat';
+          catSpan.textContent = catName;
+
+          var arrowSpan = document.createElement('span');
+          arrowSpan.className = 'card-arrow';
+          arrowSpan.setAttribute('aria-hidden', 'true');
+          arrowSpan.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+          topDiv.appendChild(catSpan);
+          topDiv.appendChild(arrowSpan);
+
+          var h3 = document.createElement('h3');
+          var a = document.createElement('a');
+          a.href = articleUrl;
+          a.textContent = it.title;
+          h3.appendChild(a);
+
+          var p = document.createElement('p');
+          p.textContent = it.brief || (it.title + ' — Read full analysis.');
+
+          var metaSpan = document.createElement('span');
+          metaSpan.className = 'meta';
+          metaSpan.innerHTML = '<time>' + formatDate(it.published_at || it.created_at) + '</time><i></i>' + (it.reading_time_minutes || 5) + ' min read';
+
+          art.appendChild(topDiv);
+          art.appendChild(h3);
+          art.appendChild(p);
+          art.appendChild(metaSpan);
+
+          art.onclick = function (e) {
+            if (e.target.closest('a')) return;
+            window.location.href = articleUrl;
+          };
+
+          if (emptyEl) {
+            grid.insertBefore(art, emptyEl);
+          } else {
+            grid.appendChild(art);
+          }
+        });
+      })
+      .catch(function () {});
+  }
+
+  loadFeaturedArticle();
+  loadGridArticles();
+
+  // If a legacy or hash link #post/<slug> is requested, redirect to article.html
+  if (window.location.hash.startsWith('#post/')) {
+    var initialSlug = window.location.hash.replace('#post/', '').trim();
+    if (initialSlug) {
+      window.location.href = 'article.html?slug=' + encodeURIComponent(initialSlug);
+    }
+  }
+  window.addEventListener('hashchange', function () {
+    if (window.location.hash.startsWith('#post/')) {
+      var slug = window.location.hash.replace('#post/', '').trim();
+      if (slug) {
+        window.location.href = 'article.html?slug=' + encodeURIComponent(slug);
+      }
+    }
+  });
+
   /* ── Topic filter + search ── */
   (function initFilters() {
     var filters = document.querySelectorAll('[data-filter]');
     var search = document.getElementById('blog-search');
-    var cards = Array.prototype.slice.call(document.querySelectorAll('#post-grid .card'));
     var empty = document.getElementById('post-empty');
     var status = document.getElementById('results-status');
     var clearBtn = document.getElementById('clear-filters');
     var active = 'all';
     var swapTimer = 0;
     var searchTimer = 0;
+
+    function getCards() {
+      return Array.prototype.slice.call(document.querySelectorAll('#post-grid .card'));
+    }
 
     function matches(card) {
       var q = search.value.trim().toLowerCase();
@@ -829,13 +995,11 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
     }
 
     function apply() {
+      var cards = getCards();
       var next = cards.filter(matches);
       var visible = cards.filter(function (c) { return !c.hidden; });
-      var same = next.length === visible.length && next.every(function (c) { return !c.hidden; });
-      if (same) return;
 
       clearTimeout(swapTimer);
-      // Cards already revealed by scroll should not wait on the observer again
       cards.forEach(function (c) { c.classList.add('is-in', 'is-settled'); });
       visible.forEach(function (c) { if (!reduceMotion) c.classList.add('is-leaving'); });
 
@@ -847,16 +1011,14 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
           c.style.transitionDelay = '';
           if (show && !reduceMotion) c.classList.add('is-entering');
         });
-        empty.hidden = next.length > 0;
-        status.textContent = next.length ? next.length + (next.length === 1 ? ' article' : ' articles') + ' shown' : 'No articles match';
+        if (empty) empty.hidden = next.length > 0;
+        if (status) status.textContent = next.length ? next.length + (next.length === 1 ? ' article' : ' articles') + ' shown' : 'No articles match';
         if (reduceMotion) return;
-        // Force layout so the entering state is painted before it is released
         void document.body.offsetHeight;
         next.forEach(function (c, i) {
           c.style.transitionDelay = Math.min(i, 8) * 40 + 'ms';
           c.classList.remove('is-entering');
         });
-        // Drop the stagger so later hovers respond immediately
         swapTimer = setTimeout(function () {
           next.forEach(function (c) { c.style.transitionDelay = ''; });
         }, 700);
@@ -870,17 +1032,21 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
         apply();
       });
     });
-    search.addEventListener('input', function () {
-      clearTimeout(searchTimer);
-      searchTimer = setTimeout(apply, 160);
-    });
-    clearBtn.addEventListener('click', function () {
-      search.value = '';
-      active = 'all';
-      filters.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === 'all')); });
-      apply();
-      search.focus();
-    });
+    if (search) {
+      search.addEventListener('input', function () {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(apply, 160);
+      });
+    }
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function () {
+        search.value = '';
+        active = 'all';
+        filters.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === 'all')); });
+        apply();
+        search.focus();
+      });
+    }
   })();
 
   /* ── Reused home-page background ── */

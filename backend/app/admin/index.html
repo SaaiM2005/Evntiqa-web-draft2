@@ -9,7 +9,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="/admin/assets/vendor/quill.snow.css">
 <link rel="stylesheet" href="/admin/assets/admin.css">
+<script src="/admin/assets/vendor/quill.js" defer></script>
 <script src="/admin/assets/admin.js" defer></script>
 </head>
 <body>
@@ -19,7 +21,7 @@
   <form id="login-form" class="login-card">
     <div class="wordmark">Evntiqa<span class="dot"></span></div>
     <h1>Admin portal</h1>
-    <p class="muted">Sign in to view form responses.</p>
+    <p class="muted">Sign in to manage forms and editorial content.</p>
     <label for="login-email" class="field-label">Email</label>
     <input id="login-email" type="email" class="input" required autocomplete="username" spellcheck="false">
     <label for="login-password" class="field-label field-gap">Password</label>
@@ -34,71 +36,375 @@
   <header class="topbar">
     <div class="topbar-left">
       <div class="wordmark">Evntiqa<span class="dot"></span></div>
-      <span class="topbar-title">Form responses</span>
+      <nav class="portal-nav" role="tablist" aria-label="Portal section">
+        <button id="nav-forms-btn" type="button" role="tab" class="portal-tab is-active" aria-selected="true">Form responses</button>
+        <button id="nav-editorial-btn" type="button" role="tab" class="portal-tab" aria-selected="false">Editorial Content</button>
+      </nav>
     </div>
     <div class="topbar-actions">
       <span id="user-email" class="user-email"></span>
       <button id="refresh-btn" type="button" class="btn btn-ghost">Refresh</button>
-      <button id="export-btn" type="button" class="btn btn-ghost">Export CSV</button>
       <button id="logout-btn" type="button" class="btn btn-ghost">Sign out</button>
     </div>
   </header>
 
-  <section class="stats" aria-label="Summary">
-    <div class="stat"><span class="stat-label">All responses</span><span class="stat-value" data-stat="total">–</span></div>
-    <div class="stat"><span class="stat-label">Consultations</span><span class="stat-value" data-stat="expert_consultation">–</span></div>
-    <div class="stat"><span class="stat-label">Calendar requests</span><span class="stat-value" data-stat="calendar_request">–</span></div>
-    <div class="stat"><span class="stat-label">Case study requests</span><span class="stat-value" data-stat="case_study_request">–</span></div>
-    <div class="stat stat-accent"><span class="stat-label">Not yet contacted</span><span class="stat-value" data-stat="new">–</span></div>
+  <!-- ================= SUBMISSIONS VIEW ================= -->
+  <section id="forms-view">
+    <div class="view-header">
+      <div>
+        <span class="eyebrow">INQUIRIES REPOSITORY</span>
+        <h1 class="view-title">Form Submissions</h1>
+        <p class="view-desc">Lead intake, consultation and event calendar requests from the public site.</p>
+      </div>
+      <button id="export-btn" type="button" class="btn btn-ghost">Export CSV</button>
+    </div>
+
+    <section class="stats" aria-label="Summary">
+      <div class="stat"><span class="stat-label">All responses</span><span class="stat-value" data-stat="total">–</span></div>
+      <div class="stat"><span class="stat-label">Consultations</span><span class="stat-value" data-stat="expert_consultation">–</span></div>
+      <div class="stat"><span class="stat-label">Calendar requests</span><span class="stat-value" data-stat="calendar_request">–</span></div>
+      <div class="stat"><span class="stat-label">Case study requests</span><span class="stat-value" data-stat="case_study_request">–</span></div>
+      <div class="stat stat-accent"><span class="stat-label">Not yet contacted</span><span class="stat-value" data-stat="new">–</span></div>
+    </section>
+
+    <section class="toolbar">
+      <div class="tabs" role="tablist" aria-label="Form">
+        <button type="button" role="tab" class="tab is-active" data-form="">All</button>
+        <button type="button" role="tab" class="tab" data-form="expert_consultation">Consultation</button>
+        <button type="button" role="tab" class="tab" data-form="calendar_request">Calendar</button>
+        <button type="button" role="tab" class="tab" data-form="case_study_request">Case study</button>
+      </div>
+      <div class="toolbar-right">
+        <select id="status-filter" class="input input-sm" aria-label="Status">
+          <option value="">Any status</option>
+          <option value="new">New</option>
+          <option value="contacted">Contacted</option>
+          <option value="archived">Archived</option>
+        </select>
+        <input id="search" type="search" class="input input-sm" placeholder="Search name, email, company" aria-label="Search">
+      </div>
+    </section>
+
+    <section class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Received</th>
+            <th>Form</th>
+            <th>Name</th>
+            <th>Company</th>
+            <th>Email</th>
+            <th>Program focus</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+      <div id="empty" class="empty" hidden>No responses match these filters yet.</div>
+      <div id="list-error" class="error error-block" role="alert" hidden></div>
+    </section>
+
+    <footer class="pager">
+      <span id="pager-info" class="muted"></span>
+      <div class="pager-btns">
+        <button id="prev-btn" type="button" class="btn btn-ghost">Previous</button>
+        <button id="next-btn" type="button" class="btn btn-ghost">Next</button>
+      </div>
+    </footer>
   </section>
 
-  <section class="toolbar">
-    <div class="tabs" role="tablist" aria-label="Form">
-      <button type="button" role="tab" class="tab is-active" data-form="">All</button>
-      <button type="button" role="tab" class="tab" data-form="expert_consultation">Consultation</button>
-      <button type="button" role="tab" class="tab" data-form="calendar_request">Calendar</button>
-      <button type="button" role="tab" class="tab" data-form="case_study_request">Case study</button>
+  <!-- ================= EDITORIAL CONTENT VIEW ================= -->
+  <section id="editorial-view" hidden>
+
+    <!-- LIST SUBVIEW (Image 2) -->
+    <div id="editorial-list-subview">
+      <div class="engine-status-bar">
+        <span class="engine-badge">EDITORIAL CMS ENGINE ACTIVE</span>
+        <span class="engine-live"><span class="status-dot"></span> Status: Connected</span>
+      </div>
+
+      <div class="view-header">
+        <div>
+          <span class="eyebrow">CONTENT REPOSITORY</span>
+          <h1 class="view-title">EDITORIAL CONTENT MANAGEMENT</h1>
+          <p class="view-desc">Manage Articles, News, and Blogs with publication workflows &amp; featured overrides.</p>
+        </div>
+        <button id="add-content-btn" type="button" class="btn btn-action-primary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          ADD NEW CONTENT
+        </button>
+      </div>
+
+      <!-- Filters & Search Toolbar -->
+      <div class="editorial-filter-bar">
+        <div class="filter-group">
+          <span class="filter-label">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
+            FILTERS:
+          </span>
+          <select id="ed-type-filter" class="input input-sm">
+            <option value="">All Types</option>
+            <option value="ARTICLE">Article</option>
+            <option value="BLOG">Blog</option>
+            <option value="NEWS">News</option>
+          </select>
+          <select id="ed-status-filter" class="input input-sm">
+            <option value="">All Statuses</option>
+            <option value="PUBLISHED">Published</option>
+            <option value="DRAFT">Draft</option>
+            <option value="SCHEDULED">Scheduled</option>
+            <option value="ARCHIVED">Archived</option>
+          </select>
+        </div>
+        <form id="ed-search-form" class="ed-search-form">
+          <div class="search-input-wrap">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input id="ed-search-input" type="search" class="input input-sm" placeholder="Search title, slug, brief...">
+          </div>
+          <button type="submit" class="btn btn-dark-action">SEARCH</button>
+        </form>
+      </div>
+
+      <!-- Content Management Table -->
+      <div class="table-wrap">
+        <table class="table editorial-table">
+          <thead>
+            <tr>
+              <th class="th-sortable" data-sort="primary_feature">PRIMARY FEATURE <span class="sort-icon">⇅</span></th>
+              <th class="th-sortable" data-sort="title">TITLE &amp; TOPIC <span class="sort-icon">⇅</span></th>
+              <th class="th-sortable" data-sort="type">TYPE <span class="sort-icon">⇅</span></th>
+              <th class="th-sortable" data-sort="author">AUTHOR ATTRIBUTION <span class="sort-icon">⇅</span></th>
+              <th class="th-sortable" data-sort="status">STATUS <span class="sort-icon">⇅</span></th>
+              <th class="th-sortable" data-sort="reads">READS <span class="sort-icon">⇅</span></th>
+              <th style="text-align:right">ACTIONS</th>
+            </tr>
+          </thead>
+          <tbody id="ed-rows"></tbody>
+        </table>
+        <div id="ed-empty" class="empty" hidden>No editorial content found. Click "ADD NEW CONTENT" to write your first blog!</div>
+        <div id="ed-list-error" class="error error-block" role="alert" hidden></div>
+      </div>
+
+      <footer class="pager">
+        <span id="ed-pager-info" class="muted"></span>
+        <div class="pager-btns">
+          <button id="ed-prev-btn" type="button" class="btn btn-ghost">Previous</button>
+          <button id="ed-next-btn" type="button" class="btn btn-ghost">Next</button>
+        </div>
+      </footer>
     </div>
-    <div class="toolbar-right">
-      <select id="status-filter" class="input input-sm" aria-label="Status">
-        <option value="">Any status</option>
-        <option value="new">New</option>
-        <option value="contacted">Contacted</option>
-        <option value="archived">Archived</option>
-      </select>
-      <input id="search" type="search" class="input input-sm" placeholder="Search name, email, company" aria-label="Search">
+
+    <!-- WORKSPACE / EDITOR SUBVIEW (Image 1) -->
+    <div id="editorial-editor-subview" hidden>
+      <div class="editor-topbar">
+        <div class="editor-topbar-left">
+          <button id="ed-cancel-btn-top" type="button" class="back-link-btn" title="Back to content repository">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
+          <div>
+            <span class="eyebrow">EDITORIAL WORKSPACE</span>
+            <h1 id="ed-editor-title" class="editor-heading">NEW EDITORIAL ITEM</h1>
+            <p id="ed-editor-subtitle" class="editor-subhead">Article / Blog Piece (Optional Author)</p>
+          </div>
+        </div>
+        <div class="editor-topbar-actions">
+          <button id="ed-cancel-btn" type="button" class="btn btn-ghost">CANCEL</button>
+          <button id="ed-save-btn" type="button" class="btn btn-action-primary">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            <span id="ed-save-label">CREATE &amp; PUBLISH</span>
+          </button>
+        </div>
+      </div>
+
+      <div id="ed-draft-banner" class="draft-banner" hidden>
+        <span>An unsaved draft was automatically restored from your local storage.</span>
+        <button id="ed-discard-draft-btn" type="button" class="btn btn-sm btn-ghost">Discard Draft</button>
+      </div>
+
+      <form id="editorial-form" class="editor-grid">
+        <!-- Main Form Column -->
+        <div class="editor-main-col">
+          <!-- Title & Brief Card -->
+          <div class="editor-card">
+            <div class="field-block">
+              <label for="ed-title" class="ed-label">HEADLINE / TITLE <span class="req">*</span></label>
+              <input id="ed-title" type="text" class="input input-lg" required placeholder="e.g. Quantum Cryptography Standards for Enterprise Infrastructure">
+            </div>
+
+            <div class="field-block">
+              <label for="ed-slug" class="ed-label">URL SLUG (AUTO-GENERATED IF LEFT BLANK)</label>
+              <input id="ed-slug" type="text" class="input" placeholder="quantum-cryptography-standards">
+            </div>
+
+            <div class="field-block">
+              <label for="ed-brief" class="ed-label">BRIEF SUMMARY / EXCERPT</label>
+              <textarea id="ed-brief" class="input textarea" rows="3" placeholder="Short introductory summary displayed on listing cards..."></textarea>
+            </div>
+          </div>
+
+          <!-- Rich Text Article Body Card -->
+          <div class="editor-card">
+            <div class="field-block-header">
+              <label class="ed-label">ARTICLE BODY (RICH TEXT / HTML / MARKDOWN) <span class="req">*</span></label>
+              <span class="ed-hint">Stored XSS sanitization runs automatically on save to strip harmful scripts.</span>
+            </div>
+
+            <!-- Custom Quill Toolbar -->
+            <div id="quill-toolbar" class="quill-custom-toolbar">
+              <span class="ql-formats">
+                <button class="ql-bold" title="Bold"></button>
+                <button class="ql-italic" title="Italic"></button>
+                <button class="ql-underline" title="Underline"></button>
+                <button class="ql-strike" title="Strikethrough"></button>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-header" value="2" title="Heading 2">H2</button>
+                <button class="ql-header" value="3" title="Heading 3">H3</button>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-list" value="ordered" title="Ordered List"></button>
+                <button class="ql-list" value="bullet" title="Bullet List"></button>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-blockquote" title="Quote"></button>
+                <button class="ql-code-block" title="Code Block"></button>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-link" title="Insert Link"></button>
+                <button class="ql-image" title="Insert Image"></button>
+                <button class="ql-video" title="Insert Video"></button>
+              </span>
+              <span class="ql-formats">
+                <button class="ql-clean" title="Clear Formatting"></button>
+              </span>
+            </div>
+
+            <div id="quill-editor" class="quill-editor-container"></div>
+          </div>
+
+          <!-- FAQs (Accordion) Card -->
+          <div class="editor-card">
+            <div class="field-block-header">
+              <label class="ed-label">FAQS / FREQUENTLY ASKED QUESTIONS</label>
+              <button id="ed-add-faq-btn" type="button" class="btn btn-sm btn-ghost">+ Add FAQ</button>
+            </div>
+            <div id="ed-faqs-container" class="faqs-list"></div>
+          </div>
+        </div>
+
+        <!-- Sidebar Lifecycle Column -->
+        <div class="editor-side-col">
+          <!-- Publishing Lifecycle -->
+          <div class="editor-card">
+            <h3 class="side-card-title">PUBLISHING LIFECYCLE</h3>
+
+            <div class="field-block">
+              <label for="ed-type" class="ed-label">CONTENT TYPE <span class="req">*</span></label>
+              <select id="ed-type" class="input">
+                <option value="ARTICLE">Article (Author Optional)</option>
+                <option value="BLOG">Blog Post</option>
+                <option value="NEWS">News</option>
+              </select>
+            </div>
+
+            <div class="field-block">
+              <label for="ed-status" class="ed-label">EDITORIAL STATUS</label>
+              <select id="ed-status" class="input">
+                <option value="PUBLISHED">Published (Live Online)</option>
+                <option value="DRAFT">Draft (Unpublished)</option>
+                <option value="SCHEDULED">Scheduled</option>
+                <option value="ARCHIVED">Archived</option>
+              </select>
+            </div>
+
+            <div class="field-block">
+              <label for="ed-published-at" class="ed-label">DATE OF PUBLICATION</label>
+              <input id="ed-published-at" type="datetime-local" class="input">
+            </div>
+
+            <div class="featured-checkbox-card">
+              <label class="checkbox-label">
+                <input id="ed-featured-checkbox" type="checkbox">
+                <span class="checkbox-text">
+                  <strong>⭐ SET AS HOMEPAGE FEATURED</strong>
+                  <small>Exclusively features this item on the homepage split-hero. Setting this automatically unsets any prior featured piece.</small>
+                </span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Author Attribution -->
+          <div class="editor-card">
+            <div class="side-card-head">
+              <div>
+                <h3 class="side-card-title">AUTHOR ATTRIBUTION</h3>
+                <small class="ed-hint">Explicitly Optional for Articles/Blogs</small>
+              </div>
+              <button id="btn-open-author-modal" type="button" class="icon-add-btn" title="Add new author">+</button>
+            </div>
+            <select id="ed-author-select" class="input">
+              <option value="">-- No Author (General Editorial) --</option>
+            </select>
+          </div>
+
+          <!-- Category / Topic -->
+          <div class="editor-card">
+            <div class="side-card-head">
+              <div>
+                <h3 class="side-card-title">CATEGORY / TOPIC</h3>
+                <small class="ed-hint">Assign to content category</small>
+              </div>
+              <button id="btn-open-category-modal" type="button" class="icon-add-btn" title="Add new category">+</button>
+            </div>
+            <select id="ed-category-select" class="input">
+              <option value="">-- Select Category --</option>
+            </select>
+          </div>
+
+          <!-- Hero / Cover Image -->
+          <div class="editor-card">
+            <h3 class="side-card-title">COVER / HERO IMAGE</h3>
+            <div class="cover-input-group">
+              <input id="ed-cover-url" type="url" class="input" placeholder="Paste image URL (https://...)">
+              <button id="ed-convert-cover-btn" type="button" class="btn btn-sm btn-ghost" title="Download & Convert to WebP">Convert</button>
+            </div>
+            <div class="cover-upload-row">
+              <label class="btn btn-sm btn-ghost file-upload-btn">
+                <span>Upload file</span>
+                <input id="ed-cover-file" type="file" accept="image/*" hidden>
+              </label>
+              <button id="ed-remove-cover-btn" type="button" class="btn btn-sm btn-ghost" hidden>Remove image</button>
+            </div>
+            <div id="ed-cover-preview-wrap" class="cover-preview-wrap" hidden>
+              <img id="ed-cover-preview" alt="Cover preview">
+            </div>
+          </div>
+
+          <!-- SEO & Metadata -->
+          <div class="editor-card">
+            <h3 class="side-card-title">META / SEO SETTINGS</h3>
+            <div class="field-block">
+              <label for="ed-meta-title" class="ed-label">Meta Title</label>
+              <input id="ed-meta-title" type="text" class="input" placeholder="Title for search engines">
+            </div>
+            <div class="field-block">
+              <label for="ed-meta-desc" class="ed-label">Meta Description</label>
+              <textarea id="ed-meta-desc" class="input textarea" rows="2" placeholder="Brief snippet for Google & social shares"></textarea>
+            </div>
+            <div class="field-block">
+              <label for="ed-canonical-url" class="ed-label">Canonical URL</label>
+              <input id="ed-canonical-url" type="url" class="input" placeholder="https://evntiqa.com/blog/...">
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
   </section>
-
-  <section class="table-wrap">
-    <table class="table">
-      <thead>
-        <tr>
-          <th>Received</th>
-          <th>Form</th>
-          <th>Name</th>
-          <th>Company</th>
-          <th>Email</th>
-          <th>Program focus</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody id="rows"></tbody>
-    </table>
-    <div id="empty" class="empty" hidden>No responses match these filters yet.</div>
-    <div id="list-error" class="error error-block" role="alert" hidden></div>
-  </section>
-
-  <footer class="pager">
-    <span id="pager-info" class="muted"></span>
-    <div class="pager-btns">
-      <button id="prev-btn" type="button" class="btn btn-ghost">Previous</button>
-      <button id="next-btn" type="button" class="btn btn-ghost">Next</button>
-    </div>
-  </footer>
 </div>
 
-<!-- Detail drawer -->
+<!-- ================= MODALS & DRAWERS ================= -->
+
+<!-- Detail drawer for form submissions -->
 <div id="drawer-backdrop" class="drawer-backdrop" hidden></div>
 <aside id="drawer" class="drawer" aria-labelledby="d-name" aria-hidden="true">
   <div class="drawer-head">
@@ -129,6 +435,63 @@
   </div>
 </aside>
 
+<!-- Quick Add Author Modal -->
+<div id="author-modal" class="modal-backdrop" hidden>
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Add New Author</h2>
+      <button id="close-author-modal" type="button" class="icon-btn" aria-label="Close">✕</button>
+    </div>
+    <form id="author-form" class="modal-body">
+      <label for="author-name" class="field-label">Full Name <span class="req">*</span></label>
+      <input id="author-name" type="text" class="input" required placeholder="e.g. Dr. Aris Thorne">
+
+      <label for="author-designation" class="field-label field-gap">Designation / Role</label>
+      <input id="author-designation" type="text" class="input" placeholder="e.g. Chief Cryptographer & Security Fellow">
+
+      <label for="author-email" class="field-label field-gap">Email</label>
+      <input id="author-email" type="email" class="input" placeholder="e.g. author@evntiqa.com">
+
+      <label for="author-avatar" class="field-label field-gap">Avatar Image URL</label>
+      <input id="author-avatar" type="url" class="input" placeholder="https://...">
+
+      <label for="author-desc" class="field-label field-gap">Bio / Description</label>
+      <textarea id="author-desc" class="input textarea" rows="2" placeholder="Brief background about the author..."></textarea>
+
+      <div class="modal-footer">
+        <button id="cancel-author-btn" type="button" class="btn btn-ghost">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create Author</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Quick Add Category Modal -->
+<div id="category-modal" class="modal-backdrop" hidden>
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Add New Category</h2>
+      <button id="close-category-modal" type="button" class="icon-btn" aria-label="Close">✕</button>
+    </div>
+    <form id="category-form" class="modal-body">
+      <label for="category-name" class="field-label">Category Name <span class="req">*</span></label>
+      <input id="category-name" type="text" class="input" required placeholder="e.g. AI & Cloud">
+
+      <label for="category-slug" class="field-label field-gap">URL Slug (Auto-generated if blank)</label>
+      <input id="category-slug" type="text" class="input" placeholder="e.g. ai-cloud">
+
+      <label for="category-desc" class="field-label field-gap">Description</label>
+      <textarea id="category-desc" class="input textarea" rows="2" placeholder="Topic overview..."></textarea>
+
+      <div class="modal-footer">
+        <button id="cancel-category-btn" type="button" class="btn btn-ghost">Cancel</button>
+        <button type="submit" class="btn btn-primary">Create Category</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Toast notification -->
 <div id="toast" class="toast" role="status" hidden></div>
 </body>
 </html>

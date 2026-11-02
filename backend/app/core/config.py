@@ -1,4 +1,5 @@
 from functools import lru_cache
+from pathlib import Path
 from typing import Annotated, Literal
 
 from pydantic import Field, PostgresDsn, SecretStr, field_validator
@@ -18,7 +19,10 @@ class Settings(BaseSettings):
     submit_rate_limit: str = "5/minute"
     login_rate_limit: str = "5/minute"
     session_ttl_hours: int = 12
-    max_body_bytes: int = 16_384
+    max_body_bytes: int = 25 * 1024 * 1024  # 25 MB to allow image uploads
+    upload_dir: str = str(
+        (Path(__file__).resolve().parent.parent.parent / "uploads").resolve()
+    )
 
     @field_validator("allowed_origins", mode="before")
     @classmethod
