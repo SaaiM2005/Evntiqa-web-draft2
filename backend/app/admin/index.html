@@ -39,6 +39,7 @@
       <nav class="portal-nav" role="tablist" aria-label="Portal section">
         <button id="nav-forms-btn" type="button" role="tab" class="portal-tab is-active" aria-selected="true">Form responses</button>
         <button id="nav-editorial-btn" type="button" role="tab" class="portal-tab" aria-selected="false">Editorial Content</button>
+        <button id="nav-authors-btn" type="button" role="tab" class="portal-tab" aria-selected="false">Authors &amp; Bylines</button>
       </nav>
     </div>
     <div class="topbar-actions">
@@ -400,6 +401,63 @@
       </form>
     </div>
   </section>
+
+  <!-- ================= AUTHORS & BYLINES VIEW ================= -->
+  <section id="authors-view" hidden>
+    <div class="engine-status-bar">
+      <span class="engine-badge">EDITORIAL CMS ENGINE ACTIVE</span>
+      <span class="engine-live"><span class="status-dot"></span> Status: Connected</span>
+    </div>
+
+    <div class="view-header">
+      <div>
+        <span class="eyebrow">EDITORIAL MASTHEAD</span>
+        <h1 class="view-title">AUTHORS &amp; EDITORIAL CONTRIBUTORS</h1>
+        <p class="view-desc">Manage journalists, technical analysts, and guest contributors</p>
+      </div>
+      <button id="add-author-btn" type="button" class="btn btn-action-primary">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+        ADD NEW AUTHOR
+      </button>
+    </div>
+
+    <!-- Search Toolbar -->
+    <div class="authors-filter-bar">
+      <form id="authors-search-form" class="ed-search-form authors-search-form">
+        <div class="search-input-wrap">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="authors-search-input" type="search" class="input input-sm" placeholder="Search by author name or role...">
+        </div>
+        <button type="submit" class="btn btn-dark-action">SEARCH</button>
+      </form>
+    </div>
+
+    <!-- Authors Table -->
+    <div class="table-wrap">
+      <table class="table authors-table">
+        <thead>
+          <tr>
+            <th>AUTHOR</th>
+            <th>ROLE / DESIGNATION</th>
+            <th>CONTACT EMAIL</th>
+            <th>BIO / SPECIALIZATION</th>
+            <th style="text-align:right">ACTIONS</th>
+          </tr>
+        </thead>
+        <tbody id="authors-rows"></tbody>
+      </table>
+      <div id="authors-empty" class="empty" hidden>No authors found. Create an author record for journalistic bylines.</div>
+      <div id="authors-list-error" class="error error-block" role="alert" hidden></div>
+    </div>
+
+    <footer class="pager">
+      <span id="authors-pager-info" class="muted"></span>
+      <div class="pager-btns">
+        <button id="authors-prev-btn" type="button" class="btn btn-ghost">Previous</button>
+        <button id="authors-next-btn" type="button" class="btn btn-ghost">Next</button>
+      </div>
+    </footer>
+  </section>
 </div>
 
 <!-- ================= MODALS & DRAWERS ================= -->
@@ -435,32 +493,87 @@
   </div>
 </aside>
 
-<!-- Quick Add Author Modal -->
+<!-- Author Modal (Create & Edit) -->
 <div id="author-modal" class="modal-backdrop" hidden>
-  <div class="modal-card">
+  <div class="modal-card modal-card-author">
     <div class="modal-header">
-      <h2>Add New Author</h2>
+      <div class="modal-header-icon-title">
+        <div class="modal-icon-badge">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+        </div>
+        <div>
+          <h2 id="author-modal-title">ADD NEW AUTHOR</h2>
+          <p id="author-modal-sub" class="modal-sub">Inline resolution for article and news attribution</p>
+        </div>
+      </div>
       <button id="close-author-modal" type="button" class="icon-btn" aria-label="Close">✕</button>
     </div>
     <form id="author-form" class="modal-body">
-      <label for="author-name" class="field-label">Full Name <span class="req">*</span></label>
-      <input id="author-name" type="text" class="input" required placeholder="e.g. Dr. Aris Thorne">
+      <div id="author-modal-error" class="error error-block" role="alert" hidden></div>
 
-      <label for="author-designation" class="field-label field-gap">Designation / Role</label>
-      <input id="author-designation" type="text" class="input" placeholder="e.g. Chief Cryptographer & Security Fellow">
+      <div class="field-block">
+        <label for="author-name" class="field-label">FULL NAME <span class="req">*</span></label>
+        <input id="author-name" type="text" class="input" required placeholder="e.g. Dr. Sarah Jenkins">
+      </div>
 
-      <label for="author-email" class="field-label field-gap">Email</label>
-      <input id="author-email" type="email" class="input" placeholder="e.g. author@evntiqa.com">
+      <!-- Duplicate / Fuzzy Warning Alert -->
+      <div id="author-duplicate-alert" class="author-duplicate-alert" hidden>
+        <div class="duplicate-alert-content">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <span id="author-duplicate-msg"></span>
+        </div>
+        <button id="author-select-duplicate-btn" type="button" class="btn btn-sm btn-action-primary" hidden>Select Existing</button>
+      </div>
 
-      <label for="author-avatar" class="field-label field-gap">Avatar Image URL</label>
-      <input id="author-avatar" type="url" class="input" placeholder="https://...">
+      <div class="form-grid-2col">
+        <div class="field-block">
+          <label for="author-designation" class="field-label">DESIGNATION / ROLE</label>
+          <input id="author-designation" type="text" class="input" placeholder="e.g. Principal Threat Analyst">
+        </div>
+        <div class="field-block">
+          <label for="author-email" class="field-label">EMAIL ADDRESS</label>
+          <input id="author-email" type="email" class="input" placeholder="author@evntiqa.com">
+        </div>
+      </div>
 
-      <label for="author-desc" class="field-label field-gap">Bio / Description</label>
-      <textarea id="author-desc" class="input textarea" rows="2" placeholder="Brief background about the author..."></textarea>
+      <div class="field-block">
+        <label for="author-desc" class="field-label">BIOGRAPHY / DESCRIPTION <span class="req">*</span></label>
+        <textarea id="author-desc" class="input textarea" rows="3" required placeholder="Author research background, specializations, or editorial bio..."></textarea>
+      </div>
+
+      <div class="field-block">
+        <label class="field-label">AVATAR IMAGE</label>
+        <input id="author-avatar-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" hidden>
+        <div class="avatar-input-row">
+          <input id="author-avatar" type="text" inputmode="url" class="input" placeholder="Paste image URL or upload a file">
+          <button id="author-upload-btn" type="button" class="btn btn-dark-action">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+            UPLOAD
+          </button>
+        </div>
+
+        <div id="author-import-prompt" class="avatar-import-prompt" hidden>
+          <span class="muted text-xs">External URL: convert &amp; save to local storage</span>
+          <button id="author-import-btn" type="button" class="btn btn-xs btn-action-primary">Import now</button>
+        </div>
+
+        <div id="author-avatar-error" class="error text-xs" hidden></div>
+
+        <div id="author-avatar-preview-wrap" class="author-avatar-preview-wrap" hidden>
+          <img id="author-avatar-preview" src="" alt="Avatar preview" class="author-avatar-preview-img">
+          <span class="badge-webp">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Stored locally (WebP)
+          </span>
+          <button id="author-remove-avatar-btn" type="button" class="btn-link-remove">Remove</button>
+        </div>
+      </div>
 
       <div class="modal-footer">
-        <button id="cancel-author-btn" type="button" class="btn btn-ghost">Cancel</button>
-        <button type="submit" class="btn btn-primary">Create Author</button>
+        <button id="cancel-author-btn" type="button" class="btn btn-ghost">CANCEL</button>
+        <button id="submit-author-btn" type="submit" class="btn btn-action-primary">
+          <span id="submit-author-label">CREATE AUTHOR</span>
+        </button>
       </div>
     </form>
   </div>

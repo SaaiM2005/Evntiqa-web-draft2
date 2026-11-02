@@ -18,7 +18,7 @@ from PIL import Image, ImageOps, ImageSequence, UnidentifiedImageError
 
 from app.core.config import get_settings
 
-HTTP_422 = getattr(status, "HTTP_422_UNPROCESSABLE_CONTENT", status.HTTP_422_UNPROCESSABLE_ENTITY)
+HTTP_422 = status.HTTP_422_UNPROCESSABLE_CONTENT
 
 settings = get_settings()
 IMAGES_DIR = os.path.join(settings.upload_dir, "images")

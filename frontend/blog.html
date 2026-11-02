@@ -932,7 +932,8 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
 
           var metaSpan = document.createElement('span');
           metaSpan.className = 'meta';
-          metaSpan.innerHTML = '<time>' + formatDate(it.published_at || it.created_at) + '</time><i></i>' + (it.reading_time_minutes || 5) + ' min read';
+          var authorText = (it.author && it.author.name) ? ('<i></i>By ' + it.author.name) : '';
+          metaSpan.innerHTML = '<time>' + formatDate(it.published_at || it.created_at) + '</time><i></i>' + (it.reading_time_minutes || 5) + ' min read' + authorText;
 
           art.appendChild(topDiv);
           art.appendChild(h3);

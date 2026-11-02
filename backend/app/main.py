@@ -86,10 +86,14 @@ def create_app() -> FastAPI:
     app.include_router(admin_authors.router)
     app.include_router(admin_categories.router)
     app.include_router(admin_media.router)
-    app.include_router(admin_ui.router)
-
-    app.mount("/admin/assets", StaticFiles(directory=admin_ui.ADMIN_DIR / "assets"), name="admin")
+    app.mount(
+        "/admin/assets",
+        StaticFiles(directory=admin_ui.ADMIN_DIR / "assets"),
+        name="admin_assets",
+    )
     app.mount("/uploads", StaticFiles(directory=settings.upload_dir), name="uploads")
+
+    app.include_router(admin_ui.router)
     return app
 
 

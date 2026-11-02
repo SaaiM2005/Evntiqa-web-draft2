@@ -34,7 +34,12 @@ def migrate() -> None:
 async def clean_db() -> AsyncIterator[None]:
     yield
     async with get_engine().begin() as conn:
-        await conn.execute(text("TRUNCATE form_submissions, admin_sessions, admin_users"))
+        await conn.execute(
+            text(
+                "TRUNCATE form_submissions, admin_sessions, admin_users, "
+                "content_items, authors, categories CASCADE"
+            )
+        )
     limiter.reset()
 
 

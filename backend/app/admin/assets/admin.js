@@ -38,7 +38,16 @@
     authors: [],
     categories: [],
     quill: null,
-    faqs: []
+    faqs: [],
+    // Authors & Bylines
+    authorsList: [],
+    authorsTotal: 0,
+    authorsPage: 1,
+    authorsLimit: 10,
+    authorsSearch: '',
+    editingAuthor: null,
+    authorOptions: [],
+    authorModalContext: 'editorial'
   };
 
   // ---------- Utilities ----------
@@ -88,32 +97,42 @@
   var dateOnlyFmt = new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' });
 
   // =========================================================================
-  // VIEW SWITCHING (Tabs: Form Responses vs Editorial Content)
+  // VIEW SWITCHING (Tabs: Form Responses vs Editorial Content vs Authors)
   // =========================================================================
   function switchPortalTab(tab) {
     state.currentTab = tab;
     var formsBtn = $('nav-forms-btn');
     var edBtn = $('nav-editorial-btn');
+    var authorsBtn = $('nav-authors-btn');
     var formsView = $('forms-view');
     var edView = $('editorial-view');
+    var authorsView = $('authors-view');
+
+    formsBtn.classList.toggle('is-active', tab === 'forms');
+    formsBtn.setAttribute('aria-selected', tab === 'forms' ? 'true' : 'false');
+    edBtn.classList.toggle('is-active', tab === 'editorial');
+    edBtn.setAttribute('aria-selected', tab === 'editorial' ? 'true' : 'false');
+    if (authorsBtn) {
+      authorsBtn.classList.toggle('is-active', tab === 'authors');
+      authorsBtn.setAttribute('aria-selected', tab === 'authors' ? 'true' : 'false');
+    }
+
+    formsView.hidden = tab !== 'forms';
+    edView.hidden = tab !== 'editorial';
+    if (authorsView) authorsView.hidden = tab !== 'authors';
 
     if (tab === 'forms') {
-      formsBtn.classList.add('is-active');
-      formsBtn.setAttribute('aria-selected', 'true');
-      edBtn.classList.remove('is-active');
-      edBtn.setAttribute('aria-selected', 'false');
-      formsView.hidden = false;
-      edView.hidden = true;
+      window.location.hash = '#forms';
       refreshSubmissions();
-    } else {
-      edBtn.classList.add('is-active');
-      edBtn.setAttribute('aria-selected', 'true');
-      formsBtn.classList.remove('is-active');
-      formsBtn.setAttribute('aria-selected', 'false');
-      edView.hidden = false;
-      formsView.hidden = true;
+    } else if (tab === 'editorial') {
+      window.location.hash = '#editorial';
       loadReferenceData().then(function () {
         refreshEditorialList();
+      });
+    } else if (tab === 'authors') {
+      window.location.hash = '#authors';
+      loadReferenceData().then(function () {
+        refreshAuthorsList();
       });
     }
   }
@@ -400,10 +419,12 @@
   // =========================================================================
   function loadReferenceData() {
     return Promise.all([
-      requestJson(API_ADMIN_AUTHORS),
+      requestJson(API_ADMIN_AUTHORS + '/options'),
       requestJson(API_ADMIN_CATEGORIES)
     ]).then(function (results) {
-      state.authors = results[0] || [];
+      var rawAuthors = results[0];
+      state.authors = (rawAuthors && rawAuthors.items) ? rawAuthors.items : (rawAuthors || []);
+      state.authorOptions = state.authors;
       state.categories = results[1] || [];
       populateAuthorSelect();
       populateCategorySelect();
@@ -968,38 +989,414 @@
   }
 
   // =========================================================================
-  // QUICK ADD MODALS (Author & Category)
+  // AUTHORS & BYLINES MASTHEAD & MODAL
   // =========================================================================
-  function openAuthorModal() {
+
+  function normalizeAuthorName(name) {
+    if (!name) return '';
+    return name
+      .replace(/^(dr|prof|professor|mr|mrs|ms|miss|er)\.?\s+/i, '')
+      .replace(/[^\w\s]/gi, '')
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, ' ');
+  }
+
+  function calculateAuthorSimilarity(str1, str2) {
+    var n1 = normalizeAuthorName(str1);
+    var n2 = normalizeAuthorName(str2);
+    if (!n1 || !n2) return 0;
+    if (n1 === n2) return 1.0;
+
+    var t1 = n1.split(' ').sort().join(' ');
+    var t2 = n2.split(' ').sort().join(' ');
+    if (t1 === t2) return 1.0;
+
+    var len1 = n1.length;
+    var len2 = n2.length;
+    var matrix = [];
+    for (var i = 0; i <= len2; i++) {
+      matrix[i] = [i];
+    }
+    for (var j = 0; j <= len1; j++) {
+      matrix[0][j] = j;
+    }
+    for (var r = 1; r <= len2; r++) {
+      for (var c = 1; c <= len1; c++) {
+        var cost = n1[c - 1] === n2[r - 1] ? 0 : 1;
+        matrix[r][c] = Math.min(
+          matrix[r][c - 1] + 1,
+          matrix[r - 1][c] + 1,
+          matrix[r - 1][c - 1] + cost
+        );
+      }
+    }
+    var dist = matrix[len2][len1];
+    var maxLen = Math.max(len1, len2);
+    return 1 - dist / maxLen;
+  }
+
+  function checkAuthorDuplicate() {
+    var name = ($('author-name').value || '').trim();
+    var email = ($('author-email').value || '').trim().toLowerCase();
+    var alertBox = $('author-duplicate-alert');
+    var msgSpan = $('author-duplicate-msg');
+    var selectBtn = $('author-select-duplicate-btn');
+
+    if (!name || !state.authorOptions.length) {
+      alertBox.hidden = true;
+      return null;
+    }
+
+    var currentId = state.editingAuthor ? state.editingAuthor.id : null;
+    var candidates = state.authorOptions.filter(function (a) {
+      return a.id !== currentId;
+    });
+
+    // 1. Email collision
+    if (email) {
+      var emailMatch = candidates.find(function (a) {
+        return a.email && a.email.trim().toLowerCase() === email;
+      });
+      if (emailMatch) {
+        alertBox.hidden = false;
+        msgSpan.textContent = 'Author with email "' + email + '" already exists (' + emailMatch.name + ').';
+        selectBtn.hidden = state.authorModalContext !== 'editorial';
+        selectBtn.onclick = function () { selectExistingAuthor(emailMatch); };
+        return emailMatch;
+      }
+    }
+
+    // 2. Exact or normalized name collision
+    var normTyped = normalizeAuthorName(name);
+    var exactMatch = candidates.find(function (a) {
+      return a.name.trim().toLowerCase() === name.toLowerCase() ||
+             (normTyped && normalizeAuthorName(a.name) === normTyped);
+    });
+    if (exactMatch) {
+      alertBox.hidden = false;
+      msgSpan.textContent = 'An author named "' + exactMatch.name + '" already exists.';
+      selectBtn.hidden = state.authorModalContext !== 'editorial';
+      selectBtn.onclick = function () { selectExistingAuthor(exactMatch); };
+      return exactMatch;
+    }
+
+    // 3. Fuzzy similarity >= 85%
+    var bestRatio = 0;
+    var bestAuthor = null;
+    candidates.forEach(function (a) {
+      var ratio = calculateAuthorSimilarity(name, a.name);
+      if (ratio > bestRatio) {
+        bestRatio = ratio;
+        bestAuthor = a;
+      }
+    });
+
+    if (bestRatio >= 0.85 && bestAuthor) {
+      var pct = Math.round(bestRatio * 100);
+      alertBox.hidden = false;
+      msgSpan.textContent = 'Similar author detected: "' + bestAuthor.name + '" (' + pct + '% match).';
+      selectBtn.hidden = state.authorModalContext !== 'editorial';
+      selectBtn.onclick = function () { selectExistingAuthor(bestAuthor); };
+      return bestAuthor;
+    }
+
+    alertBox.hidden = true;
+    return null;
+  }
+
+  function selectExistingAuthor(author) {
+    if (state.authorModalContext === 'editorial' && $('ed-author-select')) {
+      $('ed-author-select').value = author.id;
+      closeAuthorModal();
+      toast('Selected existing author: ' + author.name);
+    }
+  }
+
+  function refreshAuthorsList() {
+    $('authors-list-error').hidden = true;
+    var params = [
+      'limit=' + state.authorsLimit,
+      'offset=' + ((state.authorsPage - 1) * state.authorsLimit)
+    ];
+    if (state.authorsSearch) {
+      params.push('q=' + encodeURIComponent(state.authorsSearch));
+    }
+    requestJson(API_ADMIN_AUTHORS + '?' + params.join('&'))
+      .then(function (data) {
+        state.authorsList = (data && data.items) ? data.items : [];
+        state.authorsTotal = (data && typeof data.total === 'number') ? data.total : state.authorsList.length;
+        renderAuthorsTable();
+        renderAuthorsPager();
+      })
+      .catch(function (err) {
+        $('authors-list-error').textContent = 'Could not load authors: ' + err.message;
+        $('authors-list-error').hidden = false;
+      });
+  }
+
+  function renderAuthorsTable() {
+    var tbody = $('authors-rows');
+    tbody.innerHTML = '';
+    var items = state.authorsList || [];
+    $('authors-empty').hidden = items.length > 0;
+
+    items.forEach(function (a) {
+      var tr = document.createElement('tr');
+
+      // Author column (avatar + name)
+      var tdAuthor = document.createElement('td');
+      var cellDiv = document.createElement('div');
+      cellDiv.className = 'author-cell';
+      if (a.avatar_url) {
+        var img = document.createElement('img');
+        img.src = a.avatar_url;
+        img.className = 'author-avatar-img';
+        img.alt = '';
+        cellDiv.appendChild(img);
+      } else {
+        var fallback = document.createElement('div');
+        fallback.className = 'author-avatar-fallback';
+        fallback.textContent = (a.name || 'A').charAt(0).toUpperCase();
+        cellDiv.appendChild(fallback);
+      }
+      var nameSpan = document.createElement('span');
+      nameSpan.className = 'author-name-text';
+      nameSpan.textContent = a.name;
+      cellDiv.appendChild(nameSpan);
+      tdAuthor.appendChild(cellDiv);
+      tr.appendChild(tdAuthor);
+
+      // Role / Designation
+      var tdRole = document.createElement('td');
+      tdRole.textContent = a.designation || 'Contributing Writer';
+      tdRole.className = 'muted text-xs';
+      tr.appendChild(tdRole);
+
+      // Email
+      var tdEmail = document.createElement('td');
+      tdEmail.textContent = a.email || '—';
+      tdEmail.className = 'muted text-xs';
+      tdEmail.style.fontFamily = 'monospace';
+      tr.appendChild(tdEmail);
+
+      // Bio / Specialization
+      var tdBio = document.createElement('td');
+      tdBio.textContent = a.description || '—';
+      tdBio.className = 'muted text-xs';
+      tdBio.style.maxWidth = '320px';
+      tdBio.style.overflow = 'hidden';
+      tdBio.style.textOverflow = 'ellipsis';
+      tdBio.style.whiteSpace = 'nowrap';
+      tdBio.title = a.description || '';
+      tr.appendChild(tdBio);
+
+      // Actions (Edit & Delete)
+      var tdActions = document.createElement('td');
+      tdActions.style.textAlign = 'right';
+      var actionsDiv = document.createElement('div');
+      actionsDiv.className = 'author-actions-cell';
+
+      var editBtn = document.createElement('button');
+      editBtn.type = 'button';
+      editBtn.className = 'btn-action-icon';
+      editBtn.title = 'Edit Author';
+      editBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>';
+      editBtn.addEventListener('click', function () {
+        openAuthorModal(a, 'masthead');
+      });
+      actionsDiv.appendChild(editBtn);
+
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'btn-action-icon btn-action-delete';
+      delBtn.title = 'Delete Author';
+      delBtn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>';
+      delBtn.addEventListener('click', function () {
+        deleteAuthor(a.id, a.name);
+      });
+      actionsDiv.appendChild(delBtn);
+
+      tdActions.appendChild(actionsDiv);
+      tr.appendChild(tdActions);
+
+      tbody.appendChild(tr);
+    });
+  }
+
+  function renderAuthorsPager() {
+    var total = state.authorsTotal;
+    var start = total === 0 ? 0 : (state.authorsPage - 1) * state.authorsLimit + 1;
+    var end = Math.min(state.authorsPage * state.authorsLimit, total);
+    $('authors-pager-info').textContent = 'Showing ' + start + '–' + end + ' of ' + total + ' authors';
+    $('authors-prev-btn').disabled = state.authorsPage <= 1;
+    $('authors-next-btn').disabled = end >= total;
+  }
+
+  function deleteAuthor(id, name) {
+    if (!window.confirm('Are you sure you want to delete author "' + name + '"? Existing articles will retain general editorial status.')) return;
+    requestJson(API_ADMIN_AUTHORS + '/' + id, { method: 'DELETE' })
+      .then(function () {
+        toast('Author "' + name + '" deleted.');
+        loadReferenceData();
+        refreshAuthorsList();
+      })
+      .catch(function (err) {
+        toast(err.message || 'Failed to delete author.', true);
+      });
+  }
+
+  function openAuthorModal(author, context) {
+    state.editingAuthor = author || null;
+    state.authorModalContext = context || 'editorial';
     $('author-form').reset();
+    $('author-modal-error').hidden = true;
+    $('author-duplicate-alert').hidden = true;
+    $('author-avatar-error').hidden = true;
+    $('author-import-prompt').hidden = true;
+    $('author-avatar-preview-wrap').hidden = true;
+
+    if (author) {
+      $('author-modal-title').textContent = 'EDIT AUTHOR / EDITORIAL CONTRIBUTOR';
+      $('author-modal-sub').textContent = 'Update biographical details and attribution';
+      $('submit-author-label').textContent = 'SAVE CHANGES';
+      $('author-name').value = author.name || '';
+      $('author-designation').value = author.designation || '';
+      $('author-email').value = author.email || '';
+      $('author-desc').value = author.description || '';
+      $('author-avatar').value = author.avatar_url || '';
+      if (author.avatar_url) {
+        $('author-avatar-preview').src = author.avatar_url;
+        $('author-avatar-preview-wrap').hidden = false;
+      }
+    } else {
+      $('author-modal-title').textContent = 'ADD NEW AUTHOR';
+      $('author-modal-sub').textContent = 'Inline resolution for article and news attribution';
+      $('submit-author-label').textContent = 'CREATE AUTHOR';
+    }
+
+    requestJson(API_ADMIN_AUTHORS + '/options').then(function (opts) {
+      state.authorOptions = opts || [];
+    }).catch(function () {});
+
     $('author-modal').hidden = false;
     $('author-name').focus();
   }
+
   function closeAuthorModal() {
     $('author-modal').hidden = true;
+    state.editingAuthor = null;
   }
-  function submitAuthorModal(e) {
-    e.preventDefault();
-    var payload = {
-      name: $('author-name').value.trim(),
-      designation: $('author-designation').value.trim() || null,
-      email: $('author-email').value.trim() || null,
-      avatar_url: $('author-avatar').value.trim() || null,
-      description: $('author-desc').value.trim() || ''
-    };
-    if (!payload.name) return;
-    requestJson(API_ADMIN_AUTHORS, {
+
+  function handleAvatarFileUpload(e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      $('author-avatar-error').textContent = 'Please select a valid image file (.png, .jpeg, .webp, .gif).';
+      $('author-avatar-error').hidden = false;
+      return;
+    }
+    $('author-avatar-error').hidden = true;
+    var fd = new FormData();
+    fd.append('file', file);
+
+    fetch(API_ADMIN_MEDIA + '/upload', {
+      method: 'POST',
+      credentials: 'same-origin',
+      body: fd
+    }).then(function (res) {
+      if (!res.ok) return res.json().then(function (d) { throw new Error(d.detail || 'Upload failed'); });
+      return res.json();
+    }).then(function (data) {
+      if (data && data.url) {
+        $('author-avatar').value = data.url;
+        $('author-avatar-preview').src = data.url;
+        $('author-avatar-preview-wrap').hidden = false;
+        $('author-import-prompt').hidden = true;
+        toast('Avatar uploaded & converted to WebP');
+      }
+    }).catch(function (err) {
+      $('author-avatar-error').textContent = err.message || 'Failed to upload avatar.';
+      $('author-avatar-error').hidden = false;
+    }).finally(function () {
+      e.target.value = '';
+    });
+  }
+
+  function handleAvatarUrlConvert() {
+    var url = ($('author-avatar').value || '').trim();
+    if (!url || url.startsWith('/uploads/')) return;
+    $('author-avatar-error').hidden = true;
+
+    requestJson(API_ADMIN_MEDIA + '/process-url', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    }).then(function (newAuthor) {
-      state.authors.push(newAuthor);
-      populateAuthorSelect();
-      $('ed-author-select').value = newAuthor.id;
-      closeAuthorModal();
-      toast('Author "' + newAuthor.name + '" added!');
+      body: JSON.stringify({ url: url })
+    }).then(function (data) {
+      if (data && data.url) {
+        $('author-avatar').value = data.url;
+        $('author-avatar-preview').src = data.url;
+        $('author-avatar-preview-wrap').hidden = false;
+        $('author-import-prompt').hidden = true;
+        toast('Avatar imported & converted to WebP');
+      }
     }).catch(function (err) {
-      toast('Could not create author: ' + err.message, true);
+      $('author-avatar-error').textContent = err.message || 'Failed to process avatar URL.';
+      $('author-avatar-error').hidden = false;
+    });
+  }
+
+  function submitAuthorModal(e) {
+    e.preventDefault();
+    $('author-modal-error').hidden = true;
+
+    var name = $('author-name').value.trim();
+    var desc = $('author-desc').value.trim();
+    var email = $('author-email').value.trim() || null;
+    var designation = $('author-designation').value.trim() || null;
+    var avatarUrl = $('author-avatar').value.trim() || null;
+
+    if (!name) {
+      $('author-modal-error').textContent = 'Author name is required.';
+      $('author-modal-error').hidden = false;
+      return;
+    }
+    if (!desc || desc.length < 5) {
+      $('author-modal-error').textContent = 'Author bio/description must be at least 5 characters.';
+      $('author-modal-error').hidden = false;
+      return;
+    }
+
+    var payload = {
+      name: name,
+      description: desc,
+      email: email,
+      designation: designation,
+      avatar_url: avatarUrl
+    };
+
+    var isEdit = Boolean(state.editingAuthor && state.editingAuthor.id);
+    var url = isEdit ? (API_ADMIN_AUTHORS + '/' + state.editingAuthor.id) : API_ADMIN_AUTHORS;
+    var method = isEdit ? 'PUT' : 'POST';
+
+    requestJson(url, {
+      method: method,
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(function (savedAuthor) {
+      closeAuthorModal();
+      toast(isEdit ? ('Author "' + savedAuthor.name + '" updated!') : ('Author "' + savedAuthor.name + '" added!'));
+      loadReferenceData().then(function () {
+        if (state.authorModalContext === 'editorial' && $('ed-author-select')) {
+          $('ed-author-select').value = savedAuthor.id;
+        }
+      });
+      if (state.currentTab === 'authors') {
+        refreshAuthorsList();
+      }
+    }).catch(function (err) {
+      $('author-modal-error').textContent = err.message || 'Failed to save author.';
+      $('author-modal-error').hidden = false;
     });
   }
 
@@ -1260,15 +1657,62 @@
     });
 
     // Modals
-    $('btn-open-author-modal').addEventListener('click', openAuthorModal);
+    $('btn-open-author-modal').addEventListener('click', function () { openAuthorModal(null, 'editorial'); });
     $('close-author-modal').addEventListener('click', closeAuthorModal);
     $('cancel-author-btn').addEventListener('click', closeAuthorModal);
     $('author-form').addEventListener('submit', submitAuthorModal);
+
+    // Author duplicate checking & avatar upload/convert
+    $('author-name').addEventListener('input', checkAuthorDuplicate);
+    $('author-email').addEventListener('input', checkAuthorDuplicate);
+    $('author-upload-btn').addEventListener('click', function () { $('author-avatar-file').click(); });
+    $('author-avatar-file').addEventListener('change', handleAvatarFileUpload);
+    $('author-import-btn').addEventListener('click', handleAvatarUrlConvert);
+    $('author-remove-avatar-btn').addEventListener('click', function () {
+      $('author-avatar').value = '';
+      $('author-avatar-preview-wrap').hidden = true;
+      $('author-import-prompt').hidden = true;
+    });
+    $('author-avatar').addEventListener('input', function () {
+      var val = ($('author-avatar').value || '').trim();
+      if (val && !val.startsWith('/uploads/')) {
+        $('author-import-prompt').hidden = false;
+      } else {
+        $('author-import-prompt').hidden = true;
+      }
+    });
+
+    // Authors & Bylines Masthead Page
+    $('nav-authors-btn').addEventListener('click', function () { switchPortalTab('authors'); });
+    $('add-author-btn').addEventListener('click', function () { openAuthorModal(null, 'masthead'); });
+    $('authors-search-form').addEventListener('submit', function (e) {
+      e.preventDefault();
+      state.authorsSearch = ($('authors-search-input').value || '').trim();
+      state.authorsPage = 1;
+      refreshAuthorsList();
+    });
+    $('authors-prev-btn').addEventListener('click', function () {
+      if (state.authorsPage > 1) { state.authorsPage--; refreshAuthorsList(); }
+    });
+    $('authors-next-btn').addEventListener('click', function () {
+      state.authorsPage++; refreshAuthorsList();
+    });
 
     $('btn-open-category-modal').addEventListener('click', openCategoryModal);
     $('close-category-modal').addEventListener('click', closeCategoryModal);
     $('cancel-category-btn').addEventListener('click', closeCategoryModal);
     $('category-form').addEventListener('submit', submitCategoryModal);
+
+    // Initial tab from pathname or hash
+    var path = window.location.pathname.toLowerCase();
+    var hash = (window.location.hash || '').replace('#', '').toLowerCase();
+    if (path.indexOf('/authors') !== -1 || hash === 'authors') {
+      state.currentTab = 'authors';
+    } else if (path.indexOf('/editorial') !== -1 || path.indexOf('/content') !== -1 || hash === 'editorial') {
+      state.currentTab = 'editorial';
+    } else {
+      state.currentTab = 'forms';
+    }
 
     // Initial session verification
     checkSession();
