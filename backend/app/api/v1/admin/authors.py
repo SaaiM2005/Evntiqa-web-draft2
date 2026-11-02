@@ -1,13 +1,11 @@
-import uuid
-
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import require_admin
 from app.db.session import get_session
 from app.models.author import Author
-from app.schemas.author import AuthorCreate, AuthorResponse, AuthorUpdate
+from app.schemas.author import AuthorCreate, AuthorResponse
 
 router = APIRouter(
     prefix="/api/v1/admin/authors",
@@ -35,7 +33,10 @@ async def create_author(
             select(Author.id).where(func.lower(Author.email) == author_in.email.lower())
         )
         if existing:
-            raise HTTPException(status.HTTP_409_CONFLICT, "An author with this email already exists.")
+            raise HTTPException(
+                status.HTTP_409_CONFLICT,
+                "An author with this email already exists.",
+            )
 
     author = Author(**author_in.model_dump())
     db.add(author)

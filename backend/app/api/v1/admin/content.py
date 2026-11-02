@@ -1,5 +1,6 @@
 import uuid
 from datetime import UTC, datetime
+from typing import Any
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import func, select
@@ -33,7 +34,9 @@ router = APIRouter(
 @router.get("", response_model=Page[AdminContentListItem])
 async def list_content_items(
     type: ContentType | None = Query(None, description="Filter by type (NEWS, ARTICLE, BLOG)"),
-    status_filter: ContentStatus | None = Query(None, alias="status", description="Filter by status"),
+    status_filter: ContentStatus | None = Query(
+        None, alias="status", description="Filter by status"
+    ),
     category_id: uuid.UUID | None = Query(None, description="Filter by category ID"),
     q: str | None = Query(None, max_length=200, description="Search by title, brief, or slug"),
     sort_by: str = Query("created_at"),
@@ -41,15 +44,13 @@ async def list_content_items(
     limit: int = Query(DEFAULT_PAGE_SIZE, ge=1, le=MAX_PAGE_SIZE),
     offset: int = Query(0, ge=0),
     db: AsyncSession = Depends(get_session),
-) -> dict:
-    stmt = (
-        select(ContentItem)
-        .options(
-            selectinload(ContentItem.author),
-            selectinload(ContentItem.category),
-        )
+) -> dict[str, Any]:
+    stmt = select(ContentItem).options(
+        selectinload(ContentItem.author),
+        selectinload(ContentItem.category),
     )
 
+    order_col: Any
     if sort_by == "author":
         stmt = stmt.outerjoin(Author, ContentItem.author_id == Author.id)
         order_col = Author.name
@@ -221,7 +222,9 @@ async def update_content_item(
             update_data["published_at"] = datetime.now(UTC)
 
     if "faqs" in update_data and update_data["faqs"] is not None:
-        update_data["faqs"] = [f if isinstance(f, dict) else f.model_dump() for f in update_data["faqs"]]
+        update_data["faqs"] = [
+            f if isinstance(f, dict) else f.model_dump() for f in update_data["faqs"]
+        ]
 
     for field, value in update_data.items():
         setattr(item, field, value)

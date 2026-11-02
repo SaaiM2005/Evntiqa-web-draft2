@@ -12,7 +12,9 @@ router = APIRouter(
 
 
 class ProcessUrlRequest(BaseModel):
-    url: str = Field(..., description="External image URL to validate, download, and convert to WebP")
+    url: str = Field(
+        ..., description="External image URL to validate, download, and convert to WebP"
+    )
 
 
 class MediaResponse(BaseModel):

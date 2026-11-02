@@ -3,7 +3,7 @@ import uuid
 from sqlalchemy import select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.content import ContentItem, ContentStatus, ContentType
+from app.models.content import ContentItem, ContentStatus
 
 
 async def clear_primary_featured(

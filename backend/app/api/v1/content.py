@@ -87,7 +87,10 @@ async def get_content_by_slug(
     result = await db.execute(stmt)
     item = result.scalar_one_or_none()
     if not item:
-        raise HTTPException(status.HTTP_404_NOT_FOUND, f"No published article found for slug '{slug}'.")
+        raise HTTPException(
+            status.HTTP_404_NOT_FOUND,
+            f"No published article found for slug '{slug}'.",
+        )
 
     # Increment view count
     await db.execute(

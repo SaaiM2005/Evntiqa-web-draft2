@@ -119,7 +119,7 @@ def sanitize_html_content(raw_html: str) -> str:
 
     safe_iframes: list[str] = []
 
-    def save_safe_iframe(match: re.Match) -> str:
+    def save_safe_iframe(match: re.Match[str]) -> str:
         src_url = match.group(1)
         if not _is_valid_video_embed_url(src_url):
             return ""
@@ -144,7 +144,7 @@ def sanitize_html_content(raw_html: str) -> str:
 
     cleaned = UNSAFE_DATA_HREF_RE.sub('href="#"', cleaned)
 
-    def filter_data_src(match: re.Match) -> str:
+    def filter_data_src(match: re.Match[str]) -> str:
         prefix, data_uri, suffix = match.group(1), match.group(2), match.group(3)
         if SAFE_RASTER_DATA_IMAGE_RE.match(data_uri.strip()):
             return f"{prefix}{data_uri.strip()}{suffix}"

@@ -9,6 +9,7 @@ import os
 import re
 import socket
 import uuid
+from typing import Any
 from urllib.parse import urlparse
 
 import httpx
@@ -17,7 +18,7 @@ from PIL import Image, ImageOps, ImageSequence, UnidentifiedImageError
 
 from app.core.config import get_settings
 
-HTTP_422 = status.HTTP_422_UNPROCESSABLE_ENTITY
+HTTP_422 = getattr(status, "HTTP_422_UNPROCESSABLE_CONTENT", status.HTTP_422_UNPROCESSABLE_ENTITY)
 
 settings = get_settings()
 IMAGES_DIR = os.path.join(settings.upload_dir, "images")
@@ -122,7 +123,7 @@ def is_ssrf_safe_url(url: str, allow_local_for_testing: bool = False) -> bool:
 
     for *_, sockaddr in addr_info:
         try:
-            ip_obj = ipaddress.ip_address(sockaddr[0].split("%", 1)[0])
+            ip_obj = ipaddress.ip_address(str(sockaddr[0]).split("%", 1)[0])
         except ValueError:
             return False
         if not _is_public_ip(ip_obj):
@@ -152,7 +153,8 @@ async def _fetch_external(
                     )
                     if not safe:
                         raise _unprocessable(
-                            "The provided URL points to a restricted, private, or unresolvable network address."
+                            "The provided URL points to a restricted, private, "
+                            "or unresolvable network address."
                         )
 
                     async with client.stream("GET", current) as resp:
@@ -165,7 +167,8 @@ async def _fetch_external(
 
                         if resp.status_code != 200:
                             raise _unprocessable(
-                                f"The URL returned HTTP {resp.status_code}. Please verify it is publicly accessible."
+                                f"The URL returned HTTP {resp.status_code}. "
+                                "Please verify it is publicly accessible."
                             )
 
                         declared = resp.headers.get("content-length")
@@ -257,17 +260,19 @@ def process_image_to_webp(
     quality: int = 85,
 ) -> tuple[bytes, int, int]:
     try:
-        img = Image.open(io.BytesIO(image_bytes))
+        img: Image.Image = Image.open(io.BytesIO(image_bytes))
     except Image.DecompressionBombError:
         raise _unprocessable("Image dimensions are too large to process.") from None
     except (UnidentifiedImageError, OSError, ValueError):
         raise _unprocessable(
-            "The image file could not be recognized or decoded. Supported formats: .png, .jpeg, .webp, .gif."
+            "The image file could not be recognized or decoded. "
+            "Supported formats: .png, .jpeg, .webp, .gif."
         ) from None
 
     if not img.format or img.format.upper() not in ALLOWED_PIL_FORMATS:
         raise _unprocessable(
-            f"Unsupported image format: '{img.format}'. Supported formats: .png, .jpeg, .webp, .gif, .bmp."
+            f"Unsupported image format: '{img.format}'. "
+            "Supported formats: .png, .jpeg, .webp, .gif, .bmp."
         )
 
     width, height = img.size
@@ -343,7 +348,7 @@ async def _convert_and_store(image_bytes: bytes) -> tuple[str, int, int, int]:
     return local_url, width, height, len(webp_bytes)
 
 
-async def ingest_image_url(url: str, allow_local: bool = False) -> dict:
+async def ingest_image_url(url: str, allow_local: bool = False) -> dict[str, Any]:
     if not url or not url.strip():
         raise _unprocessable("Image URL cannot be empty.")
     url = url.strip()
@@ -370,13 +375,12 @@ async def ingest_image_url(url: str, allow_local: bool = False) -> dict:
     }
 
 
-async def ingest_image_file(file_bytes: bytes, filename: str = "upload.png") -> dict:
+async def ingest_image_file(file_bytes: bytes, filename: str = "upload.png") -> dict[str, Any]:
     if not file_bytes:
         raise _unprocessable("Uploaded file is empty.")
     if len(file_bytes) > MAX_IMAGE_SIZE_BYTES:
-        raise _unprocessable(
-            f"Image file exceeds maximum allowable size of {MAX_IMAGE_SIZE_BYTES // (1024 * 1024)}MB."
-        )
+        max_mb = MAX_IMAGE_SIZE_BYTES // (1024 * 1024)
+        raise _unprocessable(f"Image file exceeds maximum allowable size of {max_mb}MB.")
 
     local_url, width, height, size = await _convert_and_store(file_bytes)
     return {
@@ -396,7 +400,7 @@ async def ensure_local_image(url: str | None, label: str = "Image") -> str | Non
         result = await ingest_image_url(url)
     except HTTPException as exc:
         raise _unprocessable(f"{label}: {exc.detail}") from None
-    return result["url"]
+    return str(result["url"])
 
 
 def _describe_src(src: str) -> str:
@@ -427,7 +431,8 @@ async def localize_html_images(content: str | None) -> str | None:
 
     if len(pending) > MAX_BODY_IMAGES_PER_SAVE:
         raise _unprocessable(
-            f"Content contains {len(pending)} external or inline images; at most {MAX_BODY_IMAGES_PER_SAVE} can be imported per save."
+            f"Content contains {len(pending)} external or inline images; "
+            f"at most {MAX_BODY_IMAGES_PER_SAVE} can be imported per save."
         )
 
     semaphore = asyncio.Semaphore(BODY_IMAGE_CONCURRENCY)
@@ -438,8 +443,9 @@ async def localize_html_images(content: str | None) -> str | None:
             try:
                 result = await ingest_image_url(target)
             except HTTPException as exc:
+                desc = _describe_src(src)
                 raise _unprocessable(
-                    f"Image in content body could not be imported ({_describe_src(src)}): {exc.detail}"
+                    f"Image in content body could not be imported ({desc}): {exc.detail}"
                 ) from None
             replacements[raw] = result["url"]
 

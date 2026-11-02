@@ -8,20 +8,29 @@ class BodyTooLarge(Exception):
 
 
 class MaxBodySizeMiddleware:
-    """Rejects request bodies over `max_bytes`, whether or not Content-Length is sent."""
+    """Rejects request bodies over `max_bytes`, allowing `max_admin_bytes` for admin routes."""
 
-    def __init__(self, app: ASGIApp, max_bytes: int) -> None:
+    def __init__(
+        self,
+        app: ASGIApp,
+        max_bytes: int,
+        max_admin_bytes: int | None = None,
+    ) -> None:
         self.app = app
         self.max_bytes = max_bytes
+        self.max_admin_bytes = max_admin_bytes if max_admin_bytes is not None else max_bytes
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if scope["type"] != "http":
             await self.app(scope, receive, send)
             return
 
+        path = str(scope.get("path", ""))
+        limit = self.max_admin_bytes if path.startswith("/api/v1/admin/") else self.max_bytes
+
         headers = dict(scope["headers"])
         length = headers.get(b"content-length")
-        if length is not None and length.isdigit() and int(length) > self.max_bytes:
+        if length is not None and length.isdigit() and int(length) > limit:
             await self._reject(send)
             return
 
@@ -33,7 +42,7 @@ class MaxBodySizeMiddleware:
             message = await receive()
             if message["type"] == "http.request":
                 received += len(message.get("body", b""))
-                if received > self.max_bytes:
+                if received > limit:
                     raise BodyTooLarge
             return message
 

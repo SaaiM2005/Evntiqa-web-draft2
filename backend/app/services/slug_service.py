@@ -18,7 +18,7 @@ async def ensure_unique_slug(
     exclude_id: uuid.UUID | None = None,
 ) -> str:
     current_slug = slug
-    for attempt in range(MAX_SLUG_ATTEMPTS):
+    for _attempt in range(MAX_SLUG_ATTEMPTS):
         query = select(ContentItem.id).where(ContentItem.slug == current_slug)
         if exclude_id is not None:
             query = query.where(ContentItem.id != exclude_id)

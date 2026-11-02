@@ -69,7 +69,11 @@ def create_app() -> FastAPI:
         allow_headers=["Content-Type", "X-API-Key"],
         max_age=600,
     )
-    app.add_middleware(MaxBodySizeMiddleware, max_bytes=settings.max_body_bytes)
+    app.add_middleware(
+        MaxBodySizeMiddleware,
+        max_bytes=settings.max_body_bytes,
+        max_admin_bytes=settings.max_media_bytes,
+    )
 
     os.makedirs(settings.upload_dir, exist_ok=True)
     os.makedirs(os.path.join(settings.upload_dir, "images"), exist_ok=True)

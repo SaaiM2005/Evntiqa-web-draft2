@@ -10,9 +10,7 @@ from app.db.base import Base
 
 class Category(Base):
     __tablename__ = "categories"
-    __table_args__ = (
-        Index("uq_categories_name_ci", func.lower(text("name")), unique=True),
-    )
+    __table_args__ = (Index("uq_categories_name_ci", func.lower(text("name")), unique=True),)
 
     id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),

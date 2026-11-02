@@ -9,13 +9,37 @@ from app.models.category import Category
 from app.models.content import ContentItem, ContentStatus, ContentType
 
 CATEGORIES_DATA = [
-    {"name": "CISO Engagement", "slug": "engagement", "description": "Engaging senior security executives"},
+    {
+        "name": "CISO Engagement",
+        "slug": "engagement",
+        "description": "Engaging senior security executives",
+    },
     {"name": "ABM", "slug": "abm", "description": "Account-Based Marketing playbooks"},
-    {"name": "Roundtables", "slug": "roundtables", "description": "Virtual and physical executive benchmarking"},
-    {"name": "Field Marketing", "slug": "field", "description": "Field events and regional programs"},
-    {"name": "Pipeline", "slug": "pipeline", "description": "Enterprise opportunity acceleration and reactivation"},
-    {"name": "AI & Cloud", "slug": "ai-cloud", "description": "Artificial intelligence and cloud architecture security"},
-    {"name": "Cyber Security", "slug": "cyber-security", "description": "Threat intelligence and defense infrastructure"},
+    {
+        "name": "Roundtables",
+        "slug": "roundtables",
+        "description": "Virtual and physical executive benchmarking",
+    },
+    {
+        "name": "Field Marketing",
+        "slug": "field",
+        "description": "Field events and regional programs",
+    },
+    {
+        "name": "Pipeline",
+        "slug": "pipeline",
+        "description": "Enterprise opportunity acceleration and reactivation",
+    },
+    {
+        "name": "AI & Cloud",
+        "slug": "ai-cloud",
+        "description": "Artificial intelligence and cloud architecture security",
+    },
+    {
+        "name": "Cyber Security",
+        "slug": "cyber-security",
+        "description": "Threat intelligence and defense infrastructure",
+    },
 ]
 
 AUTHORS_DATA = [
@@ -147,12 +171,12 @@ async def seed() -> None:
     sessionmaker = get_sessionmaker()
     async with sessionmaker() as db:
         # Seed categories
-        cat_map = {}
+        cat_map: dict[str, Category] = {}
         for c_data in CATEGORIES_DATA:
-            existing = (
+            existing_cat = (
                 await db.execute(select(Category).where(Category.slug == c_data["slug"]))
             ).scalar_one_or_none()
-            if not existing:
+            if not existing_cat:
                 cat = Category(
                     name=c_data["name"],
                     slug=c_data["slug"],
@@ -162,15 +186,15 @@ async def seed() -> None:
                 await db.flush()
                 cat_map[c_data["slug"]] = cat
             else:
-                cat_map[c_data["slug"]] = existing
+                cat_map[c_data["slug"]] = existing_cat
 
         # Seed authors
-        author_map = {}
+        author_map: dict[str, Author] = {}
         for a_data in AUTHORS_DATA:
-            existing = (
+            existing_author = (
                 await db.execute(select(Author).where(Author.name == a_data["name"]))
             ).scalar_one_or_none()
-            if not existing:
+            if not existing_author:
                 author = Author(
                     name=a_data["name"],
                     designation=a_data["designation"],
@@ -182,14 +206,14 @@ async def seed() -> None:
                 await db.flush()
                 author_map[a_data["name"]] = author
             else:
-                author_map[a_data["name"]] = existing
+                author_map[a_data["name"]] = existing_author
 
         # Seed content items
         for art in ARTICLES_DATA:
-            existing = (
+            existing_item = (
                 await db.execute(select(ContentItem).where(ContentItem.slug == art["slug"]))
             ).scalar_one_or_none()
-            if not existing:
+            if not existing_item:
                 item = ContentItem(
                     title=art["title"],
                     slug=art["slug"],
@@ -201,7 +225,9 @@ async def seed() -> None:
                     published_at=art["published_at"],
                     reading_time_minutes=art["reading_time_minutes"],
                     category_id=cat_map[art["cat_slug"]].id if art["cat_slug"] in cat_map else None,
-                    author_id=author_map[art["author_name"]].id if art["author_name"] in author_map else None,
+                    author_id=author_map[art["author_name"]].id
+                    if art["author_name"] in author_map
+                    else None,
                 )
                 db.add(item)
 
