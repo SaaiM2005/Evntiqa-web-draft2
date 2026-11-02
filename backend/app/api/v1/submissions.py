@@ -8,6 +8,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, status
 from fastapi.responses import StreamingResponse
+from pydantic import BeforeValidator
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import Settings, get_settings
@@ -59,11 +60,31 @@ async def create_submission(
     return SubmissionCreated(id=row.id)
 
 
+def _parse_form_type(v: object) -> FormType | None:
+    if not v:
+        return None
+    if isinstance(v, FormType):
+        return v
+    return FormType(str(v))
+
+
+def _parse_status(v: object) -> SubmissionStatus | None:
+    if not v:
+        return None
+    if isinstance(v, SubmissionStatus):
+        return v
+    return SubmissionStatus(str(v))
+
+
+FormTypeDep = Annotated[FormType | None, BeforeValidator(_parse_form_type)]
+StatusDep = Annotated[SubmissionStatus | None, BeforeValidator(_parse_status)]
+
+
 @router.get("", response_model=SubmissionPage, dependencies=admin)
 async def list_submissions(
     session: SessionDep,
-    form_type: FormType | None = None,
-    status_: Annotated[SubmissionStatus | None, Query(alias="status")] = None,
+    form_type: FormTypeDep = None,
+    status_: Annotated[StatusDep, Query(alias="status")] = None,
     date_from: Annotated[datetime | None, Query(alias="from")] = None,
     date_to: Annotated[datetime | None, Query(alias="to")] = None,
     q: Annotated[str | None, Query(max_length=120)] = None,
@@ -127,8 +148,8 @@ def _csv_row(row: FormSubmission) -> list[str]:
 
 @router.get("/export.csv", dependencies=admin)
 async def export_submissions(
-    form_type: FormType | None = None,
-    status_: Annotated[SubmissionStatus | None, Query(alias="status")] = None,
+    form_type: FormTypeDep = None,
+    status_: Annotated[StatusDep, Query(alias="status")] = None,
     date_from: Annotated[datetime | None, Query(alias="from")] = None,
     date_to: Annotated[datetime | None, Query(alias="to")] = None,
     q: Annotated[str | None, Query(max_length=120)] = None,

@@ -183,6 +183,11 @@
     calendar_request: 'Calendar',
     case_study_request: 'Case study'
   };
+  var STATUS_LABELS = {
+    new: 'New',
+    contacted: 'Contacted',
+    archived: 'Archived'
+  };
   var OBJECTIVE_LABELS = {
     'roundtables': 'Virtual CISO Roundtables',
     'stalled-deals': 'Stalled account reactivation',
@@ -215,11 +220,25 @@
         }
       });
 
+    loadSubmissionsStats();
+  }
+
+  function loadSubmissionsStats() {
     requestJson(API_SUBMISSIONS + '/stats').then(function (stats) {
-      Object.keys(stats).forEach(function (k) {
+      if (!stats) return;
+      var setStat = function (k, val) {
         var el = document.querySelector('[data-stat="' + k + '"]');
-        if (el) el.textContent = Number(stats[k]).toLocaleString();
-      });
+        if (el) el.textContent = Number(val != null ? val : 0).toLocaleString();
+      };
+      setStat('total', stats.total);
+      if (stats.by_form_type) {
+        Object.keys(stats.by_form_type).forEach(function (k) {
+          setStat(k, stats.by_form_type[k]);
+        });
+      }
+      if (stats.by_status) {
+        setStat('new', stats.by_status.new);
+      }
     }).catch(function () {});
   }
 
@@ -231,7 +250,8 @@
 
     items.forEach(function (it) {
       var tr = document.createElement('tr');
-      tr.addEventListener('click', function () { openDrawer(it.id); });
+      tr.setAttribute('data-id', it.id);
+      tr.addEventListener('click', function () { openDrawer(it); });
 
       var tdDate = document.createElement('td');
       tdDate.className = 'cell-date';
@@ -256,12 +276,12 @@
 
       var tdFocus = document.createElement('td');
       tdFocus.className = 'cell-muted';
-      tdFocus.textContent = OBJECTIVE_LABELS[it.primary_objective] || it.primary_objective || '–';
+      tdFocus.textContent = OBJECTIVE_LABELS[it.objective] || it.objective || '–';
 
       var tdStatus = document.createElement('td');
       var sp = document.createElement('span');
       sp.className = 'status-pill status-' + it.status;
-      sp.textContent = it.status.charAt(0).toUpperCase() + it.status.slice(1);
+      sp.textContent = (STATUS_LABELS[it.status] || it.status);
       tdStatus.appendChild(sp);
 
       tr.appendChild(tdDate);
@@ -276,59 +296,101 @@
   }
 
   function renderSubmissionsPager() {
-    var pages = Math.max(1, Math.ceil(state.total / PAGE_SIZE));
-    $('pager-info').textContent = state.total === 0 ? '' : 'Page ' + state.page + ' of ' + pages + ' (' + state.total.toLocaleString() + ' total)';
+    var start = state.total === 0 ? 0 : (state.page - 1) * PAGE_SIZE + 1;
+    var end = Math.min(state.page * PAGE_SIZE, state.total);
+    $('pager-info').textContent = state.total === 0 ? '' : start + '–' + end + ' of ' + state.total.toLocaleString();
     $('prev-btn').disabled = state.page <= 1;
-    $('next-btn').disabled = state.page >= pages;
+    $('next-btn').disabled = end >= state.total;
   }
 
-  function openDrawer(id) {
-    requestJson(API_SUBMISSIONS + '/' + id).then(function (it) {
-      state.currentSubmission = it;
-      $('d-name').textContent = it.name;
-      $('d-sub').textContent = it.title ? it.title + ' at ' + it.company : it.company;
-      $('d-form').className = 'badge badge-' + it.form_type;
-      $('d-form').textContent = FORM_LABELS[it.form_type] || it.form_type;
-
-      var dl = $('d-fields');
-      dl.innerHTML = '';
-      function addField(label, val, isLink) {
-        if (!val) return;
-        var dt = document.createElement('dt'); dt.textContent = label;
-        var dd = document.createElement('dd');
-        if (isLink) {
-          var a = document.createElement('a'); a.href = 'mailto:' + val; a.textContent = val;
-          dd.appendChild(a);
-        } else {
-          dd.textContent = val;
-        }
-        dl.appendChild(dt); dl.appendChild(dd);
-      }
-      addField('Email', it.email, true);
-      addField('Phone', it.phone);
-      addField('Company size', it.company_size);
-      addField('Program focus', OBJECTIVE_LABELS[it.primary_objective] || it.primary_objective);
-      addField('Received', fullDateFmt.format(new Date(it.created_at)));
-
-      var msg = $('d-message');
-      msg.textContent = it.message || 'No additional message left.';
-      msg.classList.toggle('is-empty', !it.message);
-
-      document.querySelectorAll('#d-status .status-btn').forEach(function (btn) {
-        btn.classList.toggle('is-active', btn.getAttribute('data-status') === it.status);
-      });
-
-      $('d-reply').href = 'mailto:' + encodeURIComponent(it.email) + '?subject=' + encodeURIComponent('Evntiqa follow-up');
-
-      $('drawer-backdrop').hidden = false;
-      $('drawer').classList.add('is-open');
+  function openDrawer(itemOrId) {
+    if (typeof itemOrId === 'object' && itemOrId !== null) {
+      populateDrawer(itemOrId);
+      return;
+    }
+    var found = state.items.find(function (r) { return r.id === itemOrId; });
+    if (found) {
+      populateDrawer(found);
+      return;
+    }
+    requestJson(API_SUBMISSIONS + '/' + itemOrId).then(function (it) {
+      populateDrawer(it);
     }).catch(function (err) {
       toast(err.message, true);
     });
   }
 
+  function populateDrawer(it) {
+    state.currentSubmission = it;
+    var meta = it.metadata || {};
+
+    $('d-name').textContent = it.name;
+    var subParts = [it.job_title, it.company].filter(Boolean);
+    $('d-sub').textContent = subParts.join(' · ') || it.company || '';
+    $('d-form').className = 'badge badge-' + it.form_type;
+    $('d-form').textContent = FORM_LABELS[it.form_type] || it.form_type;
+
+    var dl = $('d-fields');
+    dl.innerHTML = '';
+    function addField(label, val, href) {
+      if (val == null || val === '') return;
+      var dt = document.createElement('dt'); dt.textContent = label;
+      var dd = document.createElement('dd');
+      if (href) {
+        var a = document.createElement('a'); a.href = href; a.textContent = val;
+        if (/^https?:/.test(href)) { a.target = '_blank'; a.rel = 'noopener noreferrer'; }
+        dd.appendChild(a);
+      } else {
+        dd.textContent = val;
+      }
+      dl.appendChild(dt); dl.appendChild(dd);
+    }
+
+    addField('Email', it.email, 'mailto:' + it.email);
+    addField('Company', it.company);
+    addField('Job title', it.job_title);
+    addField('Program focus', OBJECTIVE_LABELS[it.objective] || it.objective);
+    addField('Case study', meta.case_study_title);
+    addField('Received', fullDateFmt.format(new Date(it.created_at)));
+    if (meta.page_url) addField('Page', meta.page_url, meta.page_url);
+    if (meta.referrer) addField('Referrer', meta.referrer, meta.referrer);
+
+    var utm = ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content']
+      .filter(function (k) { return meta[k]; })
+      .map(function (k) { return k.replace('utm_', '') + ': ' + meta[k]; })
+      .join(' · ');
+    if (utm) addField('UTM', utm);
+    addField('ID', it.id);
+
+    var msg = $('d-message');
+    msg.textContent = it.message || 'No additional message left.';
+    msg.classList.toggle('is-empty', !it.message);
+
+    updateDrawerStatusButtons(it.status);
+
+    var subject = it.form_type === 'case_study_request' && meta.case_study_title
+      ? 'Your Evntiqa case study: ' + meta.case_study_title
+      : it.form_type === 'calendar_request'
+        ? 'Your 2027 CISO Roundtable Calendar'
+        : 'Your Evntiqa consultation request';
+    $('d-reply').href = 'mailto:' + encodeURIComponent(it.email) + '?subject=' + encodeURIComponent(subject);
+
+    $('drawer-backdrop').hidden = false;
+    $('drawer').classList.add('is-open');
+    $('drawer').setAttribute('aria-hidden', 'false');
+  }
+
+  function updateDrawerStatusButtons(status) {
+    document.querySelectorAll('#d-status .status-btn').forEach(function (btn) {
+      var active = btn.getAttribute('data-status') === status;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-checked', String(active));
+    });
+  }
+
   function closeDrawer() {
     $('drawer').classList.remove('is-open');
+    $('drawer').setAttribute('aria-hidden', 'true');
     $('drawer-backdrop').hidden = true;
     state.currentSubmission = null;
   }
@@ -993,13 +1055,43 @@
     $('nav-editorial-btn').addEventListener('click', function () { switchPortalTab('editorial'); });
 
     // Submissions interactions
+    function setFormFilter(formType) {
+      document.querySelectorAll('[data-form]').forEach(function (b) {
+        var match = (b.getAttribute('data-form') || '') === (formType || '');
+        b.classList.toggle('is-active', match);
+        b.setAttribute('aria-selected', String(match));
+      });
+      state.formType = formType || '';
+      state.page = 1;
+      refreshSubmissions();
+    }
+
     document.querySelectorAll('[data-form]').forEach(function (btn) {
       btn.addEventListener('click', function () {
-        document.querySelectorAll('[data-form]').forEach(function (b) { b.classList.remove('is-active'); });
-        btn.classList.add('is-active');
-        state.formType = btn.getAttribute('data-form');
-        state.page = 1;
-        refreshSubmissions();
+        setFormFilter(btn.getAttribute('data-form'));
+      });
+    });
+
+    // Make summary stats cards interactive quick-filters
+    document.querySelectorAll('.stats .stat').forEach(function (card) {
+      card.addEventListener('click', function () {
+        var statValueEl = card.querySelector('[data-stat]');
+        if (!statValueEl) return;
+        var statKey = statValueEl.getAttribute('data-stat');
+        if (statKey === 'total') {
+          setFormFilter('');
+          $('status-filter').value = '';
+          state.status = '';
+          state.page = 1;
+          refreshSubmissions();
+        } else if (statKey === 'new') {
+          $('status-filter').value = 'new';
+          state.status = 'new';
+          state.page = 1;
+          refreshSubmissions();
+        } else if (FORM_LABELS[statKey]) {
+          setFormFilter(statKey);
+        }
       });
     });
 
@@ -1023,23 +1115,42 @@
 
     $('drawer-close').addEventListener('click', closeDrawer);
     $('drawer-backdrop').addEventListener('click', closeDrawer);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && $('drawer').classList.contains('is-open')) closeDrawer();
+    });
 
     document.querySelectorAll('#d-status .status-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
         if (!state.currentSubmission) return;
         var newStatus = btn.getAttribute('data-status');
-        requestJson(API_SUBMISSIONS + '/' + state.currentSubmission.id + '/status', {
+        if (state.currentSubmission.status === newStatus) return;
+
+        var prevStatus = state.currentSubmission.status;
+        state.currentSubmission.status = newStatus;
+        updateDrawerStatusButtons(newStatus);
+
+        requestJson(API_SUBMISSIONS + '/' + state.currentSubmission.id, {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: newStatus })
-        }).then(function () {
-          state.currentSubmission.status = newStatus;
-          document.querySelectorAll('#d-status .status-btn').forEach(function (b) {
-            b.classList.toggle('is-active', b === btn);
-          });
-          refreshSubmissions();
-          toast('Status updated to ' + newStatus);
-        }).catch(function (err) { toast(err.message, true); });
+        }).then(function (updated) {
+          state.currentSubmission.status = updated.status;
+          updateDrawerStatusButtons(updated.status);
+
+          var item = state.items.find(function (r) { return r.id === updated.id; });
+          if (item) {
+            item.status = updated.status;
+            renderSubmissionsTable();
+          } else {
+            refreshSubmissions();
+          }
+          loadSubmissionsStats();
+          toast('Marked as ' + (STATUS_LABELS[updated.status] || updated.status).toLowerCase());
+        }).catch(function (err) {
+          state.currentSubmission.status = prevStatus;
+          updateDrawerStatusButtons(prevStatus);
+          toast(err.message, true);
+        });
       });
     });
 
