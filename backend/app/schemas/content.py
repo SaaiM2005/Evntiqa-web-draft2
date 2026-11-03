@@ -17,7 +17,7 @@ class FAQItem(BaseModel):
 
 class ContentItemBase(BaseModel):
     title: str = Field(..., min_length=3, max_length=255, description="Headline / Title")
-    type: ContentType = Field(default=ContentType.ARTICLE, description="Content type")
+    type: ContentType = Field(default=ContentType.BLOG, description="Content type")
     slug: str | None = Field(None, max_length=255, description="URL slug")
     brief: str | None = Field(None, max_length=2000, description="Short summary / excerpt")
     content: str = Field(..., min_length=1, max_length=5_000_000, description="Rich text content")

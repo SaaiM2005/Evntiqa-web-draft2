@@ -745,7 +745,7 @@
     $('ed-cover-preview-wrap').hidden = true;
     $('ed-remove-cover-btn').hidden = true;
     $('ed-featured-checkbox').checked = false;
-    $('ed-type').value = 'ARTICLE';
+    if ($('ed-type')) $('ed-type').value = 'BLOG';
     $('ed-status').value = 'PUBLISHED';
     $('ed-faqs-container').innerHTML = '';
     state.faqs = [];
@@ -764,7 +764,7 @@
     $('ed-title').value = item.title || '';
     $('ed-slug').value = item.slug || '';
     $('ed-brief').value = item.brief || '';
-    $('ed-type').value = item.type || 'ARTICLE';
+    if ($('ed-type')) $('ed-type').value = item.type || 'BLOG';
     $('ed-status').value = item.status || 'DRAFT';
     $('ed-featured-checkbox').checked = !!item.is_primary_featured;
 
@@ -1584,7 +1584,7 @@
     $('ed-meta-title').addEventListener('input', scheduleDraftSave);
     $('ed-meta-desc').addEventListener('input', scheduleDraftSave);
     $('ed-canonical-url').addEventListener('input', scheduleDraftSave);
-    $('ed-type').addEventListener('change', scheduleDraftSave);
+    if ($('ed-type')) $('ed-type').addEventListener('change', scheduleDraftSave);
     $('ed-status').addEventListener('change', scheduleDraftSave);
     $('ed-author-select').addEventListener('change', scheduleDraftSave);
     $('ed-category-select').addEventListener('change', scheduleDraftSave);
@@ -1609,11 +1609,13 @@
     $('ed-add-faq-btn').addEventListener('click', function () { addFaqItem('', ''); });
 
     // Filter bar (Image 2)
-    $('ed-type-filter').addEventListener('change', function (e) {
-      state.edTypeFilter = e.target.value;
-      state.edPage = 1;
-      refreshEditorialList();
-    });
+    if ($('ed-type-filter')) {
+      $('ed-type-filter').addEventListener('change', function (e) {
+        state.edTypeFilter = e.target.value;
+        state.edPage = 1;
+        refreshEditorialList();
+      });
+    }
     $('ed-status-filter').addEventListener('change', function (e) {
       state.edStatusFilter = e.target.value;
       state.edPage = 1;

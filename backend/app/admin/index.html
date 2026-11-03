@@ -143,12 +143,6 @@
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon></svg>
             FILTERS:
           </span>
-          <select id="ed-type-filter" class="input input-sm">
-            <option value="">All Types</option>
-            <option value="ARTICLE">Article</option>
-            <option value="BLOG">Blog</option>
-            <option value="NEWS">News</option>
-          </select>
           <select id="ed-status-filter" class="input input-sm">
             <option value="">All Statuses</option>
             <option value="PUBLISHED">Published</option>
@@ -299,14 +293,7 @@
           <div class="editor-card">
             <h3 class="side-card-title">PUBLISHING LIFECYCLE</h3>
 
-            <div class="field-block">
-              <label for="ed-type" class="ed-label">CONTENT TYPE <span class="req">*</span></label>
-              <select id="ed-type" class="input">
-                <option value="ARTICLE">Article (Author Optional)</option>
-                <option value="BLOG">Blog Post</option>
-                <option value="NEWS">News</option>
-              </select>
-            </div>
+            <input id="ed-type" type="hidden" value="BLOG">
 
             <div class="field-block">
               <label for="ed-status" class="ed-label">EDITORIAL STATUS</label>
