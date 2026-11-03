@@ -41,7 +41,7 @@ async def admin_page(subpath: str = "") -> Response:
         headers={
             "Content-Security-Policy": CSP,
             "X-Frame-Options": "DENY",
-            "Referrer-Policy": "no-referrer",
+            "Referrer-Policy": "strict-origin-when-cross-origin",
             "Cache-Control": "no-store",
         },
     )

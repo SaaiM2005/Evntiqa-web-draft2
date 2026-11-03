@@ -683,12 +683,43 @@
   // =========================================================================
   // EDITORIAL WORKSPACE / EDITOR (Image 1)
   // =========================================================================
+  function registerCustomQuillBlots() {
+    if (typeof Quill === 'undefined' || state._quillBlotsRegistered) return;
+    try {
+      var BaseVideo = Quill.import('formats/video');
+      if (BaseVideo) {
+        class CustomVideo extends BaseVideo {
+          static create(value) {
+            var node = super.create(value);
+            node.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+            node.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+            node.setAttribute('allowfullscreen', 'true');
+            return node;
+          }
+          static sanitize(url) {
+            if (!url) return '//:0';
+            var shortsMatch = url.match(/^(?:https?:)?(?:\/\/)?(?:www\.)?youtube\.com\/shorts\/([a-zA-Z0-9_-]+)/);
+            if (shortsMatch) {
+              return 'https://www.youtube.com/embed/' + shortsMatch[1];
+            }
+            return super.sanitize(url);
+          }
+        }
+        Quill.register(CustomVideo, true);
+      }
+      state._quillBlotsRegistered = true;
+    } catch (e) {
+      console.warn('Could not register custom Quill video blot:', e);
+    }
+  }
+
   function initQuill() {
     if (state.quill) return;
     if (typeof Quill === 'undefined') {
       console.warn('Quill not loaded yet.');
       return;
     }
+    registerCustomQuillBlots();
     state.quill = new Quill('#quill-editor', {
       theme: 'snow',
       modules: {

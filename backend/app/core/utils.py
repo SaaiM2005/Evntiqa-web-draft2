@@ -125,7 +125,10 @@ def sanitize_html_content(raw_html: str) -> str:
             return ""
         safe_tag = (
             f'<iframe class="ql-video" src="{src_url}" '
-            f'frameborder="0" allowfullscreen="true"></iframe>'
+            f'frameborder="0" allowfullscreen="true" '
+            f'referrerpolicy="strict-origin-when-cross-origin" '
+            f'allow="accelerometer; autoplay; clipboard-write; '
+            f'encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>'
         )
         placeholder = f"__SAFE_VIDEO_IFRAME_{len(safe_iframes)}__"
         safe_iframes.append(safe_tag)

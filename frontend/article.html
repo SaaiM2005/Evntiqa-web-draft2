@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Article | Evntiqa</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <meta name="description" content="Evntiqa Editorial Dispatch: Executive perspectives, ABM playbooks, and CISO engagement benchmarking.">
@@ -634,6 +635,15 @@ h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
         if (src && src.startsWith('/uploads/')) {
           img.src = API_BASE + src;
         }
+      });
+
+      // Ensure embedded videos have proper referrer policy and player capabilities
+      bodyEl.querySelectorAll('iframe').forEach(function (iframe) {
+        iframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+        if (!iframe.getAttribute('allow')) {
+          iframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+        }
+        iframe.setAttribute('allowfullscreen', 'true');
       });
 
       // FAQs
