@@ -10,9 +10,9 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/admin/assets/vendor/quill.snow.css">
-<link rel="stylesheet" href="/admin/assets/admin.css">
+<link rel="stylesheet" href="/admin/assets/admin.css?v=1.1.0">
 <script src="/admin/assets/vendor/quill.js" defer></script>
-<script src="/admin/assets/admin.js" defer></script>
+<script src="/admin/assets/admin.js?v=1.1.0" defer></script>
 </head>
 <body>
 
@@ -246,7 +246,7 @@
           <!-- Rich Text Article Body Card -->
           <div class="editor-card">
             <div class="field-block-header">
-              <label class="ed-label">ARTICLE BODY (RICH TEXT / HTML / MARKDOWN) <span class="req">*</span></label>
+              <span class="ed-label">ARTICLE BODY (RICH TEXT / HTML / MARKDOWN) <span class="req">*</span></span>
               <span class="ed-hint">Stored XSS sanitization runs automatically on save to strip harmful scripts.</span>
             </div>
 
@@ -286,7 +286,7 @@
           <!-- FAQs (Accordion) Card -->
           <div class="editor-card">
             <div class="field-block-header">
-              <label class="ed-label">FAQS / FREQUENTLY ASKED QUESTIONS</label>
+              <span class="ed-label">FAQS / FREQUENTLY ASKED QUESTIONS</span>
               <button id="ed-add-faq-btn" type="button" class="btn btn-sm btn-ghost">+ Add FAQ</button>
             </div>
             <div id="ed-faqs-container" class="faqs-list"></div>
@@ -542,7 +542,7 @@
       </div>
 
       <div class="field-block">
-        <label class="field-label">AVATAR IMAGE</label>
+        <label for="author-avatar" class="field-label">AVATAR IMAGE</label>
         <input id="author-avatar-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/avif" hidden>
         <div class="avatar-input-row">
           <input id="author-avatar" type="text" inputmode="url" class="input" placeholder="Paste image URL or upload a file">
