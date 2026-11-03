@@ -815,7 +815,8 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
   }
 
   /* ── Dynamic API Integration ── */
-  var API_BASE = window.location.port === '8000' ? '' : 'http://127.0.0.1:8000';
+  var isLocal = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var API_BASE = isLocal && window.location.port !== '8000' ? 'http://127.0.0.1:8000' : '';
 
   function formatDate(isoStr) {
     if (!isoStr) return '';
@@ -875,7 +876,9 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
           window.location.href = articleUrl;
         };
       })
-      .catch(function () {});
+      .catch(function (err) {
+        console.warn('Could not load featured article from API:', err);
+      });
   }
 
   // Load Published Articles List
@@ -952,7 +955,9 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
           }
         });
       })
-      .catch(function () {});
+      .catch(function (err) {
+        console.warn('Could not load articles from API:', err);
+      });
   }
 
   loadFeaturedArticle();

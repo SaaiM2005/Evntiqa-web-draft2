@@ -537,9 +537,8 @@ h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
 (function () {
   'use strict';
 
-  var API_BASE = window.location.port === '8000'
-    ? ''
-    : window.location.protocol + '//' + (window.location.hostname || '127.0.0.1') + ':8000';
+  var isLocal = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var API_BASE = isLocal && window.location.port !== '8000' ? 'http://127.0.0.1:8000' : '';
 
   var params = new URLSearchParams(window.location.search);
   var slug = params.get('slug') || (window.location.hash.startsWith('#post/') ? window.location.hash.replace('#post/', '') : '');

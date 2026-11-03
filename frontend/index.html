@@ -1915,9 +1915,8 @@ class Component extends DCLogic {
 </script>
 <script>
   (function() {
-    var API_BASE = (location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname))
-      ? 'http://localhost:8000'
-      : 'https://api.evntiqa.com';
+    var isLocal = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+    var API_BASE = isLocal && window.location.port !== '8000' ? 'http://localhost:8000' : '';
 
     function submitForm(formType, form, extraMeta) {
       var fd = new FormData(form);
