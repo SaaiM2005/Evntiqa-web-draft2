@@ -334,7 +334,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
 }
 .filter:hover { border-color: rgba(200,244,92,0.4); color: #fff; }
 .filter[aria-pressed="true"] { background: var(--lime); border-color: var(--lime); color: var(--bg); }
-.filter[data-cat]::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c); transition: background 0.25s ease; }
+.filter[data-cat]::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--c, var(--lime)); transition: background 0.25s ease; }
 .filter[data-cat][aria-pressed="true"]::before { background: var(--bg); }
 .search { position: relative; flex: 0 1 300px; }
 .search svg { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: var(--text-3); pointer-events: none; transition: color 0.25s ease; }
@@ -561,13 +561,8 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
   <div class="wrap">
     <h2 id="list-title" class="sr-only">All articles</h2>
     <div class="list-head" data-reveal>
-      <ul class="filters" aria-label="Filter by topic">
+      <ul class="filters" id="category-filters" aria-label="Filter by topic">
         <li><button type="button" class="filter" aria-pressed="true" data-filter="all">All</button></li>
-        <li><button type="button" class="filter" aria-pressed="false" data-filter="engagement" data-cat="engagement">CISO Engagement</button></li>
-        <li><button type="button" class="filter" aria-pressed="false" data-filter="abm" data-cat="abm">ABM</button></li>
-        <li><button type="button" class="filter" aria-pressed="false" data-filter="roundtables" data-cat="roundtables">Roundtables</button></li>
-        <li><button type="button" class="filter" aria-pressed="false" data-filter="field" data-cat="field">Field Marketing</button></li>
-        <li><button type="button" class="filter" aria-pressed="false" data-filter="pipeline" data-cat="pipeline">Pipeline</button></li>
       </ul>
       <div class="search">
         <label for="blog-search" class="sr-only">Search articles</label>
@@ -766,6 +761,65 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
   var isLocal = location.protocol === 'file:' || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
   var API_BASE = isLocal && window.location.port !== '8000' ? 'http://127.0.0.1:8000' : '';
 
+  /* ── Dynamic Category Palettes ── */
+  var PALETTE = ['var(--lime)', 'var(--cyan)', 'var(--violet)', 'var(--amber)', 'var(--emerald)'];
+  var categoryColorMap = {
+    'engagement': 'var(--lime)',
+    'abm': 'var(--cyan)',
+    'roundtables': 'var(--violet)',
+    'field': 'var(--amber)',
+    'pipeline': 'var(--emerald)'
+  };
+  var colorIndex = 0;
+  function getCategoryColor(slug) {
+    if (!slug) return 'var(--lime)';
+    if (!categoryColorMap[slug]) {
+      categoryColorMap[slug] = PALETTE[colorIndex % PALETTE.length];
+      colorIndex++;
+    }
+    return categoryColorMap[slug];
+  }
+
+  // Load Categories Dynamically
+  function loadCategories() {
+    fetch(API_BASE + '/api/v1/content/categories')
+      .then(function (res) {
+        if (!res.ok) return null;
+        return res.json();
+      })
+      .then(function (cats) {
+        if (!cats || cats.length === 0) return;
+        var filtersList = document.getElementById('category-filters');
+        if (!filtersList) return;
+
+        // Keep "All" button intact
+        var allBtn = filtersList.querySelector('[data-filter="all"]');
+        var allLi = allBtn ? allBtn.closest('li') : null;
+        filtersList.innerHTML = '';
+        if (allLi) filtersList.appendChild(allLi);
+
+        cats.forEach(function (cat) {
+          var color = getCategoryColor(cat.slug);
+
+          var li = document.createElement('li');
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'filter';
+          btn.setAttribute('aria-pressed', 'false');
+          btn.setAttribute('data-filter', cat.slug);
+          btn.setAttribute('data-cat', cat.slug);
+          btn.style.setProperty('--c', color);
+          btn.textContent = cat.name;
+
+          li.appendChild(btn);
+          filtersList.appendChild(li);
+        });
+      })
+      .catch(function (err) {
+        console.warn('Could not load categories from API:', err);
+      });
+  }
+
   function formatDate(isoStr) {
     if (!isoStr) return '';
     try {
@@ -804,6 +858,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
         if (catEl && it.category) {
           catEl.textContent = it.category.name;
           catEl.setAttribute('data-cat', it.category.slug || 'engagement');
+          catEl.style.setProperty('--c', getCategoryColor(it.category.slug));
         }
         if (linkEl) {
           linkEl.textContent = it.title;
@@ -867,12 +922,14 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
         items.forEach(function (it, idx) {
           var catSlug = it.category ? it.category.slug : 'abm';
           var catName = it.category ? it.category.name : 'Editorial';
+          var catColor = getCategoryColor(catSlug);
           var articleUrl = 'article.html?slug=' + encodeURIComponent(it.slug);
 
           var art = document.createElement('article');
           art.className = 'card is-in is-settled';
           art.setAttribute('data-cat', catSlug);
           art.style.setProperty('--d', (idx * 0.08) + 's');
+          art.style.setProperty('--c', catColor);
           art.style.cursor = 'pointer';
 
           var topDiv = document.createElement('div');
@@ -881,6 +938,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
           var catSpan = document.createElement('span');
           catSpan.className = 'cat';
           catSpan.textContent = catName;
+          catSpan.style.setProperty('--c', catColor);
 
           var arrowSpan = document.createElement('span');
           arrowSpan.className = 'card-arrow';
@@ -934,6 +992,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
       });
   }
 
+  loadCategories();
   loadFeaturedArticle();
   loadGridArticles();
 
@@ -955,7 +1014,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
 
   /* ── Topic filter + search ── */
   (function initFilters() {
-    var filters = document.querySelectorAll('[data-filter]');
+    var filtersList = document.getElementById('category-filters');
     var search = document.getElementById('blog-search');
     var empty = document.getElementById('post-empty');
     var status = document.getElementById('results-status');
@@ -1010,13 +1069,17 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
       }, reduceMotion ? 0 : 180);
     }
 
-    filters.forEach(function (btn) {
-      btn.addEventListener('click', function () {
+    if (filtersList) {
+      filtersList.addEventListener('click', function (e) {
+        var btn = e.target.closest('[data-filter]');
+        if (!btn) return;
         active = btn.getAttribute('data-filter');
-        filters.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+        filtersList.querySelectorAll('[data-filter]').forEach(function (b) {
+          b.setAttribute('aria-pressed', String(b === btn));
+        });
         apply();
       });
-    });
+    }
     if (search) {
       search.addEventListener('input', function () {
         clearTimeout(searchTimer);
@@ -1027,7 +1090,11 @@ h1, h2, h3 { font-family: 'Space Grotesk', sans-serif; margin: 0; }
       clearBtn.addEventListener('click', function () {
         search.value = '';
         active = 'all';
-        filters.forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === 'all')); });
+        if (filtersList) {
+          filtersList.querySelectorAll('[data-filter]').forEach(function (b) {
+            b.setAttribute('aria-pressed', String(b.getAttribute('data-filter') === 'all'));
+          });
+        }
         apply();
         search.focus();
       });
